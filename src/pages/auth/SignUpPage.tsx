@@ -1,5 +1,11 @@
+import { AuthLayout } from "@/layouts";
+
 const SignUpPage = () => {
-  return <div></div>;
+  return (
+    <AuthLayout title="Sign up">
+      <div>Hello</div>
+    </AuthLayout>
+  );
 };
 
 export default SignUpPage;
