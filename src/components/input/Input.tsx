@@ -1,4 +1,5 @@
 import { useField } from "formik";
+import { ErrorMessage } from "../errorMessage";
 
 interface InputProps {
   type?: string;
@@ -20,17 +21,13 @@ const Input: React.FC<InputProps> = ({
         {...field}
         name={name}
         type={type}
-        className={`border-gray-300 border-b placeholder:text-lg placeholder:text-neutral-4 outline-none py-4 text-lg w-[600px] ${
+        className={`border-gray-300 border-b placeholder:text-base xl:placeholder:text-lg placeholder:text-neutral-4 outline-none py-2 text-base xl:text-lg w-full ${
           meta.touched && meta.error ? "border-red-500" : ""
         } ${className}`}
         placeholder={placeHolder}
       ></input>
 
-      {meta.error && meta.touched && (
-        <span className="absolute left-0 text-red-500 -bottom-8">
-          {meta.error}
-        </span>
-      )}
+      {meta.error && meta.touched && <ErrorMessage message={meta.error} />}
     </div>
   );
 };

@@ -1,4 +1,7 @@
+import { Button } from "@/components/button";
+import { Checkbox } from "@/components/checkbox";
 import { Input } from "@/components/input";
+import Label from "@/components/label/Label";
 import { AuthLayout } from "@/layouts";
 import { Form, Formik, FormikHelpers } from "formik";
 import { Link } from "react-router-dom";
@@ -48,7 +51,7 @@ const SignUpPage = () => {
   };
   return (
     <AuthLayout title="Sign up">
-      <span className="text-lg text-neutral-4">
+      <span className="text-base text-neutral-4 xl:text-lg">
         Already have an account?{" "}
         <Link
           className="font-semibold text-secondary-green"
@@ -58,17 +61,37 @@ const SignUpPage = () => {
         </Link>
       </span>
 
-      <div className="flex flex-col gap-8 mt-8">
+      <div className="flex flex-col mt-5">
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          <Form className="flex flex-col gap-8">
+          <Form className="flex flex-col w-full xl:w-[500px] 2xl:w-[600px]  gap-8 pb-7">
             <Input name="name" placeHolder="Your name" />
             <Input name="username" placeHolder="Username" />
             <Input type="email" name="email" placeHolder="Email address" />
             <Input type="password" name="password" placeHolder="Password" />
+            <Checkbox
+              name="agreeTerms"
+              className="mt-3"
+              label={
+                <Label>
+                  I agree with{" "}
+                  <span className="font-semibold text-primary">
+                    Privacy Policy{" "}
+                  </span>
+                  and{" "}
+                  <span className="font-semibold text-primary">
+                    Terms of Use
+                  </span>
+                </Label>
+              }
+            ></Checkbox>
+
+            <Button type="submit" className="mt-3">
+              Sign Up
+            </Button>
           </Form>
         </Formik>
       </div>

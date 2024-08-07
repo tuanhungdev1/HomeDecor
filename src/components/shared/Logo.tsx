@@ -7,7 +7,9 @@ interface LogoProps {
 const Logo: React.FC<LogoProps> = ({ className }) => {
   return (
     <Link to={"/"}>
-      <div className={`text-2xl font-medium ${className}`}>HomeDecor.</div>
+      <div className={`select-none text-2xl font-medium ${className}`}>
+        HomeDecor.
+      </div>
     </Link>
   );
 };
