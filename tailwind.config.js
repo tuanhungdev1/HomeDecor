@@ -10,7 +10,9 @@ export default {
           green: "#38CB89",
           orange: "#FFAB00",
           red: "#FF5630",
+          gray: "#F2F4F6",
         },
+
         "neutral-1": "#FEFEFE",
         "neutral-2": "#F3F5F7",
         "neutral-3": "#E8ECEF",
