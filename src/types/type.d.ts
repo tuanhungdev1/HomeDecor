@@ -3,3 +3,8 @@ export interface IMenuItem {
   title: string;
   url: string;
 }
+
+export interface IImageSlide {
+  id: string;
+  url: string;
+}
