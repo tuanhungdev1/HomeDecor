@@ -1,5 +1,11 @@
+import { PromotionalBanner } from "@/components/promotionalBanner";
+
 const Header = () => {
-  return <div></div>;
+  return (
+    <div>
+      <PromotionalBanner />
+    </div>
+  );
 };
 
 export default Header;
