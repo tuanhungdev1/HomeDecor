@@ -1,11 +1,9 @@
-import { ImageSlide } from "@/components/imageSlide";
+import { HeroSection } from "@/modules/home";
 
 const HomePage = () => {
   return (
     <main>
-      <section>
-        <ImageSlide />
-      </section>
+      <HeroSection />
     </main>
   );
 };
