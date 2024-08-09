@@ -14,10 +14,10 @@ const PromotionalBanner = () => {
   return (
     <>
       {isShowPromotionalBanner && (
-        <div className="relative flex items-center justify-center w-full h-12 gap-4 text-lg font-medium lg:h-16 xl:text-xl bg-secondary-gray">
+        <div className="relative flex items-center justify-center w-full h-12 gap-4 text-sm font-medium lg:h-14 xl:text-lg bg-secondary-gray">
           <div className="flex items-center gap-3">
             <div>
-              <RiDiscountPercentLine className="text-3xl xl:text-4xl" />
+              <RiDiscountPercentLine className="text-2xl xl:text-3xl" />
             </div>
             <span>30% off storewide — Limited time!</span>
           </div>
@@ -35,7 +35,7 @@ const PromotionalBanner = () => {
             className="absolute p-2 cursor-pointer right-3"
             onClick={handleShowPromotionalBannerClick}
           >
-            <IoClose className="text-3xl" />
+            <IoClose className="text-2xl xl:text-3xl" />
           </div>
         </div>
       )}
