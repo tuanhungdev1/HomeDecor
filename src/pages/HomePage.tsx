@@ -1,9 +1,10 @@
-import { HeroSection } from "@/modules/home";
+import { CategoriesSection, HeroSection } from "@/modules/home";
 
 const HomePage = () => {
   return (
     <main>
       <HeroSection />
+      <CategoriesSection />
     </main>
   );
 };
