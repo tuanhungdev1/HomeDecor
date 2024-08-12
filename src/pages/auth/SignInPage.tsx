@@ -59,7 +59,7 @@ const SignInPage = () => {
           onSubmit={handleSubmit}
         >
           <Form className="flex flex-col w-full xl:w-[500px] 2xl:w-[600px]  gap-8 pb-7">
-            <Input name="username" placeHolder="Username" />
+            <Input name="username" placeHolder="Username or Email" />
             <Input type="password" name="password" placeHolder="Password" />
             <div className="relative flex items-center justify-between">
               <Checkbox
