@@ -4,7 +4,7 @@ import "./styles/index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { HomePage } from "./pages";
 import { RootLayout } from "./layouts";
-import { SignInPage, SignUpPage } from "./pages/auth";
+import { ForgotPassword, SignInPage, SignUpPage } from "./pages/auth";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +23,10 @@ const router = createBrowserRouter([
   {
     path: "/auth/sign-up",
     element: <SignUpPage />,
+  },
+  {
+    path: "/auth/forgot-password",
+    element: <ForgotPassword />,
   },
 ]);
 

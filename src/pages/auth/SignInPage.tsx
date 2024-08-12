@@ -68,7 +68,7 @@ const SignInPage = () => {
                 label={<Label>Remember me</Label>}
               ></Checkbox>
 
-              <Link to={"/"}>
+              <Link to={"/auth/forgot-password"}>
                 <Label className="absolute right-0 flex-1 text-sm font-medium text-black -translate-y-[3px] top-1/2 text-end">
                   Forgot password?
                 </Label>

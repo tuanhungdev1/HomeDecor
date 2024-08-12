@@ -18,7 +18,16 @@ const ProductCarousel = () => {
           </span>
         </Link>
       </div>
-      <div></div>
+      <div className="mt-5">
+        <div className="flex">
+          <div>
+            <div className="relative">
+              <img src="/public/productCardImage.png" alt="" />
+              <span>NEW</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   );
 };
