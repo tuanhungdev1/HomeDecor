@@ -11,7 +11,7 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ productItem }) => {
   return (
     <div key={productItem.id} className="select-none">
-      <div className="relative w-[250px] h-[350px]">
+      <div className="relative w-[250px] h-[350px] group/item overflow-hidden">
         <img
           src={productItem.imageProduct}
           alt={productItem.name}
@@ -25,10 +25,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ productItem }) => {
             </Badge>
           )}
         </div>
-        <div className="absolute flex items-center justify-center bg-white rounded-full shadow-md h-9 w-9 right-4 top-4">
+        <div className="absolute flex items-center justify-center transition-all duration-300 ease-in-out translate-x-16 bg-white rounded-full shadow-md opacity-0 cursor-pointer group-hover/item:opacity-100 group-hover/item:translate-x-0 h-9 w-9 right-4 top-4">
           <CiHeart className="text-3xl text-gray-500" />
         </div>
-        <div className="absolute right-4 left-4 bottom-4">
+        <div className="absolute transition-all duration-300 translate-y-20 opacity-0 group-hover/item:opacity-100 ease group-hover/item:translate-y-0 right-4 left-4 bottom-4">
           <Button>Add to cart</Button>
         </div>
       </div>

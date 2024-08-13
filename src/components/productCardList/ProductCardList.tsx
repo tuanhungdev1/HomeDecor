@@ -78,38 +78,42 @@ const ProductCardList: React.FC = () => {
         scrollbar={{
           hide: false,
         }}
+        className="swiper"
         modules={[Scrollbar]}
         breakpoints={{
-          // Khi màn hình có độ rộng >= 320px (rất nhỏ)
           300: {
             slidesPerView: 1,
+            spaceBetween: 10,
           },
           420: {
             slidesPerView: 1.3,
+            spaceBetween: 15,
           },
           500: {
             slidesPerView: 1.7,
+            spaceBetween: 20,
           },
-
           620: {
             slidesPerView: 2,
+            spaceBetween: 25,
           },
           768: {
             slidesPerView: 2.5,
+            spaceBetween: 30,
           },
           1024: {
             slidesPerView: 3.2,
+            spaceBetween: 35,
           },
-
           1280: {
             slidesPerView: 4.2,
+            spaceBetween: 40,
           },
-
           1536: {
             slidesPerView: 5.3,
+            spaceBetween: 45,
           },
         }}
-        className="flex gap-5"
       >
         {products.map((product) => (
           <SwiperSlide key={product.id}>
