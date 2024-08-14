@@ -1,4 +1,5 @@
 import {
+  BannerSection,
   CategoriesSection,
   HeroSection,
   ProductCarousel,
@@ -12,6 +13,7 @@ const HomePage = () => {
       <CategoriesSection />
       <ProductCarousel />
       <ValuesSection />
+      <BannerSection />
     </main>
   );
 };
