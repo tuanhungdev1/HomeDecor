@@ -4,7 +4,7 @@ import { PromotionalBanner } from "@/components/promotionalBanner";
 
 const RootLayout = () => {
   return (
-    <div>
+    <div className="overflow-hidden">
       <PromotionalBanner />
       <div className="container px-5 mx-auto">
         <Header />

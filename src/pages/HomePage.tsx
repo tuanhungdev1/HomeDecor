@@ -5,6 +5,7 @@ import {
   ProductCarousel,
   ValuesSection,
 } from "@/modules/home";
+import ArticlesSection from "@/modules/home/ArticlesSection";
 
 const HomePage = () => {
   return (
@@ -14,6 +15,7 @@ const HomePage = () => {
       <ProductCarousel />
       <ValuesSection />
       <BannerSection />
+      <ArticlesSection />
     </main>
   );
 };

@@ -86,32 +86,32 @@ const ProductCardList: React.FC = () => {
             spaceBetween: 10,
           },
           420: {
-            slidesPerView: 1.3,
-            spaceBetween: 15,
+            slidesPerView: 1.5,
+            spaceBetween: 10,
           },
           500: {
             slidesPerView: 1.7,
-            spaceBetween: 20,
+            spaceBetween: 10,
           },
           620: {
-            slidesPerView: 2,
-            spaceBetween: 25,
+            slidesPerView: 2.3,
+            spaceBetween: 10,
           },
           768: {
-            slidesPerView: 2.5,
-            spaceBetween: 30,
+            slidesPerView: 2.7,
+            spaceBetween: 10,
           },
           1024: {
-            slidesPerView: 3.2,
-            spaceBetween: 35,
+            slidesPerView: 3.7,
+            spaceBetween: 10,
           },
           1280: {
-            slidesPerView: 4.2,
-            spaceBetween: 40,
+            slidesPerView: 4.6,
+            spaceBetween: 10,
           },
           1536: {
-            slidesPerView: 5.3,
-            spaceBetween: 45,
+            slidesPerView: 5.6,
+            spaceBetween: 10,
           },
         }}
       >
