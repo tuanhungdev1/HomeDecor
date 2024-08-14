@@ -2,6 +2,7 @@ import {
   CategoriesSection,
   HeroSection,
   ProductCarousel,
+  ValuesSection,
 } from "@/modules/home";
 
 const HomePage = () => {
@@ -10,6 +11,7 @@ const HomePage = () => {
       <HeroSection />
       <CategoriesSection />
       <ProductCarousel />
+      <ValuesSection />
     </main>
   );
 };

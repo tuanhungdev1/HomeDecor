@@ -4,6 +4,8 @@ export interface IMenuItem {
   url: string;
 }
 
+
+
 export interface IImageSlide {
   id: string;
   url: string;
