@@ -1,6 +1,8 @@
 import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import { PromotionalBanner } from "@/components/promotionalBanner";
+import NewsLetter from "./NewsLetter";
+import Footer from "./Footer";
 
 const RootLayout = () => {
   return (
@@ -10,6 +12,8 @@ const RootLayout = () => {
         <Header />
         <Outlet />
       </div>
+      <NewsLetter />
+      <Footer />
     </div>
   );
 };

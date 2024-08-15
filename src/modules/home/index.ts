@@ -3,3 +3,4 @@ export { default as CategoriesSection } from "./CategoriesSection";
 export { default as ProductCarousel } from "./ProductCarousel";
 export { default as ValuesSection } from "./ValuesSection";
 export { default as BannerSection } from "./BannerSection";
+

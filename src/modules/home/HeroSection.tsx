@@ -1,5 +1,5 @@
 import { ImageSlide } from "@/components/imageSlide";
-import { Heading } from "@/layouts/typography";
+import { Heading } from "@/components/typography";
 
 const HeroSection = () => {
   return (

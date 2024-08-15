@@ -1,5 +1,5 @@
 import { Logo } from "@/components/shared";
-import { Heading } from "@/layouts/typography";
+import { Heading } from "@/components/typography";
 import AuthImage from "../assets/image/ChairImage.png";
 
 interface AuthLayoutProps {

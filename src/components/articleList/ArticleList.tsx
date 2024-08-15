@@ -21,7 +21,7 @@ const ArticlesItem: Article[] = [
 
 const ArticleList = () => {
   return (
-    <div className="flex flex-col gap-10 mt-10">
+    <div className="flex flex-col gap-20 mt-10 md:gap-4 lg:gap-7 md:flex-row  md:h-[320px] lg:h-[370px] xl:h-[450px] 2xl:h-[520px]">
       {ArticlesItem.map((article) => (
         <ArticleCard key={article.id} article={article} />
       ))}

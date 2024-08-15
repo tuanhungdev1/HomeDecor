@@ -7,7 +7,7 @@ interface ArticleCardProps {
 
 const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
   return (
-    <div className="flex flex-col w-full select-none">
+    <div className="relative flex flex-col w-full select-none md:h-full">
       <div className="w-full">
         <img
           src={article.imageUrl}
@@ -15,13 +15,15 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
           className="object-cover w-full"
         />
       </div>
-      <div className="mt-5 mb-3 text-lg font-medium">
+      <div className="mt-5 mb-3 text-lg font-medium xl:text-xl 2xl:text-2xl">
         <span>{article.title}</span>
       </div>
 
-      <LinkTo url="/" className="text-base">
-        Read More
-      </LinkTo>
+      <div className="absolute -bottom-6 md:bottom-0 2xl:-bottom-2">
+        <LinkTo url="/" className="text-base">
+          Read More
+        </LinkTo>
+      </div>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import { ArticleList } from "@/components/articleList";
 import { LinkTo } from "@/components/linkTo";
-import { Heading } from "@/layouts/typography";
+import { Heading } from "@/components/typography";
 
 const ArticlesSection = () => {
   return (

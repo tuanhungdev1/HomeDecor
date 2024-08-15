@@ -1,4 +1,4 @@
-import { Heading } from "@/layouts/typography";
+import { Heading } from "@/components/typography";
 import { Link } from "react-router-dom";
 import { IoArrowForward } from "react-icons/io5";
 import { ProductCardList } from "@/components/productCardList";
