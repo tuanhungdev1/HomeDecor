@@ -1,6 +1,6 @@
 import { Heading } from "@/components/typography";
-import { Link } from "react-router-dom";
-import { HiArrowRight } from "react-icons/hi";
+
+import { LinkTo } from "@/components/linkTo";
 
 const BannerSection = () => {
   return (
@@ -27,15 +27,12 @@ const BannerSection = () => {
               stylish makeover
             </span>
 
-            <Link
-              to={"/"}
-              className="flex items-center gap-2 text-lg font-medium underline md:text-2xl"
+            <LinkTo
+              url="/"
+              className="flex items-center gap-2 text-2xl md:text-2xl"
             >
-              <span>Shop Now</span>
-              <span>
-                <HiArrowRight />
-              </span>
-            </Link>
+              Shop Now
+            </LinkTo>
           </div>
         </div>
       </section>

@@ -27,7 +27,7 @@ const PromotionalBanner = () => {
           >
             <span>Shop Now</span>
             <div>
-              <IoArrowForwardOutline className="text-2xl" />
+              <IoArrowForwardOutline className="text-xl" />
             </div>
           </Link>
 

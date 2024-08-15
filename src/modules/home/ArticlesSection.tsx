@@ -7,7 +7,7 @@ const ArticlesSection = () => {
     <section className="pt-10 pb-10">
       <div className="flex items-end justify-between">
         <Heading>Articles</Heading>
-        <LinkTo url="/" className="text-base">
+        <LinkTo url="/" className="text-base md:text-xl">
           More Articles
         </LinkTo>
       </div>
