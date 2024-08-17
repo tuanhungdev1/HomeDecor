@@ -25,3 +25,17 @@ export interface Product {
   isNew: boolean;
   rating: number;
 }
+
+export interface LoginData {
+  username: string;
+  password: string;
+  rememberPassword: boolean;
+}
+
+export interface RegisterData {
+  name: string;
+  username: string;
+  email: string;
+  password: string;
+  agreeTerms: boolean;
+}

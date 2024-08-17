@@ -3,17 +3,10 @@ import { Checkbox } from "@/components/checkbox";
 import { Input } from "@/components/input";
 import Label from "@/components/label/Label";
 import { AuthLayout } from "@/layouts";
+import { RegisterData } from "@/types/type";
 import { Form, Formik, FormikHelpers } from "formik";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
-
-interface SignUpFormValues {
-  name: string;
-  username: string;
-  email: string;
-  password: string;
-  agreeTerms: boolean;
-}
 
 const validationSchema = Yup.object({
   name: Yup.string()
@@ -33,7 +26,7 @@ const validationSchema = Yup.object({
 });
 
 const SignUpPage = () => {
-  const initialValues: SignUpFormValues = {
+  const initialValues: RegisterData = {
     name: "",
     username: "",
     email: "",
@@ -41,8 +34,8 @@ const SignUpPage = () => {
     agreeTerms: false,
   };
   const handleSubmit = (
-    values: SignUpFormValues,
-    { setSubmitting }: FormikHelpers<SignUpFormValues>
+    values: RegisterData,
+    { setSubmitting }: FormikHelpers<RegisterData>
   ) => {
     setTimeout(() => {
       alert(JSON.stringify(values, null, 2));
