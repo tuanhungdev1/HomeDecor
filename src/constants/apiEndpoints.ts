@@ -7,6 +7,7 @@ export const API_ENDPOINTS = {
     LOGOUT: `${API_BASE_URL}/auth/logout`,
     CURRENT_USER: `${API_BASE_URL}/auth/me`,
     REFRESH_TOKEN: `${API_BASE_URL}/auth/refresh-token`,
+    CHANGE_PASSWORD: `${API_BASE_URL}/forgot-password`,
   },
   PRODUCTS: {
     GET_ALL: `${API_BASE_URL}/products`,

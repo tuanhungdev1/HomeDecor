@@ -39,3 +39,27 @@ export interface RegisterData {
   password: string;
   agreeTerms: boolean;
 }
+
+export interface User {
+  id: string;
+  firstName?: string;
+  lastName?: string;
+  displayName: string;
+  email: string;
+  profilePicture?: string;
+  dateOfBirth?: string;
+}
+
+export interface AuthState {
+  isAuthenticated: boolean;
+  user: User | null;
+  status: "idle" | "loading" | "succeeded" | "failed";
+  error: string | null;
+}
+
+export interface ForgotPasswordFormValues {
+  username: string;
+  email: string;
+  oldPassword: string;
+  newPassword: string;
+}

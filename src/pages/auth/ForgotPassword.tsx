@@ -1,16 +1,10 @@
 import { Button } from "@/components/button";
 import { Input } from "@/components/input";
 import { AuthLayout } from "@/layouts";
+import { ForgotPasswordFormValues } from "@/types/type";
 import { Form, Formik, FormikHelpers } from "formik";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
-
-interface ForgotPasswordFormValues {
-  username: string;
-  email: string;
-  oldPassword: string;
-  newPassword: string;
-}
 
 const validationSchema = Yup.object({
   username: Yup.string()

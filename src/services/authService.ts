@@ -1,6 +1,10 @@
 import axiosInstance from "@/configs/axiosInstance";
 import { API_ENDPOINTS } from "../constants/apiEndpoints";
-import { LoginData, RegisterData } from "@/types/type";
+import {
+  ForgotPasswordFormValues,
+  LoginData,
+  RegisterData,
+} from "@/types/type";
 
 export const authService = {
   login: (credentials: LoginData) =>
@@ -10,6 +14,12 @@ export const authService = {
     axiosInstance.post(API_ENDPOINTS.AUTH.REGISTER, userData),
 
   logout: () => axiosInstance.post(API_ENDPOINTS.AUTH.LOGOUT),
+
+  changePassword: (userForgotPasswordData: ForgotPasswordFormValues) =>
+    axiosInstance.post(
+      API_ENDPOINTS.AUTH.CHANGE_PASSWORD,
+      userForgotPasswordData
+    ),
 
   getCurrentUser: () => axiosInstance.get(API_ENDPOINTS.AUTH.CURRENT_USER),
 };
