@@ -63,3 +63,8 @@ export interface ForgotPasswordFormValues {
   oldPassword: string;
   newPassword: string;
 }
+
+export interface RefreshTokenData {
+  accessToken: string | null;
+  refreshToken: string | null;
+}

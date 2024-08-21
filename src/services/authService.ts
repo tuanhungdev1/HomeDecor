@@ -3,6 +3,7 @@ import { API_ENDPOINTS } from "../constants/apiEndpoints";
 import {
   ForgotPasswordFormValues,
   LoginData,
+  RefreshTokenData,
   RegisterData,
 } from "@/types/type";
 
@@ -20,6 +21,9 @@ export const authService = {
       API_ENDPOINTS.AUTH.CHANGE_PASSWORD,
       userForgotPasswordData
     ),
+
+  refreshToken: (refreshTokenData: RefreshTokenData) =>
+    axiosInstance.post(API_ENDPOINTS.AUTH.REFRESH_TOKEN, refreshTokenData),
 
   getCurrentUser: () => axiosInstance.get(API_ENDPOINTS.AUTH.CURRENT_USER),
 };
