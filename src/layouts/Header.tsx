@@ -25,7 +25,7 @@ const Header = () => {
         </div>
 
         <div className="hidden lg:flex ">
-          <ul className="flex gap-6 text-lg font-normal xl:text-xl xl:gap-10">
+          <ul className="flex gap-6 text-lg font-normal xl:text-lg xl:gap-10">
             {menuItems.map((item) => (
               <ActiveLink
                 key={item.id}
@@ -41,18 +41,18 @@ const Header = () => {
           <div className="items-center hidden gap-2 lg:flex">
             <div></div>
             <div className="cursor-pointer">
-              <IoSearchOutline className="text-4xl xl:text-5xl" />
+              <IoSearchOutline className="text-4xl" />
             </div>
             <div>
               {/* <Avatar name="Join" alt="avatar" to="/" /> */}
-              <HiOutlineUserCircle className="text-4xl xl:text-5xl" />
+              <HiOutlineUserCircle className="text-4xl " />
             </div>
           </div>
           <div className="flex items-center gap-2 cursor-pointer">
             <div>
-              <IoCartOutline className="text-4xl xl:text-5xl" />
+              <IoCartOutline className="text-4xl" />
             </div>
-            <span className="flex items-center justify-center w-8 h-8 text-lg font-semibold text-white rounded-full bg-primary xl:w-10 xl:h-10 xl:text-2xl">
+            <span className="flex items-center justify-center w-8 h-8 text-base font-semibold text-white rounded-full bg-primary ">
               9
             </span>
           </div>

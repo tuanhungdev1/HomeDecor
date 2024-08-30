@@ -5,19 +5,29 @@ interface LinkToProps {
   children: React.ReactNode;
   className?: string;
   url: string;
+  colorLine?: string;
 }
 
-const LinkTo: React.FC<LinkToProps> = ({ children, className, url }) => {
+const LinkTo: React.FC<LinkToProps> = ({
+  children,
+  className,
+  url,
+  colorLine,
+}) => {
   return (
     <Link
       to={url}
       className={`flex w-max items-center text-sm gap-1  group/arrow relative `}
     >
-      <span className={`${className} 2xl:text-xl`}>{children}</span>
+      <span className={`${className} text-base`}>{children}</span>
       <span className="transition-all duration-300 group-hover/arrow:translate-x-1 ">
         <IoArrowForward className="text-lg 2xl:text-xl" />
       </span>
-      <div className="absolute h-[2px] bg-primary -bottom-[2px] w-full"></div>
+      <div
+        className={`absolute h-[2px] ${
+          colorLine ? colorLine : "bg-primary"
+        } -bottom-[2px] w-full`}
+      ></div>
     </Link>
   );
 };

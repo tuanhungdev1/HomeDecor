@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { RiDiscountPercentLine } from "react-icons/ri";
-import { IoArrowForwardOutline } from "react-icons/io5";
 import { IoClose } from "react-icons/io5";
+import { LinkTo } from "../linkTo";
 
 const PromotionalBanner = () => {
   const [isShowPromotionalBanner, setIsShowPromotionalBanner] =
@@ -23,12 +23,11 @@ const PromotionalBanner = () => {
           </div>
           <Link
             to={"/shop"}
-            className="items-center hidden gap-2 underline md:flex text-secondary-blue"
+            className="items-center hidden gap-2 md:flex text-secondary-blue"
           >
-            <span>Shop Now</span>
-            <div>
-              <IoArrowForwardOutline className="text-xl" />
-            </div>
+            <LinkTo url="/" className="text-lg" colorLine="bg-secondary-blue">
+              Shop Now
+            </LinkTo>
           </Link>
 
           <div

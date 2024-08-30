@@ -10,13 +10,7 @@ import "swiper/css/pagination";
 
 import "../../styles/styles.css";
 
-import {
-  Navigation,
-  Pagination,
-  Mousewheel,
-  Keyboard,
-  Autoplay,
-} from "swiper/modules";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
 
 interface IImageSlide {
   id: string;
@@ -62,11 +56,11 @@ const ImageSlide: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative w-full h-[400px] md:h-[400px] lg:h-[500px] xl:h-[700px]">
+    <div className="relative w-full h-[400px] md:h-[400px] lg:h-[500px] xl:h-[700px] group/item-hidden">
       <Swiper
         loop={true}
         autoplay={{
-          delay: 5000,
+          delay: 8000,
           disableOnInteraction: false,
         }}
         navigation={
@@ -82,7 +76,7 @@ const ImageSlide: React.FC = () => {
         }}
         keyboard={true}
         mousewheel={true}
-        modules={[Navigation, Pagination, Mousewheel, Keyboard, Autoplay]}
+        modules={[Navigation, Pagination, Autoplay]}
         className="w-full h-full custom-swiper"
         onSwiper={(swiperInstance) => setSwiper(swiperInstance)}
       >
@@ -102,7 +96,7 @@ const ImageSlide: React.FC = () => {
       {showNavigation && (
         <>
           <div
-            className="absolute select-none cursor-pointer left-[10px] z-10 -translate-y-1/2 top-1/2 w-[40px] h-[40px] lg:left-[40px] hover:bg-slate-100 transition-all bg-white flex items-center justify-center rounded-full xl:w-[50px] xl:h-[50px] xl:left-[40px]"
+            className="absolute select-none cursor-pointer left-[10px] z-10 -translate-y-1/2 top-1/2 w-[40px] h-[40px] lg:left-[40px] hover:bg-slate-100 transition-all bg-white flex items-center justify-center rounded-full xl:w-[50px] xl:h-[50px] xl:left-[40px] opacity-0 invisible group-hover/item-hidden:opacity-100 group-hover/item-hidden:visible duration-300"
             ref={navigationPrevRef}
             onClick={() => swiper?.slidePrev()}
           >
@@ -110,7 +104,7 @@ const ImageSlide: React.FC = () => {
           </div>
 
           <div
-            className="absolute select-none cursor-pointer right-[10px] z-10 -translate-y-1/2 top-1/2 w-[40px] h-[40px] lg:right-[40px] hover:bg-slate-100 transition-all bg-white flex items-center justify-center rounded-full xl:h-[50px] xl:w-[50px] xl:right-[40px]"
+            className="absolute select-none cursor-pointer right-[10px] z-10 -translate-y-1/2 top-1/2 w-[40px] h-[40px] lg:right-[40px] hover:bg-slate-100 transition-all bg-white flex items-center justify-center rounded-full xl:h-[50px] xl:w-[50px] xl:right-[40px]  opacity-0 invisible group-hover/item-hidden:opacity-100 group-hover/item-hidden:visible duration-300"
             ref={navigationNextRef}
             onClick={() => swiper?.slideNext()}
           >
