@@ -53,7 +53,7 @@ export interface User {
 export interface AuthState {
   isAuthenticated: boolean;
   user: User | null;
-  status: "idle" | "loading" | "succeeded" | "failed";
+  status: "idle" | "pending" | "succeeded" | "rejected";
   error: string | null;
 }
 

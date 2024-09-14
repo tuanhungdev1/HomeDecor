@@ -3,10 +3,17 @@ import { menuItems } from "@/constants/menuItem";
 import { useState } from "react";
 import { IoMenu } from "react-icons/io5";
 import { IoCartOutline } from "react-icons/io5";
-import { HiOutlineUserCircle } from "react-icons/hi2";
+
 import { IoSearchOutline } from "react-icons/io5";
+import { useSelector } from "react-redux";
+import { selectAuthUser } from "@/stores/authSlice/authSlice";
+import { Button } from "@/components/button";
+import { Link } from "react-router-dom";
+import { Avatar } from "@/components/avatar";
 
 const Header = () => {
+  const authUser = useSelector(selectAuthUser);
+
   const [activeLinkId, setActiveLinkId] = useState<string>(
     menuItems[0].id ?? "/home"
   );
@@ -14,6 +21,8 @@ const Header = () => {
   const handleSelectedLinkIdClick = (id: string) => {
     setActiveLinkId(id);
   };
+
+  console.log(authUser);
   return (
     <section className="mt-4 mb-4">
       <nav className="h-[60px] flex items-center justify-between">
@@ -43,19 +52,38 @@ const Header = () => {
             <div className="cursor-pointer">
               <IoSearchOutline className="text-4xl" />
             </div>
-            <div>
-              {/* <Avatar name="Join" alt="avatar" to="/" /> */}
-              <HiOutlineUserCircle className="text-4xl " />
-            </div>
+            {authUser && (
+              <div>
+                <Avatar
+                  name={authUser.displayName ?? authUser.email}
+                  alt={authUser.displayName ?? authUser.email}
+                  to="/"
+                  src={authUser.profilePicture}
+                />
+              </div>
+            )}
           </div>
-          <div className="flex items-center gap-2 cursor-pointer">
-            <div>
-              <IoCartOutline className="text-4xl" />
+
+          {!authUser ? (
+            <div className="flex items-center gap-4">
+              <Link to={"/auth/sign-up"}>
+                <Button className="">Sign Up</Button>
+              </Link>
+
+              <Link to={"/auth/sign-in"}>
+                <Button className="">Sign In</Button>
+              </Link>
             </div>
-            <span className="flex items-center justify-center w-8 h-8 text-base font-semibold text-white rounded-full bg-primary ">
-              9
-            </span>
-          </div>
+          ) : (
+            <div className="flex items-center gap-2 cursor-pointer">
+              <div>
+                <IoCartOutline className="text-4xl" />
+              </div>
+              <span className="flex items-center justify-center text-base font-semibold text-white rounded-full w-9 h-9 bg-primary ">
+                9
+              </span>
+            </div>
+          )}
         </div>
       </nav>
     </section>

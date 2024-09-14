@@ -33,7 +33,7 @@ const Avatar = ({ src, alt, to, name }: AvatarProps) => {
   }, [name]);
   return (
     <Link to={to}>
-      <div className="w-8 h-8 overflow-hidden rounded-full cursor-pointer xl:w-10 xl:h-10">
+      <div className="w-8 h-8 overflow-hidden rounded-full cursor-pointer xl:w-9 xl:h-9">
         {src ? (
           <img src={src} alt={alt} className="object-cover w-full h-full" />
         ) : (

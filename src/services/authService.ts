@@ -1,4 +1,4 @@
-import axiosInstance from "@/configs/axiosInstance";
+import axiosInstance from "@/api/interceptor";
 import { API_ENDPOINTS } from "../constants/apiEndpoints";
 import {
   ForgotPasswordFormValues,
