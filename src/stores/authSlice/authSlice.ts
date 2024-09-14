@@ -9,12 +9,21 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import axios from "axios";
 
-const initialState: AuthState = {
-  isAuthenticated: false,
-  user: null,
-  status: "idle",
-  error: null,
+// Hàm để lấy trạng thái ban đầu từ localStorage
+const getInitialState = (): AuthState => {
+  const storedUser = localStorage.getItem("user");
+  const storedIsAuthenticated = localStorage.getItem("isAuthenticated");
+  return {
+    isAuthenticated: storedIsAuthenticated
+      ? JSON.parse(storedIsAuthenticated)
+      : false,
+    user: storedUser ? JSON.parse(storedUser) : null,
+    status: "idle",
+    error: null,
+  };
 };
+
+const initialState: AuthState = getInitialState();
 
 // Thunk cho đăng nhập
 export const login = createAsyncThunk(
@@ -39,9 +48,20 @@ export const login = createAsyncThunk(
 // Thunk cho đăng ký
 export const register = createAsyncThunk(
   "auth/register",
-  async (registerData: RegisterData) => {
-    const response = await authService.register(registerData);
-    return response.data;
+  async (registerData: RegisterData, { rejectWithValue }) => {
+    try {
+      const response = await authService.register(registerData);
+      return response.data;
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        console.log(err);
+        if (err.response && err.response.data && err.response.data.message) {
+          return rejectWithValue(err.response.data.message);
+        }
+      } else {
+        return rejectWithValue("An error occurred. Please try again.");
+      }
+    }
   }
 );
 
@@ -65,6 +85,10 @@ const authSlice = createSlice({
       state.user = null;
       state.status = "idle";
       state.error = null;
+      localStorage.removeItem("user");
+      localStorage.removeItem("isAuthenticated");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
     },
     resetAuthStatus: (state) => {
       state.status = "idle";
@@ -80,8 +104,16 @@ const authSlice = createSlice({
         state.status = "succeeded";
         state.isAuthenticated = true;
         state.user = action.payload.data;
-        localStorage.setItem("accessToken", action.payload.token);
-        localStorage.setItem("refreshToken", action.payload.refreshToken);
+        localStorage.setItem(
+          "accessToken",
+          JSON.stringify(action.payload.token)
+        );
+        localStorage.setItem(
+          "refreshToken",
+          JSON.stringify(action.payload.refreshToken)
+        );
+        localStorage.setItem("user", JSON.stringify(action.payload.data));
+        localStorage.setItem("isAuthenticated", JSON.stringify(true));
       })
       .addCase(login.rejected, (state, action) => {
         state.status = "rejected";
@@ -96,7 +128,7 @@ const authSlice = createSlice({
       })
       .addCase(register.rejected, (state, action) => {
         state.status = "rejected";
-        state.error = action.error.message || null;
+        (action.payload as string) || "Invalid username or password.";
       })
       .addCase(changePassword.pending, (state) => {
         state.status = "pending";

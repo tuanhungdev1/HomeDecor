@@ -1,3 +1,5 @@
+import { UserRole } from "./Enums";
+
 export interface IMenuItem {
   id: string;
   title: string;
@@ -37,6 +39,7 @@ export interface RegisterData {
   username: string;
   email: string;
   password: string;
+  roles: UserRole[];
   agreeTerms: boolean;
 }
 

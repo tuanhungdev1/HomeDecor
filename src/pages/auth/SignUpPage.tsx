@@ -2,10 +2,21 @@ import { Button } from "@/components/button";
 import { Checkbox } from "@/components/checkbox";
 import { Input } from "@/components/input";
 import Label from "@/components/label/Label";
+import { useAppDispatch } from "@/hooks/hooks";
 import { AuthLayout } from "@/layouts";
+import {
+  register,
+  resetAuthStatus,
+  selectAuthError,
+  selectAuthStatus,
+} from "@/stores/authSlice/authSlice";
+import { UserRole } from "@/types/Enums";
 import { RegisterData } from "@/types/type";
 import { Form, Formik, FormikHelpers } from "formik";
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import toast, { Toaster } from "react-hot-toast";
+import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 
 const validationSchema = Yup.object({
@@ -26,22 +37,43 @@ const validationSchema = Yup.object({
 });
 
 const SignUpPage = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const authStatus = useSelector(selectAuthStatus);
+
+  const authError = useSelector(selectAuthError);
+
   const initialValues: RegisterData = {
     name: "",
     username: "",
     email: "",
     password: "",
+    roles: [UserRole.Customer],
     agreeTerms: false,
   };
-  const handleSubmit = (
+  const handleSubmit = async (
     values: RegisterData,
     { setSubmitting }: FormikHelpers<RegisterData>
   ) => {
-    setTimeout(() => {
-      alert(JSON.stringify(values, null, 2));
-      setSubmitting(false);
-    }, 400);
+    await dispatch(register(values)).unwrap();
+    setSubmitting(false);
+    console.log(values);
   };
+
+  useEffect(() => {
+    if (authStatus === "succeeded") {
+      toast.success("Logged in successfully!");
+      const timer = setTimeout(() => {
+        dispatch(resetAuthStatus());
+        navigate("/auth/sign-in");
+      }, 2000);
+
+      // Clean up timer on component unmount or if authStatus changes
+      return () => clearTimeout(timer);
+    } else if (authStatus === "rejected" && authError) {
+      toast.error(authError);
+    }
+  }, [authStatus, authError, navigate, dispatch]);
   return (
     <AuthLayout title="Sign up">
       <span className="text-base text-neutral-4 xl:text-lg">
@@ -82,11 +114,16 @@ const SignUpPage = () => {
               }
             ></Checkbox>
 
-            <Button type="submit" className="mt-3">
+            <Button
+              type="submit"
+              className="mt-3"
+              isLoading={authStatus === "pending"}
+            >
               Sign Up
             </Button>
           </Form>
         </Formik>
+        <Toaster />
       </div>
     </AuthLayout>
   );
