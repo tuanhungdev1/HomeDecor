@@ -1,9 +1,19 @@
 import { Button } from "@/components/button";
 import { Input } from "@/components/input";
+import { useAppDispatch } from "@/hooks/hooks";
 import { AuthLayout } from "@/layouts";
+import {
+  changePassword,
+  resetAuthStatus,
+  selectAuthError,
+  selectAuthStatus,
+} from "@/stores/authSlice/authSlice";
 import { ForgotPasswordFormValues } from "@/types/type";
 import { Form, Formik, FormikHelpers } from "formik";
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import toast, { Toaster } from "react-hot-toast";
+import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 
 const validationSchema = Yup.object({
@@ -13,7 +23,7 @@ const validationSchema = Yup.object({
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
-  oldPassword: Yup.string()
+  currentPassword: Yup.string()
     .min(8, "Password must be at least 8 characters")
     .required("Old password is required"),
   newPassword: Yup.string()
@@ -26,22 +36,47 @@ const validationSchema = Yup.object({
 });
 
 const ForgotPassword = () => {
+  const dispatch = useAppDispatch();
+
+  const navigate = useNavigate();
+
+  const authStatus = useSelector(selectAuthStatus);
+
+  const authError = useSelector(selectAuthError);
+
   const initialValues: ForgotPasswordFormValues = {
     username: "",
     email: "",
-    oldPassword: "",
+    currentPassword: "",
     newPassword: "",
   };
 
-  const handleSubmit = (
+  const handleSubmit = async (
     values: ForgotPasswordFormValues,
     { setSubmitting }: FormikHelpers<ForgotPasswordFormValues>
   ) => {
-    setTimeout(() => {
-      alert("Password reset request submitted for: " + values.username);
-      setSubmitting(false);
-    }, 400);
+    console.log(values);
+    await dispatch(changePassword(values)).unwrap();
+    setSubmitting(false);
   };
+
+  useEffect(() => {
+    if (authStatus === "succeeded") {
+      toast.success("Your password has been successfully changed!");
+      const timer = setTimeout(() => {
+        dispatch(resetAuthStatus());
+        navigate("/auth/sign-in");
+      }, 2000);
+
+      // Clean up timer on component unmount or if authStatus changes
+      return () => clearTimeout(timer);
+    } else if (authStatus === "rejected" && authError) {
+      toast.error(authError);
+    }
+    return () => {
+      toast.remove();
+    };
+  }, [authStatus, authError, navigate, dispatch]);
 
   return (
     <AuthLayout title="Reset Password">
@@ -68,7 +103,7 @@ const ForgotPassword = () => {
             <Input name="username" placeHolder="Username" />
             <Input name="email" placeHolder="Email address" type="email" />
             <Input
-              name="oldPassword"
+              name="currentPassword"
               placeHolder="Old Password"
               type="password"
             />
@@ -78,11 +113,16 @@ const ForgotPassword = () => {
               type="password"
             />
 
-            <Button type="submit" className="mt-3">
+            <Button
+              type="submit"
+              className="mt-3"
+              isLoading={authStatus === "pending"}
+            >
               Reset Password
             </Button>
           </Form>
         </Formik>
+        <Toaster />
       </div>
     </AuthLayout>
   );

@@ -68,9 +68,17 @@ export const register = createAsyncThunk(
 // Thunk cho thay đổi mật khẩu
 export const changePassword = createAsyncThunk(
   "auth/changePassword",
-  async (changePasswordData: ForgotPasswordFormValues) => {
-    const response = await authService.changePassword(changePasswordData);
-    return response.data;
+  async (changePasswordData: ForgotPasswordFormValues, { rejectWithValue }) => {
+    try {
+      const response = await authService.changePassword(changePasswordData);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data.message);
+      } else {
+        return rejectWithValue("An error occurred. Please try again.");
+      }
+    }
   }
 );
 
@@ -128,7 +136,8 @@ const authSlice = createSlice({
       })
       .addCase(register.rejected, (state, action) => {
         state.status = "rejected";
-        (action.payload as string) || "Invalid username or password.";
+        state.error =
+          (action.payload as string) || "Invalid username or password.";
       })
       .addCase(changePassword.pending, (state) => {
         state.status = "pending";
@@ -138,7 +147,8 @@ const authSlice = createSlice({
       })
       .addCase(changePassword.rejected, (state, action) => {
         state.status = "rejected";
-        state.error = action.error.message || null;
+        state.error =
+          (action.payload as string) || "Invalid username or password.";
       });
   },
 });

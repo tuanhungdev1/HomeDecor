@@ -8,7 +8,7 @@ const LoadingOverlay: React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(false);
-    }, 1500);
+    }, 2000);
 
     return () => {
       clearTimeout(timer);
@@ -25,7 +25,7 @@ const LoadingOverlay: React.FC = () => {
           visible={true}
           height="80"
           width="80"
-          color="#545454"
+          color="#45b047"
           radius="9"
           ariaLabel="three-dots-loading"
           wrapperStyle={{}}

@@ -35,8 +35,8 @@ export interface LoginData {
 }
 
 export interface RegisterData {
-  name: string;
-  username: string;
+  displayName: string;
+  userName: string;
   email: string;
   password: string;
   roles: UserRole[];
@@ -63,7 +63,7 @@ export interface AuthState {
 export interface ForgotPasswordFormValues {
   username: string;
   email: string;
-  oldPassword: string;
+  currentPassword: string;
   newPassword: string;
 }
 

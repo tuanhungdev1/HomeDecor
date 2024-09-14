@@ -20,11 +20,11 @@ import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 
 const validationSchema = Yup.object({
-  name: Yup.string()
+  displayName: Yup.string()
     .matches(/^[A-Za-z\s]+$/, "Name cannot contain numbers")
     .min(5, "Name must be at least 5 characters")
     .required("Name is required"),
-  username: Yup.string()
+  userName: Yup.string()
     .min(6, "Username must be at least 6 characters")
     .required("Username is required"),
   email: Yup.string()
@@ -44,8 +44,8 @@ const SignUpPage = () => {
   const authError = useSelector(selectAuthError);
 
   const initialValues: RegisterData = {
-    name: "",
-    username: "",
+    displayName: "",
+    userName: "",
     email: "",
     password: "",
     roles: [UserRole.Customer],
@@ -55,14 +55,14 @@ const SignUpPage = () => {
     values: RegisterData,
     { setSubmitting }: FormikHelpers<RegisterData>
   ) => {
+    console.log(values);
     await dispatch(register(values)).unwrap();
     setSubmitting(false);
-    console.log(values);
   };
 
   useEffect(() => {
     if (authStatus === "succeeded") {
-      toast.success("Logged in successfully!");
+      toast.success("Create user in successfully!");
       const timer = setTimeout(() => {
         dispatch(resetAuthStatus());
         navigate("/auth/sign-in");
@@ -73,7 +73,14 @@ const SignUpPage = () => {
     } else if (authStatus === "rejected" && authError) {
       toast.error(authError);
     }
+
+    return () => {
+      toast.remove();
+    };
   }, [authStatus, authError, navigate, dispatch]);
+
+  console.log(authStatus, authError);
+
   return (
     <AuthLayout title="Sign up">
       <span className="text-base text-neutral-4 xl:text-lg">
@@ -93,8 +100,8 @@ const SignUpPage = () => {
           onSubmit={handleSubmit}
         >
           <Form className="flex flex-col w-full xl:w-[500px] 2xl:w-[600px]  gap-8 pb-7">
-            <Input name="name" placeHolder="Your name" />
-            <Input name="username" placeHolder="Username" />
+            <Input name="displayName" placeHolder="Your name" />
+            <Input name="userName" placeHolder="Username" />
             <Input type="email" name="email" placeHolder="Email address" />
             <Input type="password" name="password" placeHolder="Password" />
             <Checkbox

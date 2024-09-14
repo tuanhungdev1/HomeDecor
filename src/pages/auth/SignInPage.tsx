@@ -65,6 +65,10 @@ const SignInPage = () => {
     } else if (authStatus === "rejected" && authError) {
       toast.error(authError);
     }
+
+    return () => {
+      toast.remove();
+    };
   }, [authStatus, authError, navigate, dispatch]);
 
   return (
@@ -109,9 +113,9 @@ const SignInPage = () => {
             >
               Sign In
             </Button>
-            <Toaster />
           </Form>
         </Formik>
+        <Toaster />
       </div>
     </AuthLayout>
   );
