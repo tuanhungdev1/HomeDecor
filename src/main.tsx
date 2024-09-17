@@ -2,11 +2,17 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./styles/index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { HomePage } from "./pages";
+import { HomePage, UserProfilePage } from "./pages";
 import { RootLayout } from "./layouts";
 import { ForgotPassword, SignInPage, SignUpPage } from "./pages/auth";
 import { Provider } from "react-redux";
 import { store } from "./stores/store";
+import {
+  AccountSection,
+  AddressSection,
+  OrdersSection,
+  WishlistSection,
+} from "./modules/userProfile";
 
 const router = createBrowserRouter([
   {
@@ -15,6 +21,28 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <HomePage />,
+      },
+      {
+        path: "/user-profile",
+        element: <UserProfilePage />,
+        children: [
+          {
+            path: "",
+            element: <AccountSection />,
+          },
+          {
+            path: "address",
+            element: <AddressSection />,
+          },
+          {
+            path: "orders",
+            element: <OrdersSection />,
+          },
+          {
+            path: "wishlist",
+            element: <WishlistSection />,
+          },
+        ],
       },
     ],
   },

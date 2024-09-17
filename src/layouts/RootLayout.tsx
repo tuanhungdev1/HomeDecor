@@ -3,6 +3,7 @@ import Header from "./Header";
 import { PromotionalBanner } from "@/components/promotionalBanner";
 import NewsLetter from "./NewsLetter";
 import Footer from "./Footer";
+import { BackToTop } from "@/components/backToTop";
 
 const RootLayout = () => {
   return (
@@ -12,6 +13,7 @@ const RootLayout = () => {
         <Header />
         <Outlet />
       </div>
+      <BackToTop />
       <NewsLetter />
       <Footer />
     </div>

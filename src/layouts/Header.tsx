@@ -53,14 +53,16 @@ const Header = () => {
               <IoSearchOutline className="text-4xl" />
             </div>
             {authUser && (
-              <div>
-                <Avatar
-                  name={authUser.displayName ?? authUser.email}
-                  alt={authUser.displayName ?? authUser.email}
-                  to="/"
-                  src={authUser.profilePicture}
-                />
-              </div>
+              <Link to={"/user-profile"}>
+                <div className="relative">
+                  <Avatar
+                    name={authUser.displayName ?? authUser.email}
+                    alt={authUser.displayName ?? authUser.email}
+                    to="/user-profile"
+                    src={authUser.profilePicture}
+                  />
+                </div>
+              </Link>
             )}
           </div>
 

@@ -110,7 +110,7 @@ const ProductCardList: React.FC = () => {
             spaceBetween: 10,
           },
           1536: {
-            slidesPerView: 5.6,
+            slidesPerView: 4,
             spaceBetween: 10,
           },
         }}

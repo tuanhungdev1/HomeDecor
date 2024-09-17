@@ -47,9 +47,16 @@ export interface User {
   id: string;
   firstName?: string;
   lastName?: string;
-  displayName: string;
+  displayName?: string;
   email: string;
   profilePicture?: string;
+  dateOfBirth?: string;
+}
+
+export interface UserUpdate {
+  firstName?: string;
+  lastName?: string;
+  displayName?: string;
   dateOfBirth?: string;
 }
 
