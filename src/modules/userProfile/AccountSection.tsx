@@ -52,9 +52,8 @@ const AccountSection = () => {
     setSubmitting(false);
   };
   return (
-    <section>
+    <section className="w-full">
       <Heading className="text-[30px]">Account Details</Heading>
-      <form action=""></form>
 
       <div className="mt-10">
         <Formik
@@ -62,7 +61,7 @@ const AccountSection = () => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          <Form className="flex flex-col w-full xl:w-[500px] 2xl:w-[600px]  gap-8 pb-7">
+          <Form className="flex flex-col w-full gap-8 pb-7">
             <div className="flex flex-col gap-4">
               <Label className="text-[16px] font-semibold" htmlFor="firstName">
                 FIRST NAME *
@@ -139,18 +138,24 @@ const AccountSection = () => {
             <div>
               {isUpdateProfile ? (
                 <div className="flex gap-2">
-                  <Button type="submit" onClick={handleUpdateProfile}>
+                  <Button
+                    type="submit"
+                    onClick={handleUpdateProfile}
+                    className="xl:w-[200px]"
+                  >
                     Update
                   </Button>
                   <Button
                     onClick={handleCloseUpdateProfile}
-                    className="opacity-50"
+                    className="opacity-50 xl:w-[200px]"
                   >
                     Close
                   </Button>
                 </div>
               ) : (
-                <Button onClick={handleUpdateProfile}>Update Profile</Button>
+                <Button onClick={handleUpdateProfile} className="xl:w-[300px]">
+                  Update Profile
+                </Button>
               )}
             </div>
           </Form>

@@ -14,13 +14,16 @@ const ActiveTab: React.FC<ActiveTabProps> = ({
 }) => {
   return (
     <Link
-      to={itemLink.url}
+      to={"/user-profile"}
       className={`${
         currenLink === itemLink.id ? "text-black" : "text-gray-400"
-      } cursor-pointer`}
+      } cursor-pointer text-left  w-full px-2 py-4 relative hover:bg-gray-200 rounded-sm`}
       onClick={() => onSelectedLink(itemLink.id)}
     >
       {itemLink.title}
+      {currenLink === itemLink.id && (
+        <div className="absolute bottom-0 w-full duration-200 transition-all h-[2px] bg-black left-0"></div>
+      )}
     </Link>
   );
 };

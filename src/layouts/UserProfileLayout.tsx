@@ -14,15 +14,15 @@ const UserProfileLayout: React.FC<UserProfileLayoutProps> = ({ children }) => {
       <div className="2xl:hidden">
         <BackButton />
       </div>
-      <Heading className="py-10 text-5xl text-center select-none">
+      <Heading className="py-10 text-5xl text-center select-none lg:py-20 xl:pb-28 xl:pt-14">
         My Account
       </Heading>
 
-      <div className="flex flex-col gap-14 lg:flex-row lg:gap-10">
+      <div className="flex flex-col gap-14 lg:flex-row lg:gap-10 xl:gap-32 2xl:gap-20">
         <div className="flex-1">
           <UserTabSection />
         </div>
-        <div>{children}</div>
+        <div className="flex-1 xl:flex-[2_2_0%]">{children}</div>
       </div>
     </div>
   );

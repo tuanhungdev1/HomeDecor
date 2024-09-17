@@ -15,7 +15,7 @@ const UserTabSection = () => {
   };
   return (
     <section>
-      <div className="flex flex-col items-center justify-center w-full h-auto p-5 py-10 text-black rounded-md gap-14 bg-secondary-gray">
+      <div className="flex flex-col items-center justify-center w-full h-auto p-5 py-10 text-black rounded-md lg:px-3 gap-14 bg-secondary-gray">
         <div className="flex flex-col gap-5 text-center">
           <div>
             <UploadAvatar />
@@ -41,8 +41,8 @@ const UserTabSection = () => {
             <IoIosArrowDown className="text-xl" />
           </div>
         </div>
-        <div className="hidden lg:block">
-          <ul>
+        <div className="hidden w-full lg:block">
+          <ul className="flex flex-col w-full text-left">
             {userProfileItemList.map((item) => (
               <ActiveTab
                 itemLink={item}
