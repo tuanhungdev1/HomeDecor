@@ -78,3 +78,11 @@ export interface RefreshTokenData {
   accessToken: string | null;
   refreshToken: string | null;
 }
+
+export interface AddressCardType {
+  id: number;
+  title: string;
+  userName: string;
+  phoneNumber: string;
+  address: string;
+}
