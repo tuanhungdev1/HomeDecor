@@ -5,13 +5,18 @@ import NewsLetter from "./NewsLetter";
 import Footer from "./Footer";
 import { BackToTop } from "@/components/backToTop";
 
-const RootLayout = () => {
+interface RootLayoutProps {
+  children?: React.ReactNode;
+}
+
+const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   return (
     <div className="overflow-hidden">
       <PromotionalBanner />
       <div className="container px-5 mx-auto">
         <Header />
-        <Outlet />
+
+        {children ? children : <Outlet />}
       </div>
       <BackToTop />
       <NewsLetter />

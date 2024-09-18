@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import "./styles/index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { HomePage, UserProfilePage } from "./pages";
-import { RootLayout } from "./layouts";
+import { ProtectedRoute, RootLayout } from "./layouts";
 import { ForgotPassword, SignInPage, SignUpPage } from "./pages/auth";
 import { Provider } from "react-redux";
 import { store } from "./stores/store";
@@ -13,6 +13,7 @@ import {
   OrdersSection,
   WishlistSection,
 } from "./modules/userProfile";
+import { NotFoundPage } from "./pages/errors";
 
 const router = createBrowserRouter([
   {
@@ -22,27 +23,35 @@ const router = createBrowserRouter([
         path: "/",
         element: <HomePage />,
       },
+
+      // Đường dẫn không cần bảo vệ, vẫn render RootLayout
+    ],
+  },
+  {
+    path: "/user-profile",
+    element: (
+      <ProtectedRoute>
+        <RootLayout>
+          <UserProfilePage />
+        </RootLayout>
+      </ProtectedRoute>
+    ),
+    children: [
       {
-        path: "/user-profile",
-        element: <UserProfilePage />,
-        children: [
-          {
-            path: "",
-            element: <AccountSection />,
-          },
-          {
-            path: "address",
-            element: <AddressSection />,
-          },
-          {
-            path: "orders",
-            element: <OrdersSection />,
-          },
-          {
-            path: "wishlist",
-            element: <WishlistSection />,
-          },
-        ],
+        path: "",
+        element: <AccountSection />,
+      },
+      {
+        path: "address",
+        element: <AddressSection />,
+      },
+      {
+        path: "orders",
+        element: <OrdersSection />,
+      },
+      {
+        path: "wishlist",
+        element: <WishlistSection />,
       },
     ],
   },
@@ -57,6 +66,10 @@ const router = createBrowserRouter([
   {
     path: "/auth/forgot-password",
     element: <ForgotPassword />,
+  },
+  {
+    path: "*",
+    element: <NotFoundPage />,
   },
 ]);
 
