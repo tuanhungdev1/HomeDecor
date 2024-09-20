@@ -1,4 +1,4 @@
-import { UserRole } from "./Enums";
+import { AddressType, UserRole } from "./Enums";
 
 export interface IMenuItem {
   id: string;
@@ -51,6 +51,7 @@ export interface User {
   email: string;
   profilePicture?: string;
   dateOfBirth?: string;
+  addressList?: Address[];
 }
 
 export interface UserUpdate {
@@ -62,6 +63,12 @@ export interface UserUpdate {
 
 export interface AuthState {
   isAuthenticated: boolean;
+  user: User | null;
+  status: "idle" | "pending" | "succeeded" | "rejected";
+  error: string | null;
+}
+
+export interface UserState {
   user: User | null;
   status: "idle" | "pending" | "succeeded" | "rejected";
   error: string | null;
@@ -85,4 +92,17 @@ export interface AddressCardType {
   userName: string;
   phoneNumber: string;
   address: string;
+}
+
+export interface Address {
+  id: number;
+  displayName: string;
+  phoneNumber: string;
+  addressLine: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  postalCode?: string;
+  isDefault: boolean;
+  type: AddressType;
 }

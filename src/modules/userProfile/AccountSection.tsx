@@ -1,14 +1,21 @@
 import { Input } from "@/components/input";
 import Label from "@/components/label/Label";
 import { Heading } from "@/components/typography";
-import { selectAuthUser } from "@/stores/authSlice/authSlice";
+import { selectAuthError } from "@/stores/authSlice/authSlice";
 import { UserUpdate } from "@/types/type";
-import { Formik, FormikHelpers } from "formik";
+import { Form, Formik, FormikHelpers } from "formik";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
-import { Form } from "react-router-dom";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { Button } from "@/components/button";
+import { useAppDispatch } from "@/hooks/hooks";
+import {
+  selectUser,
+  selectUserStatus,
+  updateUserInfor,
+} from "@/stores/userSlice/userSlice";
+import toast, { Toaster } from "react-hot-toast";
 
 const validationSchema = Yup.object({
   firstName: Yup.string().min(2, "User name must be at least 2 characters"),
@@ -26,14 +33,33 @@ const validationSchema = Yup.object({
 });
 
 const AccountSection = () => {
+  const dispatch = useAppDispatch();
   const [isUpdateProfile, setIsUpdateProfile] = useState(false);
 
-  const user = useSelector(selectAuthUser);
+  const user = useSelector(selectUser);
+
+  const userStatus = useSelector(selectUserStatus);
+
+  const userError = useSelector(selectAuthError);
   const initialValues: UserUpdate = {
     firstName: user?.firstName,
     lastName: user?.lastName,
     displayName: user?.displayName,
     dateOfBirth: user?.dateOfBirth,
+  };
+
+  const handleSubmit = async (
+    values: UserUpdate,
+    { setSubmitting }: FormikHelpers<UserUpdate>
+  ) => {
+    const userUpdateData = {
+      userId: user!.id,
+      userInfor: values,
+    };
+
+    await dispatch(updateUserInfor(userUpdateData)).unwrap();
+
+    setSubmitting(false);
   };
 
   const handleUpdateProfile = () => {
@@ -44,13 +70,17 @@ const AccountSection = () => {
     setIsUpdateProfile(false);
   };
 
-  const handleSubmit = async (
-    values: UserUpdate,
-    { setSubmitting }: FormikHelpers<UserUpdate>
-  ) => {
-    console.log(values);
-    setSubmitting(false);
-  };
+  useEffect(() => {
+    if (userStatus === "succeeded") {
+      toast.success("Updated User in successfully!");
+    } else if (userStatus === "rejected" && userError) {
+      toast.error(userError);
+    }
+
+    return () => {
+      toast.remove();
+    };
+  }, [userStatus, userError]);
   return (
     <section className="w-full">
       <Heading className="text-[30px]">Account Details</Heading>
@@ -72,6 +102,7 @@ const AccountSection = () => {
                 placeHolder="First name"
                 htmlFor="firstName"
                 isDisable={!isUpdateProfile}
+                value={user?.firstName}
               />
             </div>
             <div className="flex flex-col gap-4">
@@ -84,6 +115,7 @@ const AccountSection = () => {
                 placeHolder="Last name"
                 htmlFor="lastName"
                 isDisable={!isUpdateProfile}
+                value={user?.lastName}
               />
             </div>
             <div className="flex flex-col gap-4">
@@ -99,6 +131,7 @@ const AccountSection = () => {
                 placeHolder="Display name"
                 htmlFor="displayName"
                 isDisable={!isUpdateProfile}
+                value={user?.displayName}
               />
             </div>
 
@@ -120,6 +153,7 @@ const AccountSection = () => {
                 placeHolder="Email"
                 htmlFor="dateOfBirth"
                 isDisable={!isUpdateProfile}
+                value={user?.dateOfBirth}
               />
             </div>
 
@@ -133,6 +167,7 @@ const AccountSection = () => {
                 placeHolder="Email"
                 htmlFor="email"
                 isDisable={true}
+                value={user?.email}
               />
             </div>
             <div>
@@ -140,8 +175,8 @@ const AccountSection = () => {
                 <div className="flex gap-2">
                   <Button
                     type="submit"
-                    onClick={handleUpdateProfile}
                     className="xl:w-[200px]"
+                    isLoading={userStatus === "pending"}
                   >
                     Update
                   </Button>
@@ -160,6 +195,7 @@ const AccountSection = () => {
             </div>
           </Form>
         </Formik>
+        <Toaster />
       </div>
     </section>
   );

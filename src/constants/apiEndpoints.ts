@@ -21,5 +21,16 @@ export const API_ENDPOINTS = {
     GET_BY_ID: (id: string) => `${API_BASE_URL}/orders/${id}`,
     CREATE: `${API_BASE_URL}/orders`,
   },
+
+  USERS: {
+    UPDATE_USER: (id: string) => `${API_BASE_URL}/user/${id}`,
+    UPLOAD_AVATAR_USER: (id: string) =>
+      `${API_BASE_URL}/user/${id}/upload-avatar`,
+    ADD_ADDRESS_FOR_USER: (id: string) => `${API_BASE_URL}/user/${id}/address`,
+    REMOVE_ADDRESS_FOR_USER: (userId: string, addressId: string) =>
+      `${API_BASE_URL}/user/${userId}/address/${addressId}`,
+    UPDATE_ADDRESS_FOR_USER: (userId: string, addressId: string) =>
+      `${API_BASE_URL}/user/${userId}/address/${addressId}`,
+  },
   // Thêm các nhóm endpoint khác tại đây
 };
