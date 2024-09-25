@@ -13,7 +13,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   return (
     <div className="overflow-hidden">
       <PromotionalBanner />
-      <div className="container px-5 mx-auto">
+      <div className="px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
         <Header />
 
         {children ? children : <Outlet />}

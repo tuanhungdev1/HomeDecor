@@ -81,6 +81,8 @@ const AccountSection = () => {
       toast.remove();
     };
   }, [userStatus, userError]);
+
+  console.log(user);
   return (
     <section className="w-full">
       <Heading className="text-[30px]">Account Details</Heading>

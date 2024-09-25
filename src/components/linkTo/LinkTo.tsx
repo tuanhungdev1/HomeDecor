@@ -19,9 +19,9 @@ const LinkTo: React.FC<LinkToProps> = ({
       to={url}
       className={`flex w-max items-center text-sm gap-1  group/arrow relative `}
     >
-      <span className={`${className} text-base`}>{children}</span>
+      <span className={`${className} text-[16px] font-medium`}>{children}</span>
       <span className="transition-all duration-300 group-hover/arrow:translate-x-1 ">
-        <IoArrowForward className="text-lg 2xl:text-xl" />
+        <IoArrowForward className="text-base 2xl:text-xl" />
       </span>
       <div
         className={`absolute h-[2px] ${

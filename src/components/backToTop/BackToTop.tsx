@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TiArrowUp } from "react-icons/ti";
+import { IoIosArrowRoundUp } from "react-icons/io";
 
 const BackToTop = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -34,9 +34,7 @@ const BackToTop = () => {
       }`}
       onClick={scrollToTop}
     >
-      <div>
-        <TiArrowUp className="text-3xl" />
-      </div>
+      <IoIosArrowRoundUp className="text-3xl" />
     </div>
   );
 };

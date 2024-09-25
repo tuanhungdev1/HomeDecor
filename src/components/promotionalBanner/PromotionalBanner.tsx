@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { RiDiscountPercentLine } from "react-icons/ri";
-import { IoClose } from "react-icons/io5";
+import { IoCloseOutline } from "react-icons/io5";
 import { LinkTo } from "../linkTo";
 
 const PromotionalBanner = () => {
@@ -34,7 +34,7 @@ const PromotionalBanner = () => {
             className="absolute p-2 cursor-pointer right-3"
             onClick={handleShowPromotionalBannerClick}
           >
-            <IoClose className="text-2xl xl:text-3xl" />
+            <IoCloseOutline className="text-2xl" />
           </div>
         </div>
       )}
