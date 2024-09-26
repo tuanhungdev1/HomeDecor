@@ -1,6 +1,7 @@
 import { LoadingOverlay } from "@/components/loadingOverlay";
 import {
   BannerSection,
+  BestSellerProducts,
   CategoriesSection,
   HeroSection,
   ProductCarousel,
@@ -15,6 +16,7 @@ const HomePage = () => {
       <HeroSection />
       <CategoriesSection />
       <ProductCarousel />
+      <BestSellerProducts />
       <ValuesSection />
       <BannerSection />
       <ArticlesSection />

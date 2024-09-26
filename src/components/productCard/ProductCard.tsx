@@ -11,7 +11,7 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ productItem }) => {
   return (
     <div key={productItem.id} className="select-none">
-      <div className="relative w-[340px] h-[450px] group/item overflow-hidden">
+      <div className="relative overflow-hidden group/item">
         <img
           src={productItem.imageProduct}
           alt={productItem.name}

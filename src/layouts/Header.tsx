@@ -1,24 +1,36 @@
 import { ActiveLink, Logo } from "@/components/shared";
 import { menuItems } from "@/constants/menuItem";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoMenu } from "react-icons/io5";
 
 import { useSelector } from "react-redux";
-import { selectAuthUser } from "@/stores/authSlice/authSlice";
+import {
+  logoutUser,
+  selectAuthError,
+  selectAuthStatus,
+  selectAuthUser,
+} from "@/stores/authSlice/authSlice";
 import { Button } from "@/components/button";
 import { Link, NavLink } from "react-router-dom";
 import { SearchBox } from "@/components/searchBox";
 import { dropdownMenu } from "@/constants/dropdownMenu";
 import Sidebar from "./Sidebar";
+import { useAppDispatch } from "@/hooks/hooks";
+import toast, { Toaster } from "react-hot-toast";
 
 const Header = () => {
   const authUser = useSelector(selectAuthUser);
+
+  const authStatus = useSelector(selectAuthStatus);
+  const errorAuth = useSelector(selectAuthError);
 
   const [openSidebar, setOpenSidebar] = useState(false);
 
   const handleOpenSidebar = () => {
     setOpenSidebar(!openSidebar);
   };
+
+  const dispatch = useAppDispatch();
 
   const [isVisible, setIsVisible] = useState(false);
 
@@ -34,7 +46,22 @@ const Header = () => {
     setActiveLinkId(id);
   };
 
-  console.log(authUser);
+  const handleLogoutClick = async () => {
+    console.log("runing1...");
+    await dispatch(logoutUser());
+    console.log("runing2...");
+  };
+
+  useEffect(() => {
+    if (authStatus === "pending") {
+      toast.loading("Processing...");
+    } else if (authStatus === "succeeded") {
+      toast.success("Action succeeded!");
+    } else if (authStatus === "rejected") {
+      toast.error(errorAuth || "Action failed!");
+    }
+  }, [authStatus, errorAuth]);
+
   return (
     <section className="mt-4 mb-4">
       <nav className="h-[60px] flex items-center justify-between">
@@ -89,7 +116,10 @@ const Header = () => {
                       {item.title}
                     </NavLink>
                   ))}
-                  <div className="p-1 transition duration-150 cursor-pointer hover:text-black">
+                  <div
+                    className="p-1 transition duration-150 cursor-pointer hover:text-black"
+                    onClick={handleLogoutClick}
+                  >
                     Logout
                   </div>
                 </div>
@@ -127,6 +157,7 @@ const Header = () => {
       {isVisible && <SearchBox onClose={handleVisibleSearchBox} />}
 
       <Sidebar onClose={handleOpenSidebar} open={openSidebar} />
+      <Toaster />
     </section>
   );
 };

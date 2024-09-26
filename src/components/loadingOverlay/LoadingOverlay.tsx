@@ -8,7 +8,7 @@ const LoadingOverlay: React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(false);
-    }, 2000);
+    }, 1500);
 
     return () => {
       clearTimeout(timer);
@@ -23,9 +23,9 @@ const LoadingOverlay: React.FC = () => {
         <Logo className="text-6xl" />
         <ThreeDots
           visible={true}
-          height="80"
-          width="80"
-          color="#45b047"
+          height="70"
+          width="70"
+          color="#aaaaaa"
           radius="9"
           ariaLabel="three-dots-loading"
           wrapperStyle={{}}

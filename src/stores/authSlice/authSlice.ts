@@ -25,7 +25,6 @@ const getInitialState = (): AuthState => {
 
 const initialState: AuthState = getInitialState();
 
-// Thunk cho đăng nhập
 export const login = createAsyncThunk(
   "auth/login",
   async (loginData: LoginData, { rejectWithValue }) => {
@@ -45,7 +44,6 @@ export const login = createAsyncThunk(
   }
 );
 
-// Thunk cho đăng ký
 export const register = createAsyncThunk(
   "auth/register",
   async (registerData: RegisterData, { rejectWithValue }) => {
@@ -65,7 +63,6 @@ export const register = createAsyncThunk(
   }
 );
 
-// Thunk cho thay đổi mật khẩu
 export const changePassword = createAsyncThunk(
   "auth/changePassword",
   async (changePasswordData: ForgotPasswordFormValues, { rejectWithValue }) => {
@@ -82,19 +79,36 @@ export const changePassword = createAsyncThunk(
   }
 );
 
+export const logoutUser = createAsyncThunk(
+  "auth/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await authService.logout();
+      console.log(response);
+      return response;
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        console.log(err);
+        if (err.response && err.response.data && err.response.data.message) {
+          return rejectWithValue(err.response.data.message);
+        }
+      } else {
+        return rejectWithValue("An error occurred. Please try again.");
+      }
+    }
+  }
+);
+
 // Slice
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
     logout: (state) => {
-      authService.logout();
       state.isAuthenticated = false;
       state.user = null;
       state.status = "idle";
       state.error = null;
-      localStorage.removeItem("user");
-      localStorage.removeItem("isAuthenticated");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
     },
@@ -147,6 +161,21 @@ const authSlice = createSlice({
       })
       .addCase(changePassword.rejected, (state, action) => {
         state.status = "rejected";
+        state.error =
+          (action.payload as string) || "Invalid username or password.";
+      })
+      .addCase(logoutUser.pending, (state) => {
+        state.status = "pending";
+        console.log("pendding");
+      })
+
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.status = "succeeded";
+        console.log("succeeded");
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.status = "rejected";
+        console.log("rejected", action.payload);
         state.error =
           (action.payload as string) || "Invalid username or password.";
       });

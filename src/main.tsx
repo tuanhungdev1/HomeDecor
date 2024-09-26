@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./styles/index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { HomePage, UserProfilePage } from "./pages";
+import { HomePage, ShopPage, UserProfilePage } from "./pages";
 import { ProtectedRoute, RootLayout } from "./layouts";
 import { ForgotPassword, SignInPage, SignUpPage } from "./pages/auth";
 import { Provider } from "react-redux";
@@ -25,6 +25,11 @@ const router = createBrowserRouter([
       },
 
       // Đường dẫn không cần bảo vệ, vẫn render RootLayout
+
+      {
+        path: "/shop",
+        element: <ShopPage />,
+      },
     ],
   },
   {
