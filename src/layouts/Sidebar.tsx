@@ -29,6 +29,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
           <Link
             to={item.url}
             key={item.id}
+            onClick={onClose}
             className={`px-4 py-4 text-lg cursor-pointer transition-all duration-100  border-t-[2px] ${
               item.url === location.pathname
                 ? "bg-gray-100 font-medium"
