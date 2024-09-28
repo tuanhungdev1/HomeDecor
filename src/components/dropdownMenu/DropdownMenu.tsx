@@ -1,38 +1,30 @@
 import { useEffect, useRef, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
+import { DropdownItem } from "../dropdownItem";
 
-interface DropdownItem {
+export interface DropdownItemType {
   id: number;
   title: string;
   value: string;
 }
 
-const dropdownList: DropdownItem[] = [
-  {
-    id: 1,
-    title: "Recommended",
-    value: "recommended",
-  },
-  {
-    id: 2,
-    title: "Customer Rating",
-    value: "rating",
-  },
-  {
-    id: 3,
-    title: "Price (Low to High)",
-    value: "asc",
-  },
-  {
-    id: 4,
-    title: "Price (High to Low)",
-    value: "desc",
-  },
-];
+interface DropdownMenuProps {
+  title: string;
+  dropdownList: DropdownItemType[];
+  shape?: "square" | "circle";
+  isScroll?: boolean;
+  maxHeight?: number;
+}
 
-const DropdownMenu = () => {
+const DropdownMenu: React.FC<DropdownMenuProps> = ({
+  title,
+  dropdownList,
+  shape = "square",
+  isScroll = false,
+  maxHeight = 500,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedValue, setSelectedValue] = useState<DropdownItem | null>(null);
+  const [selectedValue, setSelectedValue] = useState<DropdownItemType[]>([]);
   const [contentHeight, setContentHeight] = useState<number>(0);
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -42,23 +34,54 @@ const DropdownMenu = () => {
     }
   }, [isOpen]);
 
-  const handleSelectedValue = (item: DropdownItem) => {
-    setSelectedValue(item);
+  const handleSelectedValue = (
+    item: DropdownItemType,
+    shape: "square" | "circle"
+  ) => {
+    if (shape === "circle") {
+      setSelectedValue([item]);
+    } else if (shape === "square") {
+      const isExistItem = selectedValue.some(
+        (dropdownItem) => dropdownItem.id === item.id
+      );
+
+      if (isExistItem) {
+        setSelectedValue([
+          ...selectedValue.filter(
+            (dropdownItem) => dropdownItem.id !== item.id
+          ),
+        ]);
+      } else {
+        setSelectedValue([...selectedValue, item]);
+      }
+    }
   };
 
   const handleOpenDropdownMenu = () => {
     setIsOpen(!isOpen);
   };
   return (
-    <div className="px-4 select-none py-3 border-t-[2px] border-b-[2px] text-lg">
+    <div className="select-none border-t-[2px] border-b-[2px] text-lg">
       <div
-        className="flex items-center justify-between cursor-pointer"
+        className="flex items-center justify-between px-4 py-5 transition-all duration-200 cursor-pointer hover:bg-secondary-gray"
         onClick={handleOpenDropdownMenu}
       >
-        <div className="flex flex-col">
-          <span>Sort by</span>
-          <span className="text-base text-green-600">
-            {selectedValue?.title}
+        <div className={`flex flex-col overflow-hidden`}>
+          <span className="flex items-center gap-1">
+            {title}{" "}
+            {`${selectedValue.length > 0 ? `(${selectedValue.length})` : ""}`}
+            {selectedValue.length > 0 && (
+              <span className="w-[8px] h-[8px] rounded-full bg-green-600"></span>
+            )}
+          </span>
+          <span
+            className={`text-sm transition-all duration-200 text-green-600 ${
+              selectedValue.length > 0
+                ? "opacity-100 visible"
+                : "opacity-0 invisible"
+            }`}
+          >
+            {selectedValue.map((item) => item.title).join(", ")}
           </span>
         </div>
         <IoIosArrowDown
@@ -68,21 +91,24 @@ const DropdownMenu = () => {
         />
       </div>
       <div
-        className={`w-full overflow-hidden transition-all  duration-300 ease-in-out `}
-        style={{ height: isOpen ? `${contentHeight}px` : "0px" }}
+        className={`w-full px-3 overflow-hidden transition-all  duration-300 ease-in-out ${
+          isScroll && isOpen ? "overflow-y-auto" : ""
+        }`}
+        style={{
+          height: isOpen ? `${contentHeight}px` : "0px",
+          maxHeight: isScroll ? `${maxHeight}px` : "none",
+        }}
       >
-        <div ref={contentRef} className="py-4">
-          <div className="flex flex-col gap-2 text-lg">
+        <div ref={contentRef} className="py-6">
+          <div className="flex flex-col gap-4 text-lg">
             {dropdownList.map((item) => (
-              <div
+              <DropdownItem
+                dropdownItem={item}
                 key={item.id}
-                onClick={() => handleSelectedValue(item)}
-                className={`transition-all duration-200 cursor-pointer hover:text-green-700 ${
-                  item.id === selectedValue?.id ? "text-green-700" : ""
-                }`}
-              >
-                {item.title}
-              </div>
+                onSelected={handleSelectedValue}
+                shape={shape}
+                selectedValue={selectedValue}
+              />
             ))}
           </div>
         </div>

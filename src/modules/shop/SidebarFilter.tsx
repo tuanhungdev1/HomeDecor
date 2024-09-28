@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { DropdownMenu } from "@/components/dropdownMenu";
 import { IoCloseOutline } from "react-icons/io5";
+import { dropdownList, dropdownListMaterial } from "@/constants/dataFilter";
 
 interface SidebarFilterProp {
   isOpen: boolean;
@@ -22,7 +23,7 @@ const SidebarFilter: React.FC<SidebarFilterProp> = ({ isOpen, onClose }) => {
 
   return (
     <div
-      className={`fixed top-0 bottom-0 left-0 transition-all ease-in-out duration-200 right-0 z-50 w-screen h-screen bg-white ${
+      className={`fixed top-0 bottom-0 scroll-smooth left-0 transition-all ease-in-out duration-200 right-0 z-50 w-screen h-screen bg-white ${
         isOpen ? "translate-x-0" : "translate-x-[100%]"
       }`}
     >
@@ -34,7 +35,20 @@ const SidebarFilter: React.FC<SidebarFilterProp> = ({ isOpen, onClose }) => {
       </div>
 
       {/* Filter */}
-      <DropdownMenu />
+      <DropdownMenu
+        title="Sort by"
+        dropdownList={dropdownList}
+        isScroll={true}
+        maxHeight={200}
+      />
+
+      <DropdownMenu
+        title="Frame Material"
+        dropdownList={dropdownListMaterial}
+        isScroll={true}
+        maxHeight={200}
+        shape="circle"
+      />
     </div>
   );
 };
