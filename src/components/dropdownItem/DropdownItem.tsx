@@ -20,10 +20,17 @@ const DropdownItem: React.FC<DropdownItemProps> = ({
         key={dropdownItem.id}
         onClick={() => onSelected(dropdownItem, "circle")}
         className={`transition-all duration-200 flex gap-3 items-center cursor-pointer hover:text-green-700 ${
-          dropdownItem.id === selectedValue[0].id ? "text-green-700" : ""
+          selectedValue.length > 0 && dropdownItem.id === selectedValue[0].id
+            ? "text-green-700"
+            : ""
         }`}
       >
-        <CheckBoxCircle isSelected={dropdownItem.id === selectedValue[0].id} />
+        <CheckBoxCircle
+          isSelected={
+            selectedValue.length > 0 &&
+            selectedValue.some((item) => item.id === dropdownItem.id)
+          }
+        />
         {dropdownItem.title}
       </div>
     );

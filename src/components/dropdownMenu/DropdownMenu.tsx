@@ -14,6 +14,7 @@ interface DropdownMenuProps {
   shape?: "square" | "circle";
   isScroll?: boolean;
   maxHeight?: number;
+  children?: React.ReactNode;
 }
 
 const DropdownMenu: React.FC<DropdownMenuProps> = ({
@@ -22,6 +23,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
   shape = "square",
   isScroll = false,
   maxHeight = 500,
+  children,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState<DropdownItemType[]>([]);
@@ -39,7 +41,15 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
     shape: "square" | "circle"
   ) => {
     if (shape === "circle") {
-      setSelectedValue([item]);
+      const isExistItem = selectedValue.some(
+        (dropdownItem) => dropdownItem.id === item.id
+      );
+
+      if (isExistItem) {
+        setSelectedValue([]);
+      } else {
+        setSelectedValue([item]);
+      }
     } else if (shape === "square") {
       const isExistItem = selectedValue.some(
         (dropdownItem) => dropdownItem.id === item.id
@@ -61,7 +71,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
     setIsOpen(!isOpen);
   };
   return (
-    <div className="select-none border-t-[2px] border-b-[2px] text-lg">
+    <div className="select-none border-b-[2px] text-lg">
       <div
         className="flex items-center justify-between px-4 py-5 transition-all duration-200 cursor-pointer hover:bg-secondary-gray"
         onClick={handleOpenDropdownMenu}
@@ -100,7 +110,8 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
         }}
       >
         <div ref={contentRef} className="py-6">
-          <div className="flex flex-col gap-4 text-lg">
+          {children && <div>{children}</div>}
+          <div className="flex flex-col gap-4 text-base">
             {dropdownList.map((item) => (
               <DropdownItem
                 dropdownItem={item}
