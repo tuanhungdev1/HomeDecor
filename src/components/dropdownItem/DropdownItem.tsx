@@ -1,11 +1,14 @@
 import { CheckBoxCircle, CheckBoxSquare } from "../checkbox";
 import { DropdownItemType } from "../dropdownMenu/DropdownMenu";
+import { Rate } from "../rate";
 
 interface DropdownItemProps {
   dropdownItem: DropdownItemType;
   selectedValue: DropdownItemType[];
   onSelected: (item: DropdownItemType, shape: "square" | "circle") => void;
   shape?: "square" | "circle";
+  numberStar?: number;
+  children?: React.ReactNode;
 }
 
 const DropdownItem: React.FC<DropdownItemProps> = ({
@@ -13,6 +16,7 @@ const DropdownItem: React.FC<DropdownItemProps> = ({
   selectedValue,
   onSelected,
   shape = "square",
+  numberStar,
 }) => {
   if (shape === "circle")
     return (
@@ -31,7 +35,11 @@ const DropdownItem: React.FC<DropdownItemProps> = ({
             selectedValue.some((item) => item.id === dropdownItem.id)
           }
         />
-        {dropdownItem.title}
+        {numberStar && <Rate numberRate={numberStar} />}
+
+        {!numberStar
+          ? dropdownItem.title
+          : ` ${dropdownItem.title.split(" ").slice(2).join(" ")}`}
       </div>
     );
   else if (shape === "square")
@@ -49,7 +57,10 @@ const DropdownItem: React.FC<DropdownItemProps> = ({
         <CheckBoxSquare
           isSelected={selectedValue.some((item) => item.id === dropdownItem.id)}
         />
-        {dropdownItem.title}
+        {numberStar &&
+          <Rate numberRate={numberStar} /> +
+            `${dropdownItem.title.split(" ").slice(2).join(" ")}`}
+        {!numberStar && dropdownItem.title}
       </div>
     );
 };

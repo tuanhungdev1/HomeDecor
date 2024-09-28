@@ -119,6 +119,12 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
                 onSelected={handleSelectedValue}
                 shape={shape}
                 selectedValue={selectedValue}
+                children={children}
+                numberStar={
+                  title === "Customer Rating"
+                    ? Number.parseInt(item.title.split(" ")[0])
+                    : undefined
+                }
               />
             ))}
           </div>

@@ -118,7 +118,7 @@ export const dropdownListCategory: DropdownItemType[] = [
 export const dropdownListRating: DropdownItemType[] = [
   {
     id: 1,
-    title: "1 Star & Up",
+    title: "1 Stars & Up",
     value: "1-star-up",
   },
   {
@@ -138,7 +138,7 @@ export const dropdownListRating: DropdownItemType[] = [
   },
   {
     id: 5,
-    title: "5 Stars",
+    title: "5 Stars & Up",
     value: "5-stars",
   },
 ];
