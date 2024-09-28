@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { DropdownItem } from "../dropdownItem";
+import { RangePrice } from "../rangePrice";
 
 export interface DropdownItemType {
   id: number;
@@ -23,7 +24,6 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
   shape = "square",
   isScroll = false,
   maxHeight = 500,
-  children,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState<DropdownItemType[]>([]);
@@ -71,7 +71,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
     setIsOpen(!isOpen);
   };
   return (
-    <div className="select-none border-b-[2px] text-lg">
+    <div className="select-none border-b-[2px] text-base">
       <div
         className="flex items-center justify-between px-4 py-5 transition-all duration-200 cursor-pointer hover:bg-secondary-gray"
         onClick={handleOpenDropdownMenu}
@@ -110,7 +110,11 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
         }}
       >
         <div ref={contentRef} className="py-6">
-          {children && <div>{children}</div>}
+          {title === "Price" && (
+            <div className="mb-6">
+              <RangePrice />
+            </div>
+          )}
           <div className="flex flex-col gap-4 text-base">
             {dropdownList.map((item) => (
               <DropdownItem
@@ -119,7 +123,6 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
                 onSelected={handleSelectedValue}
                 shape={shape}
                 selectedValue={selectedValue}
-                children={children}
                 numberStar={
                   title === "Customer Rating"
                     ? Number.parseInt(item.title.split(" ")[0])

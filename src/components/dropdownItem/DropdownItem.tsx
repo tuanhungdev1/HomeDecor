@@ -8,6 +8,7 @@ interface DropdownItemProps {
   onSelected: (item: DropdownItemType, shape: "square" | "circle") => void;
   shape?: "square" | "circle";
   numberStar?: number;
+  isPrice?: boolean;
   children?: React.ReactNode;
 }
 
@@ -16,6 +17,7 @@ const DropdownItem: React.FC<DropdownItemProps> = ({
   selectedValue,
   onSelected,
   shape = "square",
+
   numberStar,
 }) => {
   if (shape === "circle")
