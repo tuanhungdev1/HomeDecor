@@ -16,7 +16,7 @@ const LinkTo: React.FC<LinkToProps> = ({
 }) => {
   return (
     <Link
-      to={url}
+      to={"/shop" || url}
       className={`flex w-max items-center text-sm gap-1  group/arrow relative `}
     >
       <span className={`${className} text-[16px] font-medium`}>{children}</span>

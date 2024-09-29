@@ -1,4 +1,5 @@
 import { ImageSlide } from "@/components/imageSlide";
+import { Logo } from "@/components/shared";
 import { Heading } from "@/components/typography";
 
 const HeroSection = () => {
@@ -23,8 +24,10 @@ const HeroSection = () => {
           </div>
 
           <div className="flex items-center justify-center flex-1 gap-1">
-            <span className="text-base text-gray-400 xl:text-xl">
-              <span className="font-medium text-primary">HomeDecor. </span>
+            <span className="text-base text-gray-400  xl:text-xl">
+              <span className="font-medium text-primary">
+                <Logo className="" />
+              </span>
               is a gift & decorations store based in HCMC, Vietnam. Est since
               2019.
             </span>

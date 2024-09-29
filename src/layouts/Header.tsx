@@ -38,14 +38,6 @@ const Header = () => {
     setIsVisible(!isVisible);
   };
 
-  const [activeLinkId, setActiveLinkId] = useState<string>(
-    menuItems[0].id ?? "/home"
-  );
-
-  const handleSelectedLinkIdClick = (id: string) => {
-    setActiveLinkId(id);
-  };
-
   const handleLogoutClick = async () => {
     console.log("runing1...");
     await dispatch(logoutUser());
@@ -75,12 +67,7 @@ const Header = () => {
         <div className="hidden lg:flex ">
           <ul className="flex gap-6 text-lg font-normal xl:text-lg xl:gap-10">
             {menuItems.map((item) => (
-              <ActiveLink
-                key={item.id}
-                itemLink={item}
-                currenLink={activeLinkId}
-                onSelectedLink={handleSelectedLinkIdClick}
-              />
+              <ActiveLink key={item.id} itemLink={item} />
             ))}
           </ul>
         </div>

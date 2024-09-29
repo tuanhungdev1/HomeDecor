@@ -12,9 +12,17 @@ import {
   dropdownListRating,
 } from "@/constants/dataFilter";
 import { ApplyButton } from "@/components/button";
+import { Pagination } from "@/components/pagination";
 
 const FilterProduct = () => {
   const [openSidebarFilter, setOpenSidebarFilter] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const totalPage = 30;
+
+  const handleSetPageNumberChange = (num: number) => {
+    setCurrentPage(num);
+  };
 
   const handleOpenSidebarFilter = () => {
     setOpenSidebarFilter(!openSidebarFilter);
@@ -94,11 +102,29 @@ const FilterProduct = () => {
         </div>
 
         {/* Right Side */}
-        <div className="flex-1">
+        <div className="flex-col flex-1 -mt-5">
           <div>
             <ProductCardList
               productList={productSellerList}
-              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-5"
+              productCount={12}
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4"
+            />
+          </div>
+
+          <div className="items-center justify-center hidden px-2 mt-8  md:flex">
+            <Pagination
+              currentPage={currentPage}
+              totalPage={totalPage}
+              onChangePageNumber={handleSetPageNumberChange}
+              isSmall={true}
+            />
+          </div>
+
+          <div className="flex items-center justify-center px-2 mt-8 md:hidden">
+            <Pagination
+              currentPage={currentPage}
+              totalPage={totalPage}
+              onChangePageNumber={handleSetPageNumberChange}
             />
           </div>
         </div>

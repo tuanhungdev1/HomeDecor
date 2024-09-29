@@ -1,27 +1,21 @@
 import { IMenuItem } from "@/types/type";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 interface ActiveLinkProps {
   itemLink: IMenuItem;
-  currenLink: string;
-  onSelectedLink: (id: string) => void;
+  currenLink?: string;
 }
 
-const ActiveLink: React.FC<ActiveLinkProps> = ({
-  itemLink,
-  currenLink,
-  onSelectedLink,
-}) => {
+const ActiveLink: React.FC<ActiveLinkProps> = ({ itemLink }) => {
   return (
-    <Link
+    <NavLink
       to={itemLink.url}
-      className={`${
-        currenLink === itemLink.id ? "text-black" : "text-gray-400"
-      } cursor-pointer`}
-      onClick={() => onSelectedLink(itemLink.id)}
+      className={({ isActive }) =>
+        `${isActive ? "text-black" : "text-gray-400"} cursor-pointer`
+      }
     >
       {itemLink.title}
-    </Link>
+    </NavLink>
   );
 };
 

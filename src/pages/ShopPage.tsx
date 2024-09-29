@@ -1,5 +1,6 @@
 import { Banner } from "@/components/banner";
 import { BreadcrumbPath } from "@/components/breadcrumb/Breadcrumb";
+import { LoadingOverlay } from "@/components/loadingOverlay";
 import { FilterProduct } from "@/modules/shop";
 
 const BreadcrumbShopPage: BreadcrumbPath[] = [
@@ -18,6 +19,7 @@ const BreadcrumbShopPage: BreadcrumbPath[] = [
 const ShopPage = () => {
   return (
     <main>
+      <LoadingOverlay />
       <Banner
         title="Shop Page"
         subTitle="Let’s design the place you always imagined."

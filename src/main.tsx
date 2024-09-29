@@ -23,7 +23,6 @@ const router = createBrowserRouter([
         path: "/",
         element: <HomePage />,
       },
-
       // Đường dẫn không cần bảo vệ, vẫn render RootLayout
 
       {

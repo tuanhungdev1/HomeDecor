@@ -5,7 +5,6 @@ interface RateProps {
 }
 
 const Rate: React.FC<RateProps> = ({ numberRate }) => {
-  console.log(numberRate);
   const fullStars = Math.floor(numberRate);
 
   const hasHalfStar = numberRate - fullStars >= 0.5;
