@@ -29,7 +29,7 @@ const ProductCardList: React.FC<ProductCardListProps> = ({
 
   return (
     <div
-      className={`relative grid grid-cols-2 gap-4 mt-5 md:grid-cols-4 gap-y-6 xl:grid-cols-5 ${className}`}
+      className={`relative grid grid-cols-2 gap-4 mt-5 md:grid-cols-3 gap-y-6 ${className}`}
     >
       {products.map((product) => (
         <ProductCard productItem={product} key={product.id} />

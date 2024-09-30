@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Logo } from "../shared";
 import { ThreeDots } from "react-loader-spinner";
+import useBodyOverflow from "@/hooks/useBodyOverflow";
 
 const LoadingOverlay: React.FC = () => {
   const [isVisible, setIsVisible] = useState(true);
+
+  useBodyOverflow(isVisible);
 
   useEffect(() => {
     const timer = setTimeout(() => {

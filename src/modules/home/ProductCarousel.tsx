@@ -16,7 +16,11 @@ const ProductCarousel = () => {
           More Products
         </LinkTo>
       </div>
-      <ProductCardList productCount={10} productList={productSellerList} />
+      <ProductCardList
+        productCount={10}
+        productList={productSellerList}
+        className="lg:grid-cols-4 xl:grid-cols-5"
+      />
     </section>
   );
 };

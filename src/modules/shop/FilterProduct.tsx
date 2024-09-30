@@ -107,16 +107,15 @@ const FilterProduct = () => {
             <ProductCardList
               productList={productSellerList}
               productCount={12}
-              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4"
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
             />
           </div>
 
-          <div className="items-center justify-center hidden px-2 mt-8  md:flex">
+          <div className="items-center justify-center hidden px-2 mt-8 md:flex">
             <Pagination
               currentPage={currentPage}
               totalPage={totalPage}
               onChangePageNumber={handleSetPageNumberChange}
-              isSmall={true}
             />
           </div>
 

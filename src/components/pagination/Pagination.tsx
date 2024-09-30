@@ -5,14 +5,12 @@ interface PaginationProps {
   currentPage: number;
   totalPage: number;
   onChangePageNumber: (num: number) => void;
-  isSmall?: boolean;
 }
 
 const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   totalPage,
   onChangePageNumber,
-  isSmall = false,
 }) => {
   const getPageNumbers = () => {
     const pageNumbers = [];
@@ -77,7 +75,7 @@ const Pagination: React.FC<PaginationProps> = ({
         disabled={currentPage === totalPage}
         className="flex items-center min-w-min px-4 font-medium text-white bg-green-600 justify-center hover:bg-green-700 transition-all duration-200 h-full cursor-pointer border-t-[2px] border-r-[2px] border-b-[2px] rounded-tr-[5px] rounded-br-[5px] border-green-600 hover:border-green-700 disabled:opacity-50"
       >
-        {isSmall && <span>Next Page</span>}
+        <span className="hidden lg:block">Next Page</span>
         <MdOutlineKeyboardArrowRight className="-ml-1 text-2xl" />
       </button>
     </div>

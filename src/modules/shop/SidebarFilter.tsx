@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { DropdownMenu } from "@/components/dropdownMenu";
 import { IoCloseOutline } from "react-icons/io5";
 import {
@@ -9,6 +9,7 @@ import {
   dropdownListRating,
 } from "@/constants/dataFilter";
 import { ApplyButton } from "@/components/button";
+import useBodyOverflow from "@/hooks/useBodyOverflow";
 
 interface SidebarFilterProp {
   isOpen: boolean;
@@ -16,17 +17,7 @@ interface SidebarFilterProp {
 }
 
 const SidebarFilter: React.FC<SidebarFilterProp> = ({ isOpen, onClose }) => {
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen]);
+  useBodyOverflow(isOpen);
 
   return (
     <div>
