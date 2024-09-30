@@ -17,6 +17,7 @@
     "@reduxjs/toolkit": "^2.2.7",
     "antd": "^5.20.6",
     "axios": "^1.7.3",
+    "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "formik": "^2.4.6",
     "path": "^0.12.7",
@@ -29,6 +30,7 @@
     "react-router-dom": "^6.26.0",
     "redux": "^5.0.1",
     "swiper": "^11.1.9",
+    "tailwind-merge": "^2.5.2",
     "yup": "^1.4.0"
   },
   "devDependencies": {
