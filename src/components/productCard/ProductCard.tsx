@@ -29,7 +29,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ productItem }) => {
           <CiHeart className="text-3xl text-gray-500" />
         </div>
         <div className="absolute transition-all duration-300 translate-y-20 opacity-0 group-hover/item:opacity-100 ease group-hover/item:translate-y-0 right-4 left-4 bottom-4">
-          <Button>Add to cart</Button>
+          <Button size="lg" className="w-full">
+            Add to cart
+          </Button>
         </div>
       </div>
       <div className="flex flex-col items-start gap-2 mt-3">

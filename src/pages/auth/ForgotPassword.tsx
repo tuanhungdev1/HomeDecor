@@ -96,25 +96,26 @@ const ForgotPassword = () => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          <Form className="flex flex-col w-full xl:w-[500px] 2xl:w-[600px] gap-8 pb-7">
+          <Form className="flex flex-col w-full xl:w-[500px] 2xl:w-[600px] gap-4 pb-7">
             <p className="text-sm text-neutral-4">
               Please fill in the following information to reset your password.
             </p>
-            <Input name="username" placeHolder="Username" />
-            <Input name="email" placeHolder="Email address" type="email" />
+            <Input name="username" placeholder="Username" />
+            <Input name="email" placeholder="Email address" type="email" />
             <Input
               name="currentPassword"
-              placeHolder="Old Password"
+              placeholder="Old Password"
               type="password"
             />
             <Input
               name="newPassword"
-              placeHolder="New Password"
+              placeholder="New Password"
               type="password"
             />
 
             <Button
               type="submit"
+              size="lg"
               className="mt-3"
               isLoading={authStatus === "pending"}
             >

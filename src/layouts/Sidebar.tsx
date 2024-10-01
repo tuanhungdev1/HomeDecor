@@ -57,12 +57,14 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
           <div className="items-center px-6 py-2">
             <div className="flex flex-col gap-4">
               <Link to={"/auth/sign-up"}>
-                <Button className="bg-white border-black border-[2px] text-black">
+                <Button variant="outline" size="lg" className="w-full">
                   Login
                 </Button>
               </Link>
               <Link to={"/auth/sign-up"}>
-                <Button>Sign Up</Button>
+                <Button variant="default" size="lg" className="w-full">
+                  Sign Up
+                </Button>
               </Link>
             </div>
             <div className="flex gap-4 py-4 text-3xl">

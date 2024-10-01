@@ -89,9 +89,9 @@ const SignInPage = () => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          <Form className="flex flex-col w-full xl:w-[500px] 2xl:w-[600px]  gap-8 pb-7">
-            <Input name="username" placeHolder="Username or Email" />
-            <Input type="password" name="password" placeHolder="Password" />
+          <Form className="flex flex-col w-full xl:w-[500px] 2xl:w-[600px]  gap-4 pb-7">
+            <Input name="username" placeholder="Username or Email" />
+            <Input type="password" name="password" placeholder="Password" />
             <div className="relative flex items-center justify-between">
               <Checkbox
                 name="rememberPassword"
@@ -109,6 +109,7 @@ const SignInPage = () => {
             <Button
               type="submit"
               className="mt-3"
+              size="lg"
               isLoading={authStatus === "pending"}
             >
               Sign In

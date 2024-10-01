@@ -1,38 +1,56 @@
+import { cn } from "@/utils/cn";
 import React from "react";
 
-interface ButtonProps {
-  type?: "button" | "submit" | "reset";
-  className?: string;
-  disabled?: boolean;
-  children: React.ReactNode;
-  onClick?: () => void;
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading?: boolean;
+  variant?: "default" | "outline" | "ghost";
+  size?: "sm" | "md" | "lg";
 }
 
-const Button: React.FC<ButtonProps> = ({
-  type = "button",
-  className = "",
-  disabled = false,
-  children,
-  onClick,
-  isLoading = false,
-}) => {
-  return (
-    <button
-      type={type}
-      className={`w-full flex items-center ${
-        isLoading ? "pointer-events-none bg-gray-800" : ""
-      } justify-center bg-black text-white h-[50px] p-3 font-medium rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
-      disabled={disabled}
-      onClick={onClick}
-    >
-      {isLoading ? (
-        <div className="bg-transparent w-[25px] h-[25px] border-[3px] border-t-transparent animate-spin rounded-full"></div>
-      ) : (
-        <span>{children}</span>
-      )}
-    </button>
-  );
-};
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    {
+      className,
+      children,
+      isLoading,
+      variant = "default",
+      size = "md",
+      disabled,
+      ...props
+    },
+    ref
+  ) => {
+    return (
+      <button
+        className={cn(
+          "flex items-center justify-center font-medium rounded-lg transition-colors",
+          "disabled:opacity-50 disabled:cursor-not-allowed",
+          {
+            "bg-black text-white hover:bg-gray-800": variant === "default",
+            "border border-black text-black hover:bg-gray-100":
+              variant === "outline",
+            "text-black hover:bg-gray-100": variant === "ghost",
+            "h-8 px-3 text-sm": size === "sm",
+            "h-10 px-4": size === "md",
+            "h-12 px-6 text-lg": size === "lg",
+            "pointer-events-none": isLoading,
+          },
+          className
+        )}
+        disabled={disabled || isLoading}
+        ref={ref}
+        {...props}
+      >
+        {isLoading ? (
+          <div className="w-5 h-5 border-2 border-current rounded-full border-t-transparent animate-spin" />
+        ) : (
+          children
+        )}
+      </button>
+    );
+  }
+);
+
+Button.displayName = "Button";
 
 export default Button;

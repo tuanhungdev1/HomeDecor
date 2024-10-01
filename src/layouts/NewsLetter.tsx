@@ -54,12 +54,15 @@ const NewsLetter = () => {
             <Form className="flex flex-col items-center ">
               <Input
                 name="email"
-                className="bg-transparent md:text-lg md:placeholder:text-lg"
+                className=" md:text-lg md:placeholder:text-base"
                 width={"w-full md:w-[60%] lg:w-[40%] xl:w-[30%]"}
-                placeHolder="Email address"
+                placeholder="Email address"
                 icon={<MdOutlineEmail className="text-3xl text-gray-500" />}
               />
-              <Button className="mt-10 w-full md:w-[60%] lg:w-[40%] xl:w-[30%]">
+              <Button
+                className="mt-5 w-full md:w-[60%] lg:w-[40%] xl:w-[30%]"
+                size="lg"
+              >
                 Sign Up
               </Button>
             </Form>

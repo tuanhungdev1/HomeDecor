@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { InputRange } from "../input";
-import { ApplyButton } from "../button";
+import { Button } from "../button";
 
 const RangePrice = () => {
   const [minValue, setMinValue] = useState<string>("");
@@ -35,7 +35,12 @@ const RangePrice = () => {
           />
         </div>
       </div>
-      <ApplyButton title="Apply" />
+      <Button
+        variant="outline"
+        className="w-full mt-2 border-green-700 rounded-md hover:bg-green-100"
+      >
+        Apply
+      </Button>
       <div className="flex items-center gap-2 mt-2 text-sm text-gray-400">
         <div className="w-full h-[2px] bg-gray-200 flex-1"></div>{" "}
         <span>or</span>

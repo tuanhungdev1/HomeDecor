@@ -8,7 +8,7 @@ import {
   dropdownListPrice,
   dropdownListRating,
 } from "@/constants/dataFilter";
-import { ApplyButton } from "@/components/button";
+import { Button } from "@/components/button";
 import useBodyOverflow from "@/hooks/useBodyOverflow";
 
 interface SidebarFilterProp {
@@ -78,13 +78,19 @@ const SidebarFilter: React.FC<SidebarFilterProp> = ({ isOpen, onClose }) => {
             />
           </div>
           <div className="flex items-center gap-4 px-4 py-4 border-t-[2px]">
-            <span className="text-sm underline cursor-pointer shrink-0">
+            <Button
+              size="lg"
+              variant="ghost"
+              className="text-sm underline cursor-pointer shrink-0"
+            >
               Clear All
-            </span>
-            <ApplyButton
-              className="text-white bg-green-600 hover:bg-green-700 hover:border-green-700"
-              title="See Results"
-            />
+            </Button>
+            <Button
+              size="lg"
+              className="w-full text-white bg-green-600 hover:bg-green-700 hover:border-green-700"
+            >
+              See Results
+            </Button>
           </div>
         </div>
       </div>

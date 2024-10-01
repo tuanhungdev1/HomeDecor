@@ -16,7 +16,11 @@ const BestSellerProducts = () => {
           More Products
         </LinkTo>
       </div>
-      <ProductCardList productCount={5} productList={productSellerList} />
+      <ProductCardList
+        productCount={5}
+        productList={productSellerList}
+        className="xl:grid-cols-5"
+      />
     </section>
   );
 };

@@ -115,13 +115,13 @@ const Header = () => {
           </div>
 
           {!authUser ? (
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
               <Link to={"/auth/sign-up"}>
-                <Button className="">Sign Up</Button>
+                <Button variant="outline">Sign Up</Button>
               </Link>
 
               <Link to={"/auth/sign-in"}>
-                <Button className="">Sign In</Button>
+                <Button>Sign In</Button>
               </Link>
             </div>
           ) : (

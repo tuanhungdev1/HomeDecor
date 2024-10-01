@@ -99,14 +99,14 @@ const SignUpPage = () => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          <Form className="flex flex-col w-full xl:w-[500px] 2xl:w-[600px]  gap-8 pb-7">
-            <Input name="displayName" placeHolder="Your name" />
-            <Input name="userName" placeHolder="Username" />
-            <Input type="email" name="email" placeHolder="Email address" />
-            <Input type="password" name="password" placeHolder="Password" />
+          <Form className="flex flex-col w-full xl:w-[500px] 2xl:w-[600px]  gap-4 pb-7">
+            <Input name="displayName" placeholder="Your name" />
+            <Input name="userName" placeholder="Username" />
+            <Input type="email" name="email" placeholder="Email address" />
+            <Input type="password" name="password" placeholder="Password" />
             <Checkbox
               name="agreeTerms"
-              className="mt-3"
+              className="mt-3 text-sm"
               label={
                 <Label>
                   I agree with{" "}
@@ -123,6 +123,7 @@ const SignUpPage = () => {
 
             <Button
               type="submit"
+              size="lg"
               className="mt-3"
               isLoading={authStatus === "pending"}
             >

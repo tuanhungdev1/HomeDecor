@@ -11,7 +11,7 @@ import {
   dropdownListPrice,
   dropdownListRating,
 } from "@/constants/dataFilter";
-import { ApplyButton } from "@/components/button";
+import { Button } from "@/components/button";
 import { Pagination } from "@/components/pagination";
 
 const FilterProduct = () => {
@@ -90,14 +90,20 @@ const FilterProduct = () => {
             />
           </div>
 
-          <div className="flex items-center gap-4 px-4 py-4">
-            <span className="text-sm underline cursor-pointer shrink-0">
+          <div className="flex items-center gap-2 py-4">
+            <Button
+              size="lg"
+              variant="ghost"
+              className="text-sm underline cursor-pointer shrink-0"
+            >
               Clear All
-            </span>
-            <ApplyButton
-              className="text-white bg-green-600 hover:bg-green-700 hover:border-green-700"
-              title="See Results"
-            />
+            </Button>
+            <Button
+              size="lg"
+              className="w-full text-white bg-green-600 hover:bg-green-700 hover:border-green-700"
+            >
+              See Results
+            </Button>
           </div>
         </div>
 
