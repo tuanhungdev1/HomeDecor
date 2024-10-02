@@ -17,9 +17,14 @@ import { dropdownMenu } from "@/constants/dropdownMenu";
 import Sidebar from "./Sidebar";
 import { useAppDispatch } from "@/hooks/hooks";
 import toast, { Toaster } from "react-hot-toast";
+import SidebarCart from "./SidebarCart";
+import useToggle from "@/hooks/useToggle";
 
 const Header = () => {
   const authUser = useSelector(selectAuthUser);
+
+  const { isToggled: isOpenSidebarCart, toggle: handleSetOpenSidebarCart } =
+    useToggle(true);
 
   const authStatus = useSelector(selectAuthStatus);
   const errorAuth = useSelector(selectAuthError);
@@ -125,7 +130,10 @@ const Header = () => {
               </Link>
             </div>
           ) : (
-            <div className="flex items-center gap-2 cursor-pointer">
+            <div
+              className="flex items-center gap-2 cursor-pointer"
+              onClick={handleSetOpenSidebarCart}
+            >
               <div>
                 <img
                   src={"/public/cart.png"}
@@ -145,6 +153,10 @@ const Header = () => {
 
       <Sidebar onClose={handleOpenSidebar} open={openSidebar} />
       <Toaster />
+      <SidebarCart
+        isOpen={isOpenSidebarCart}
+        onClose={handleSetOpenSidebarCart}
+      />
     </section>
   );
 };

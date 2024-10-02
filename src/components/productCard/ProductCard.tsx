@@ -38,7 +38,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ productItem }) => {
         <div className="">
           <Rate numberRate={productItem.rating} />
         </div>
-        <span className="text-base font-medium">{productItem.name}</span>
+        <span className="text-base font-medium line-clamp-1">
+          {productItem.name}
+        </span>
         <div className="flex items-center gap-3 pb-3">
           <span className="font-medium">${productItem.price}</span>
           <span className="text-gray-500 line-through">

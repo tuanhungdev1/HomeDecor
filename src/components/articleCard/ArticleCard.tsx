@@ -16,7 +16,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
         />
       </div>
       <div className="mt-5 mb-3 text-lg font-medium xl:text-xl 2xl:text-2xl">
-        <span>{article.title}</span>
+        <span className="line-clamp-1">{article.title}</span>
       </div>
 
       <div className="absolute -bottom-6 md:bottom-0 2xl:-bottom-2">

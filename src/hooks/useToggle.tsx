@@ -1,14 +1,11 @@
 import { useState } from "react";
 
-interface UseToggleProps {
-  initialState: boolean;
-}
-
-const useToggle = ({
-  initialState,
-}: UseToggleProps): {
+const useToggle = (
+  initialState: boolean = false
+): {
   isToggled: boolean;
   toggle: () => void;
+  setToggle: (value: boolean) => void;
 } => {
   const [isToggled, setIsToggled] = useState<boolean>(initialState);
 
@@ -16,9 +13,14 @@ const useToggle = ({
     setIsToggled((prev) => !prev);
   };
 
+  const setToggle = (value: boolean) => {
+    setIsToggled(value);
+  };
+
   return {
     isToggled,
     toggle,
+    setToggle,
   };
 };
 
