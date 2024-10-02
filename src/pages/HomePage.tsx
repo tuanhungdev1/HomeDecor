@@ -1,4 +1,4 @@
-import { LoadingOverlay } from "@/components/loadingOverlay";
+// import { LoadingOverlay } from "@/components/loadingOverlay";
 import {
   BannerSection,
   BestSellerProducts,
@@ -12,7 +12,7 @@ import ArticlesSection from "@/modules/home/ArticlesSection";
 const HomePage = () => {
   return (
     <main>
-      <LoadingOverlay />
+      {/* <LoadingOverlay /> */}
       <HeroSection />
       <CategoriesSection />
       <ProductCarousel />

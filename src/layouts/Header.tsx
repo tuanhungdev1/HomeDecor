@@ -24,7 +24,7 @@ const Header = () => {
   const authUser = useSelector(selectAuthUser);
 
   const { isToggled: isOpenSidebarCart, toggle: handleSetOpenSidebarCart } =
-    useToggle(true);
+    useToggle(false);
 
   const authStatus = useSelector(selectAuthStatus);
   const errorAuth = useSelector(selectAuthError);

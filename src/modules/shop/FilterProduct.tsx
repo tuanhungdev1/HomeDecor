@@ -2,7 +2,6 @@ import { useState } from "react";
 import { BsFilterRight } from "react-icons/bs";
 import SidebarFilter from "./SidebarFilter";
 import { ProductCardList } from "@/components/productCardList";
-import { productSellerList } from "@/data/productSellerList";
 import { DropdownMenu } from "@/components/dropdownMenu";
 import {
   dropdownList,
@@ -13,6 +12,7 @@ import {
 } from "@/constants/dataFilter";
 import { Button } from "@/components/button";
 import { Pagination } from "@/components/pagination";
+import { products } from "@/data/product";
 
 const FilterProduct = () => {
   const [openSidebarFilter, setOpenSidebarFilter] = useState(false);
@@ -111,7 +111,7 @@ const FilterProduct = () => {
         <div className="flex-col flex-1 -mt-5">
           <div>
             <ProductCardList
-              productList={productSellerList}
+              productList={products}
               productCount={12}
               className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
             />

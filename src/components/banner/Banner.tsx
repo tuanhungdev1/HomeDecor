@@ -1,3 +1,4 @@
+import { BlurImage } from "../blurImage";
 import Breadcrumb, { BreadcrumbPath } from "../breadcrumb/Breadcrumb";
 import { Heading } from "../typography";
 
@@ -10,7 +11,7 @@ interface BannerProps {
 const Banner: React.FC<BannerProps> = ({ title, subTitle, breadcrumb }) => {
   return (
     <div className="relative select-none">
-      <img
+      <BlurImage
         src={"/public/Paste Image.png"}
         alt="Banner Image"
         className="object-cover object-center w-full h-[400px]"

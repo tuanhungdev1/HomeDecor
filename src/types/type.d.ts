@@ -17,15 +17,58 @@ export interface IImageSlide {
   url: string;
 }
 
-export interface Product {
-  id: string;
+interface ProductImage {
+  id: number;
+  url: string;
+  isDefault: boolean;
+  alt?: string;
+}
+
+// interfaces/category.ts
+export interface Category {
+  id: number;
   name: string;
+  slug: string;
+  description?: string;
+  image?: string;
+  level: number; // Độ sâu của category (0: root, 1: level 1, etc.)
+  parentId?: number; // ID của category cha
+  parent?: Category; // Category cha
+  children?: Category[]; // Các sub-categories
+  isActive: boolean;
+}
+
+// interfaces/product.ts
+interface ColorVariant {
+  id: number;
+  colorName: string;
+  colorCode: string;
+  quantity: number;
+  images: ProductImage[];
+}
+
+interface ProductImage {
+  id: number;
+  url: string;
+  isDefault: boolean;
+  alt?: string;
+}
+
+export interface Product {
+  id: number;
+  name: string;
+  description: string;
   price: number;
   originalPrice?: number;
-  discount: number;
-  imageProduct: string;
+  discount?: number;
+  discountExpiry?: Date;
   isNew: boolean;
   rating: number;
+  reviewCount: number;
+  measurements: string;
+  colors: ColorVariant[];
+  sku: string;
+  categories: Category[];
 }
 
 export interface LoginData {

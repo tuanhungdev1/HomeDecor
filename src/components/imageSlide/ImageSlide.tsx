@@ -11,6 +11,7 @@ import "swiper/css/pagination";
 import "../../styles/styles.css";
 
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import { BlurImage } from "../blurImage";
 
 interface IImageSlide {
   id: string;
@@ -56,7 +57,7 @@ const ImageSlide: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative w-full h-[400px] md:h-[400px] lg:h-[500px] xl:h-[700px] group/item-hidden">
+    <div className="relative  aspect-[16/14] md:aspect-[16/12] lg:aspect-[16/8] group/item-hidden">
       <Swiper
         loop={true}
         autoplay={{
@@ -83,7 +84,7 @@ const ImageSlide: React.FC = () => {
         {imageSlide.map((item) => (
           <SwiperSlide key={item.id} className="w-full h-full">
             <div className="flex items-center justify-center w-full h-full bg-gray-100">
-              <img
+              <BlurImage
                 src={item.url}
                 alt={`Slide ${item.id}`}
                 className="object-bottom max-w-full max-h-full"

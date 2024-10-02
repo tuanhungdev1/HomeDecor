@@ -1,7 +1,7 @@
 import { CartItemType } from "../cartList/CartList";
-import { GoPlus } from "react-icons/go";
-import { RiSubtractLine } from "react-icons/ri";
+
 import { CgClose } from "react-icons/cg";
+import { QuantitySelector } from "../quantitySelector";
 
 interface CartItemProps {
   item: CartItemType;
@@ -24,15 +24,7 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
           <span className="text-[12px] font-light text-gray-600 xl:text-[15px]">
             Color: {item.color.join(", ")}
           </span>
-          <div className="border-[2px] items-center w-min flex rounded-md overflow-hidden border-gray-400">
-            <div className="w-[30px] h-[30px] xl:w-[40px] xl:h-[40px] flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-all duration-200 ">
-              <GoPlus />
-            </div>
-            <span className="w-8 text-center xl:">{item.quantity}</span>
-            <div className="w-[30px] h-[30px] xl:w-[40px] xl:h-[40px] flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-all duration-200 ">
-              <RiSubtractLine />
-            </div>
-          </div>
+          <QuantitySelector initialNumber={item.quantity} />
         </div>
         <div className="flex flex-col items-end flex-1 w-[100px]">
           <span className="text-sm font-medium xl:text-lg">${item.price}</span>
