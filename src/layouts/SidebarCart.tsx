@@ -25,7 +25,7 @@ const SidebarCart: React.FC<SidebarCartProps> = ({ isOpen, onClose }) => {
         )}
       >
         <div className="flex flex-col w-full h-full px-5">
-          <div className="flex items-center justify-between pt-8 ">
+          <div className="flex items-center justify-between px-2 pt-8">
             <h2 className="text-3xl font-medium">Cart</h2>
             <IoCloseOutline
               className="text-3xl cursor-pointer xl:hidden"
@@ -37,7 +37,7 @@ const SidebarCart: React.FC<SidebarCartProps> = ({ isOpen, onClose }) => {
             <CartList cartListItem={cartItems} />
           </div>
 
-          <div>
+          <div className="px-2">
             <div className="flex items-baseline justify-between pt-4 pb-4">
               <span className="text-base">Subtotal</span>
               <span className="text-base font-medium">$99.00</span>

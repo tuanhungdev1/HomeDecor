@@ -2,6 +2,7 @@ import { CartItemType } from "../cartList/CartList";
 
 import { CgClose } from "react-icons/cg";
 import { QuantitySelector } from "../quantitySelector";
+import { BlurImage } from "../blurImage";
 
 interface CartItemProps {
   item: CartItemType;
@@ -12,10 +13,10 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
     <div className="w-full">
       <div className="flex gap-4 py-6 border-b xl:py-8">
         <div className="w-[80px] h-[90px] shrink-0 xl:w-[100px] xl:h-[110px]">
-          <img
+          <BlurImage
             src={item.img}
             alt={item.title}
-            className="object-center w-full h-full"
+            className="object-center w-full h-full cursor-pointer"
           />
         </div>
 
