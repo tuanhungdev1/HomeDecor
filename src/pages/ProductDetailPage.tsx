@@ -1,5 +1,11 @@
+import { ProductInfor } from "@/modules/productDetail";
+
 const ProductDetailPage = () => {
-  return <div></div>;
+  return (
+    <div>
+      <ProductInfor />
+    </div>
+  );
 };
 
 export default ProductDetailPage;
