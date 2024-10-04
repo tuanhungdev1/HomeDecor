@@ -4,6 +4,7 @@ import { PromotionalBanner } from "@/components/promotionalBanner";
 import NewsLetter from "./NewsLetter";
 import Footer from "./Footer";
 import { BackToTop } from "@/components/backToTop";
+import { ScrollToTop } from "@/components/scrollToTop";
 
 interface RootLayoutProps {
   children?: React.ReactNode;
@@ -12,6 +13,7 @@ interface RootLayoutProps {
 const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   return (
     <div className="overflow-hidden">
+      <ScrollToTop />
       <PromotionalBanner />
       <div className="px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
         <Header />

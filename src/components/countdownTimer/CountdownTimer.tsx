@@ -63,28 +63,44 @@ const CountdownTimer: React.FC<CountdownProps> = ({ targetDate }) => {
   return (
     <div className="flex gap-4">
       <div className="flex flex-col gap-1">
-        <div className="w-[70px] h-[70px] flex items-center justify-center bg-slate-100">
-          <span className="text-3xl font-medium">{countdownTime.days}</span>
+        <div className="w-[40px] h-[40px] md:w-[70px] md:h-[70px] flex items-center justify-center bg-slate-100">
+          <span className="text-xl font-medium md:text-3xl">
+            {countdownTime.days}
+          </span>
         </div>
-        <span className="text-center text-gray-500">Days</span>
+        <span className="text-[10px] md:text-base text-center text-gray-500">
+          Days
+        </span>
       </div>
       <div className="flex flex-col gap-1">
-        <div className="w-[70px] h-[70px] flex items-center justify-center bg-slate-100">
-          <span className="text-3xl font-medium">{countdownTime.hours}</span>
+        <div className="w-[40px] h-[40px] md:w-[70px] md:h-[70px] flex items-center justify-center bg-slate-100">
+          <span className="text-xl font-medium md:text-3xl">
+            {countdownTime.hours}
+          </span>
         </div>
-        <span className="text-center text-gray-500">Hours</span>
+        <span className="text-[10px] md:text-base text-center text-gray-500">
+          Hours
+        </span>
       </div>
       <div className="flex flex-col gap-1">
-        <div className="w-[70px] h-[70px] flex items-center justify-center bg-slate-100">
-          <span className="text-3xl font-medium">{countdownTime.minutes}</span>
+        <div className="w-[40px] h-[40px] md:w-[70px] md:h-[70px] flex items-center justify-center bg-slate-100">
+          <span className="text-xl font-medium md:text-3xl">
+            {countdownTime.minutes}
+          </span>
         </div>
-        <span className="text-center text-gray-500">Minutes</span>
+        <span className="text-[10px] md:text-base text-center text-gray-500">
+          Minutes
+        </span>
       </div>
       <div className="flex flex-col gap-1">
-        <div className="w-[70px] h-[70px] flex items-center justify-center bg-slate-100">
-          <span className="text-3xl font-medium">{countdownTime.seconds}</span>
+        <div className="w-[40px] h-[40px] md:w-[70px] md:h-[70px] flex items-center justify-center bg-slate-100">
+          <span className="text-xl font-medium md:text-3xl">
+            {countdownTime.seconds}
+          </span>
         </div>
-        <span className="text-center text-gray-500">Seconds</span>
+        <span className="text-[10px] md:text-base text-center text-gray-500">
+          Seconds
+        </span>
       </div>
     </div>
   );
