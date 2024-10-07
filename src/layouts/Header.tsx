@@ -66,7 +66,7 @@ const Header = () => {
           <div className="cursor-pointer lg:hidden" onClick={handleOpenSidebar}>
             <IoMenu className="text-4xl" />
           </div>
-          <Logo className="text-xl lg:text-3xl" />
+          <Logo className="text-xl lg:text-3xl" isLogo={true} />
         </div>
 
         <div className="hidden lg:flex ">

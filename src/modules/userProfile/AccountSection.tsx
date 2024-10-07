@@ -82,7 +82,6 @@ const AccountSection = () => {
     };
   }, [userStatus, userError]);
 
-  console.log(user);
   return (
     <section className="w-full">
       <Heading className="text-[30px]">Account Details</Heading>
@@ -101,9 +100,9 @@ const AccountSection = () => {
               <Input
                 name="firstName"
                 className="border-[2px] border-b-[2px] rounded-md px-3 py-3"
-                placeHolder="First name"
-                htmlFor="firstName"
-                isDisable={!isUpdateProfile}
+                placeholder="First name"
+                id="firstName"
+                disabled={!isUpdateProfile}
                 value={user?.firstName}
               />
             </div>
@@ -114,9 +113,9 @@ const AccountSection = () => {
               <Input
                 name="lastName"
                 className="border-[2px] border-b-[2px] rounded-md px-3 py-3"
-                placeHolder="Last name"
-                htmlFor="lastName"
-                isDisable={!isUpdateProfile}
+                placeholder="Last name"
+                id="lastName"
+                disabled={!isUpdateProfile}
                 value={user?.lastName}
               />
             </div>
@@ -130,9 +129,9 @@ const AccountSection = () => {
               <Input
                 name="displayName"
                 className="border-[2px] border-b-[2px] rounded-md px-3 py-3"
-                placeHolder="Display name"
-                htmlFor="displayName"
-                isDisable={!isUpdateProfile}
+                placeholder="Display name"
+                id="displayName"
+                disabled={!isUpdateProfile}
                 value={user?.displayName}
               />
             </div>
@@ -152,9 +151,9 @@ const AccountSection = () => {
                 type="date"
                 name="dateOfBirth"
                 className="border-[2px] border-b-[2px] rounded-md px-3 py-3"
-                placeHolder="Email"
-                htmlFor="dateOfBirth"
-                isDisable={!isUpdateProfile}
+                placeholder="Email"
+                id="dateOfBirth"
+                disabled={!isUpdateProfile}
                 value={user?.dateOfBirth}
               />
             </div>
@@ -166,9 +165,9 @@ const AccountSection = () => {
               <Input
                 name="email"
                 className="border-[2px] border-b-[2px] rounded-md px-3 py-3"
-                placeHolder="Email"
-                htmlFor="email"
-                isDisable={true}
+                placeholder="Email"
+                id="email"
+                disabled={true}
                 value={user?.email}
               />
             </div>
