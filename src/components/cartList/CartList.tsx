@@ -35,7 +35,7 @@ const CartList: React.FC<CartListProps> = ({
   return (
     <div className={cn("px-2", className)}>
       {cartListItem.map((item) => (
-        <CartItem item={item} />
+        <CartItem item={item} key={item.id} />
       ))}
     </div>
   );

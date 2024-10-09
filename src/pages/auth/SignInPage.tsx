@@ -3,12 +3,7 @@ import { Checkbox } from "@/components/checkbox";
 import { Input } from "@/components/input";
 import Label from "@/components/label/Label";
 import { AuthLayout } from "@/layouts";
-import {
-  login,
-  resetAuthStatus,
-  selectAuthError,
-  selectAuthStatus,
-} from "@/stores/authSlice/authSlice";
+
 import { AppDispatch } from "@/stores/store";
 import { LoginData } from "@/types/type";
 import { Form, Formik, FormikHelpers } from "formik";
@@ -17,6 +12,13 @@ import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import toast, { Toaster } from "react-hot-toast";
 import { useEffect } from "react";
+import {
+  selectAuthError,
+  selectAuthStatus,
+} from "@/stores/selectors/authSelector";
+import { login } from "@/stores/thunks/authThunk";
+import { resetAuthStatus } from "@/stores/slices/authSlice";
+import { getUserInfor } from "@/stores/thunks/userThunk";
 
 const validationSchema = Yup.object({
   username: Yup.string()
@@ -48,7 +50,12 @@ const SignInPage = () => {
     values: LoginData,
     { setSubmitting }: FormikHelpers<LoginData>
   ) => {
-    await dispatch(login(values)).unwrap(); // unwrap() để lấy giá trị kết quả hoặc lỗi từ thunk
+    const result = await dispatch(login(values)).unwrap(); // unwrap() để lấy giá trị kết quả hoặc lỗi từ thunk
+
+    if (result) {
+      await dispatch(getUserInfor());
+    }
+
     setSubmitting(false);
   };
 
@@ -60,7 +67,6 @@ const SignInPage = () => {
         navigate("/");
       }, 2000);
 
-      // Clean up timer on component unmount or if authStatus changes
       return () => clearTimeout(timer);
     } else if (authStatus === "rejected" && authError) {
       toast.error(authError);

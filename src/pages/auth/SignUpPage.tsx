@@ -5,11 +5,12 @@ import Label from "@/components/label/Label";
 import { useAppDispatch } from "@/hooks/hooks";
 import { AuthLayout } from "@/layouts";
 import {
-  register,
-  resetAuthStatus,
   selectAuthError,
   selectAuthStatus,
-} from "@/stores/authSlice/authSlice";
+} from "@/stores/selectors/authSelector";
+import { resetAuthStatus } from "@/stores/slices/authSlice";
+import { register } from "@/stores/thunks/authThunk";
+
 import { UserRole } from "@/types/Enums";
 import { RegisterData } from "@/types/type";
 import { Form, Formik, FormikHelpers } from "formik";
@@ -55,7 +56,6 @@ const SignUpPage = () => {
     values: RegisterData,
     { setSubmitting }: FormikHelpers<RegisterData>
   ) => {
-    console.log(values);
     await dispatch(register(values)).unwrap();
     setSubmitting(false);
   };

@@ -4,12 +4,7 @@ import { useEffect, useState } from "react";
 import { IoMenu } from "react-icons/io5";
 
 import { useSelector } from "react-redux";
-import {
-  logoutUser,
-  selectAuthError,
-  selectAuthStatus,
-  selectAuthUser,
-} from "@/stores/authSlice/authSlice";
+
 import { Button } from "@/components/button";
 import { Link, NavLink } from "react-router-dom";
 import { SearchBox } from "@/components/searchBox";
@@ -19,9 +14,15 @@ import { useAppDispatch } from "@/hooks/hooks";
 import toast, { Toaster } from "react-hot-toast";
 import SidebarCart from "./SidebarCart";
 import useToggle from "@/hooks/useToggle";
+import { selectUser } from "@/stores/selectors/userSelector";
+import {
+  selectAuthError,
+  selectAuthStatus,
+} from "@/stores/selectors/authSelector";
+import { logoutUser } from "@/stores/thunks/authThunk";
 
 const Header = () => {
-  const authUser = useSelector(selectAuthUser);
+  const user = useSelector(selectUser);
 
   const { isToggled: isOpenSidebarCart, toggle: handleSetOpenSidebarCart } =
     useToggle(false);
@@ -89,7 +90,7 @@ const Header = () => {
                 className="w-[40px]"
               />
             </div>
-            {authUser && (
+            {user && (
               <div className="relative cursor-pointer group/dropdowmenu">
                 <img
                   src={"/public/user.png"}
@@ -119,7 +120,7 @@ const Header = () => {
             )}
           </div>
 
-          {!authUser ? (
+          {!user ? (
             <div className="flex items-center gap-2">
               <Link to={"/auth/sign-up"}>
                 <Button variant="outline">Sign Up</Button>

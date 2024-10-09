@@ -6,7 +6,7 @@ export const API_ENDPOINTS = {
     REGISTER: `${API_BASE_URL}/auth/register`,
     LOGOUT: `${API_BASE_URL}/auth/logout`,
     CURRENT_USER: `${API_BASE_URL}/auth/me`,
-    REFRESH_TOKEN: `${API_BASE_URL}/auth/refresh-token`,
+    REFRESH_TOKEN: `${API_BASE_URL}/token/refresh`,
     CHANGE_PASSWORD: `${API_BASE_URL}/auth/forgot-password`,
   },
   PRODUCTS: {
@@ -31,6 +31,8 @@ export const API_ENDPOINTS = {
       `${API_BASE_URL}/user/${userId}/address/${addressId}`,
     UPDATE_ADDRESS_FOR_USER: (userId: string, addressId: string) =>
       `${API_BASE_URL}/user/${userId}/address/${addressId}`,
+
+    GET_USER_INFOR: (id: string) => `${API_BASE_URL}/user/${id}`,
   },
   // Thêm các nhóm endpoint khác tại đây
 };

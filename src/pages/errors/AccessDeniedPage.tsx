@@ -18,7 +18,7 @@ const AccessDeniedPage = () => {
       title="Access Denied"
       subTitle="You must be logged in to access this page."
     >
-      <div className="flex items-center gap-3 w-[400px]">
+      <div className="flex items-center justify-center gap-3 w-[400px]">
         <Button onClick={handleGoToSignInPage}>Sign In</Button>
         <span className="text-gray-500">or</span>
         <Button onClick={handleGoToSignUpPage}>Sign Up</Button>

@@ -95,6 +95,8 @@ export interface User {
   profilePicture?: string;
   dateOfBirth?: string;
   addressList?: Address[];
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface UserUpdate {
@@ -105,8 +107,7 @@ export interface UserUpdate {
 }
 
 export interface AuthState {
-  isAuthenticated: boolean;
-  user: User | null;
+  userId: string | null;
   status: "idle" | "pending" | "succeeded" | "rejected";
   error: string | null;
 }
@@ -125,8 +126,8 @@ export interface ForgotPasswordFormValues {
 }
 
 export interface RefreshTokenData {
-  accessToken: string | null;
-  refreshToken: string | null;
+  accessToken: string;
+  refreshToken: string;
 }
 
 export interface AddressCardType {

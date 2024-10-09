@@ -1,7 +1,6 @@
 import { Input } from "@/components/input";
 import Label from "@/components/label/Label";
 import { Heading } from "@/components/typography";
-import { selectAuthError } from "@/stores/authSlice/authSlice";
 import { UserUpdate } from "@/types/type";
 import { Form, Formik, FormikHelpers } from "formik";
 import { useSelector } from "react-redux";
@@ -10,12 +9,11 @@ import * as Yup from "yup";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/button";
 import { useAppDispatch } from "@/hooks/hooks";
-import {
-  selectUser,
-  selectUserStatus,
-  updateUserInfor,
-} from "@/stores/userSlice/userSlice";
+
 import toast, { Toaster } from "react-hot-toast";
+import { selectUser, selectUserStatus } from "@/stores/selectors/userSelector";
+import { updateUserInfor } from "@/stores/thunks/userThunk";
+import { selectAuthError } from "@/stores/selectors/authSelector";
 
 const validationSchema = Yup.object({
   firstName: Yup.string().min(2, "User name must be at least 2 characters"),

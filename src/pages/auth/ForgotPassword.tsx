@@ -3,11 +3,12 @@ import { Input } from "@/components/input";
 import { useAppDispatch } from "@/hooks/hooks";
 import { AuthLayout } from "@/layouts";
 import {
-  changePassword,
-  resetAuthStatus,
   selectAuthError,
   selectAuthStatus,
-} from "@/stores/authSlice/authSlice";
+} from "@/stores/selectors/authSelector";
+import { resetAuthStatus } from "@/stores/slices/authSlice";
+import { changePassword } from "@/stores/thunks/authThunk";
+
 import { ForgotPasswordFormValues } from "@/types/type";
 import { Form, Formik, FormikHelpers } from "formik";
 import { useEffect } from "react";

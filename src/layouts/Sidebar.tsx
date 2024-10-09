@@ -56,7 +56,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
           </div>
           <div className="items-center px-6 py-2">
             <div className="flex flex-col gap-4">
-              <Link to={"/auth/sign-up"}>
+              <Link to={"/auth/sign-in"}>
                 <Button variant="outline" size="lg" className="w-full">
                   Login
                 </Button>

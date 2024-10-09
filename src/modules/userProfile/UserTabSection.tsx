@@ -1,5 +1,4 @@
 import { userProfileItemList } from "@/constants/userProfileItems";
-import { selectAuthUser } from "@/stores/authSlice/authSlice";
 import { useSelector } from "react-redux";
 import { IoIosArrowDown } from "react-icons/io";
 import ActiveTab from "@/components/shared/ActiveTab";
@@ -11,9 +10,10 @@ import { FaCamera } from "react-icons/fa";
 import { CiCamera } from "react-icons/ci";
 import { UploadAvatarUser } from "@/components/uploadFile";
 import { UploadAvatar } from "@/components/uploadAvatar";
+import { selectUser } from "@/stores/selectors/userSelector";
 const UserTabSection = () => {
   const { isOpen, closeModal, openModal } = useModal();
-  const authUser = useSelector(selectAuthUser);
+  const authUser = useSelector(selectUser);
   const [activeTab, setActiveTab] = useState(userProfileItemList[0].id);
 
   const handleSelectActiveTab = (id: string) => {
