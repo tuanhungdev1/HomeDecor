@@ -39,8 +39,15 @@ const Header = () => {
   };
 
   useEffect(() => {
+    let toastId;
+
+    if (status === "pending") {
+      toastId = toast.loading("Logging out. Please wait..");
+    }
+
     if (status === "succeeded") {
-      toast.success("Logging out in successfully!");
+      toast.dismiss(toastId);
+      toast.success("Logged out successfully!");
       const timer = setTimeout(() => {
         handleReset();
         navigate("/auth/sign-in");
@@ -51,13 +58,12 @@ const Header = () => {
         clearTimeout(timer);
       };
     } else if (status === "rejected" && error) {
+      toast.dismiss(toastId); // Dismiss the pending toast
       toast.error(error);
-    } else if (status === "pending") {
-      toast.loading("Logging out. Please wait..");
     }
 
     return () => {
-      toast.remove();
+      toast.remove(); // Remove any remaining toasts when the component unmounts
     };
   }, [status, error, navigate, handleReset]);
 

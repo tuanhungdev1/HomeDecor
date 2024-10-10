@@ -1,18 +1,11 @@
 import { Button } from "@/components/button";
 import { Input } from "@/components/input";
-import { useAppDispatch } from "@/hooks/hooks";
+import { useAuth } from "@/hooks/useAuth";
 import { AuthLayout } from "@/layouts";
-import {
-  selectAuthError,
-  selectAuthStatus,
-} from "@/stores/selectors/authSelector";
-import { changePassword, resetAuthStatus } from "@/stores/slices/authSlice";
-
 import { ForgotPasswordFormValues } from "@/types/type";
 import { Form, Formik, FormikHelpers } from "formik";
 import { useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 
@@ -36,13 +29,9 @@ const validationSchema = Yup.object({
 });
 
 const ForgotPassword = () => {
-  const dispatch = useAppDispatch();
+  const { status, error, handleReset, handleForgotPassword } = useAuth();
 
   const navigate = useNavigate();
-
-  const authStatus = useSelector(selectAuthStatus);
-
-  const authError = useSelector(selectAuthError);
 
   const initialValues: ForgotPasswordFormValues = {
     username: "",
@@ -55,30 +44,36 @@ const ForgotPassword = () => {
     values: ForgotPasswordFormValues,
     { setSubmitting }: FormikHelpers<ForgotPasswordFormValues>
   ) => {
-    await dispatch(changePassword(values)).unwrap();
+    await handleForgotPassword(values);
     setSubmitting(false);
   };
 
   useEffect(() => {
-    if (authStatus === "succeeded") {
+    let loadingToastId: string | undefined;
+
+    if (status === "pending") {
+      loadingToastId = toast.loading("Changing your password...");
+    } else if (status === "succeeded") {
+      toast.dismiss(loadingToastId);
       toast.success("Your password has been successfully changed!");
       const timer = setTimeout(() => {
-        dispatch(resetAuthStatus());
+        handleReset();
         navigate("/auth/sign-in");
       }, 2000);
 
-      // Clean up timer on component unmount or if authStatus changes
       return () => {
         toast.remove();
         clearTimeout(timer);
       };
-    } else if (authStatus === "rejected" && authError) {
-      toast.error(authError);
+    } else if (status === "rejected" && error) {
+      toast.dismiss(loadingToastId);
+      toast.error(error);
     }
+
     return () => {
       toast.remove();
     };
-  }, [authStatus, authError, navigate, dispatch]);
+  }, [status, error, navigate, handleReset]);
 
   return (
     <AuthLayout title="Reset Password">
@@ -119,7 +114,7 @@ const ForgotPassword = () => {
               type="submit"
               size="lg"
               className="mt-3"
-              isLoading={authStatus === "pending"}
+              isLoading={status === "pending"}
             >
               Reset Password
             </Button>

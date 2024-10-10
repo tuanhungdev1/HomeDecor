@@ -51,19 +51,24 @@ const SignUpPage = () => {
   };
 
   useEffect(() => {
-    if (status === "succeeded") {
-      toast.success("Create user in successfully!");
+    let loadingToastId: string | undefined;
+
+    if (status === "pending") {
+      loadingToastId = toast.loading("Processing registration...");
+    } else if (status === "succeeded") {
+      toast.dismiss(loadingToastId);
+      toast.success("Account created successfully!");
       const timer = setTimeout(() => {
         handleReset();
         navigate("/auth/sign-in");
       }, 2000);
 
-      // Clean up timer on component unmount or if authStatus changes
       return () => {
         toast.remove();
         clearTimeout(timer);
       };
     } else if (status === "rejected" && error) {
+      toast.dismiss(loadingToastId);
       toast.error(error);
     }
 

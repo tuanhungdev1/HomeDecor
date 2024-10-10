@@ -42,7 +42,14 @@ const SignInPage = () => {
   };
 
   useEffect(() => {
+    let toastId;
+
+    if (status === "pending") {
+      toastId = toast.loading("Logging in. Please wait...");
+    }
+
     if (status === "succeeded") {
+      toast.dismiss(toastId);
       toast.success("Logged in successfully!");
       const timer = setTimeout(() => {
         handleReset();
@@ -50,10 +57,10 @@ const SignInPage = () => {
       }, 2000);
 
       return () => {
-        toast.remove();
         clearTimeout(timer);
       };
     } else if (status === "rejected" && error) {
+      toast.dismiss(toastId);
       toast.error(error);
     }
 

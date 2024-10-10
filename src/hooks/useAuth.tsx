@@ -3,13 +3,18 @@ import {
   selectAuthStatus,
 } from "@/stores/selectors/authSelector";
 import {
+  changePassword,
   login,
   logoutUser,
   register,
   resetAuthStatus,
 } from "@/stores/slices/authSlice";
 import { AppDispatch } from "@/stores/store";
-import { LoginData, RegisterData } from "@/types/type";
+import {
+  ForgotPasswordFormValues,
+  LoginData,
+  RegisterData,
+} from "@/types/type";
 import { useDispatch, useSelector } from "react-redux";
 
 export const useAuth = () => {
@@ -36,6 +41,11 @@ export const useAuth = () => {
     return dispatch(resetAuthStatus());
   };
 
+  const handleForgotPassword = async (values: ForgotPasswordFormValues) => {
+    dispatch(resetAuthStatus());
+    return dispatch(changePassword(values)).unwrap();
+  };
+
   return {
     handleLogin,
     error,
@@ -43,5 +53,6 @@ export const useAuth = () => {
     handleRegister,
     handleLogout,
     handleReset,
+    handleForgotPassword,
   };
 };
