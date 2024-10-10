@@ -1,9 +1,5 @@
-import { useAppDispatch } from "@/hooks/hooks";
 import { AccessDeniedPage } from "@/pages/errors";
-
-import { selectUser } from "@/stores/selectors/userSelector";
-import { getUserInfor } from "@/stores/thunks/userThunk";
-import { useEffect } from "react";
+import { selectAuthUserId } from "@/stores/selectors/authSelector";
 
 import { useSelector } from "react-redux";
 
@@ -12,14 +8,9 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const user = useSelector(selectUser);
-  const dispatch = useAppDispatch();
+  const userId = useSelector(selectAuthUserId);
 
-  useEffect(() => {
-    dispatch(getUserInfor());
-  }, [dispatch]);
-
-  if (!user) {
+  if (userId) {
     return <AccessDeniedPage />;
   }
 

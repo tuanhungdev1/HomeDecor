@@ -6,8 +6,7 @@ import {
   selectAuthError,
   selectAuthStatus,
 } from "@/stores/selectors/authSelector";
-import { resetAuthStatus } from "@/stores/slices/authSlice";
-import { changePassword } from "@/stores/thunks/authThunk";
+import { changePassword, resetAuthStatus } from "@/stores/slices/authSlice";
 
 import { ForgotPasswordFormValues } from "@/types/type";
 import { Form, Formik, FormikHelpers } from "formik";
@@ -56,7 +55,6 @@ const ForgotPassword = () => {
     values: ForgotPasswordFormValues,
     { setSubmitting }: FormikHelpers<ForgotPasswordFormValues>
   ) => {
-    console.log(values);
     await dispatch(changePassword(values)).unwrap();
     setSubmitting(false);
   };
@@ -70,7 +68,10 @@ const ForgotPassword = () => {
       }, 2000);
 
       // Clean up timer on component unmount or if authStatus changes
-      return () => clearTimeout(timer);
+      return () => {
+        toast.remove();
+        clearTimeout(timer);
+      };
     } else if (authStatus === "rejected" && authError) {
       toast.error(authError);
     }

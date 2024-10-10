@@ -3,22 +3,13 @@ import { Checkbox } from "@/components/checkbox";
 import { Input } from "@/components/input";
 import Label from "@/components/label/Label";
 import { AuthLayout } from "@/layouts";
-
-import { AppDispatch } from "@/stores/store";
 import { LoginData } from "@/types/type";
 import { Form, Formik, FormikHelpers } from "formik";
-import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import toast, { Toaster } from "react-hot-toast";
 import { useEffect } from "react";
-import {
-  selectAuthError,
-  selectAuthStatus,
-} from "@/stores/selectors/authSelector";
-import { login } from "@/stores/thunks/authThunk";
-import { resetAuthStatus } from "@/stores/slices/authSlice";
-import { getUserInfor } from "@/stores/thunks/userThunk";
+import { useAuth } from "@/hooks/useAuth";
 
 const validationSchema = Yup.object({
   username: Yup.string()
@@ -32,12 +23,7 @@ const validationSchema = Yup.object({
 });
 
 const SignInPage = () => {
-  const dispatch = useDispatch<AppDispatch>();
-
-  const authError = useSelector(selectAuthError);
-
-  const authStatus = useSelector(selectAuthStatus);
-
+  const { status, error, handleLogin, handleReset } = useAuth();
   const navigate = useNavigate();
 
   const initialValues: LoginData = {
@@ -50,32 +36,31 @@ const SignInPage = () => {
     values: LoginData,
     { setSubmitting }: FormikHelpers<LoginData>
   ) => {
-    const result = await dispatch(login(values)).unwrap(); // unwrap() để lấy giá trị kết quả hoặc lỗi từ thunk
-
-    if (result) {
-      await dispatch(getUserInfor());
-    }
+    await handleLogin(values);
 
     setSubmitting(false);
   };
 
   useEffect(() => {
-    if (authStatus === "succeeded") {
+    if (status === "succeeded") {
       toast.success("Logged in successfully!");
       const timer = setTimeout(() => {
-        dispatch(resetAuthStatus());
+        handleReset();
         navigate("/");
       }, 2000);
 
-      return () => clearTimeout(timer);
-    } else if (authStatus === "rejected" && authError) {
-      toast.error(authError);
+      return () => {
+        toast.remove();
+        clearTimeout(timer);
+      };
+    } else if (status === "rejected" && error) {
+      toast.error(error);
     }
 
     return () => {
       toast.remove();
     };
-  }, [authStatus, authError, navigate, dispatch]);
+  }, [status, error, navigate, handleReset]);
 
   return (
     <AuthLayout title="Sign In">
@@ -116,7 +101,7 @@ const SignInPage = () => {
               type="submit"
               className="mt-3"
               size="lg"
-              isLoading={authStatus === "pending"}
+              isLoading={status === "pending"}
             >
               Sign In
             </Button>

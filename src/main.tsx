@@ -11,7 +11,6 @@ import {
 import { ProtectedRoute, RootLayout } from "./layouts";
 import { ForgotPassword, SignInPage, SignUpPage } from "./pages/auth";
 import { Provider } from "react-redux";
-import { store } from "./stores/store";
 import {
   AccountSection,
   AddressSection,
@@ -19,6 +18,7 @@ import {
   WishlistSection,
 } from "./modules/userProfile";
 import { NotFoundPage } from "./pages/errors";
+import { store } from "./stores/store";
 
 const router = createBrowserRouter([
   {

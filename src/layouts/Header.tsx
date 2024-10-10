@@ -2,41 +2,31 @@ import { ActiveLink, Logo } from "@/components/shared";
 import { menuItems } from "@/constants/menuItem";
 import { useEffect, useState } from "react";
 import { IoMenu } from "react-icons/io5";
-
 import { useSelector } from "react-redux";
-
 import { Button } from "@/components/button";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { SearchBox } from "@/components/searchBox";
 import { dropdownMenu } from "@/constants/dropdownMenu";
 import Sidebar from "./Sidebar";
-import { useAppDispatch } from "@/hooks/hooks";
-import toast, { Toaster } from "react-hot-toast";
 import SidebarCart from "./SidebarCart";
 import useToggle from "@/hooks/useToggle";
-import { selectUser } from "@/stores/selectors/userSelector";
-import {
-  selectAuthError,
-  selectAuthStatus,
-} from "@/stores/selectors/authSelector";
-import { logoutUser } from "@/stores/thunks/authThunk";
+import { selectAuthUserId } from "@/stores/selectors/authSelector";
+import toast, { Toaster } from "react-hot-toast";
+import { useAuth } from "@/hooks/useAuth";
 
 const Header = () => {
-  const user = useSelector(selectUser);
+  const userId = useSelector(selectAuthUserId);
+  const navigate = useNavigate();
+  const { status, error, handleLogout, handleReset } = useAuth();
 
   const { isToggled: isOpenSidebarCart, toggle: handleSetOpenSidebarCart } =
     useToggle(false);
-
-  const authStatus = useSelector(selectAuthStatus);
-  const errorAuth = useSelector(selectAuthError);
 
   const [openSidebar, setOpenSidebar] = useState(false);
 
   const handleOpenSidebar = () => {
     setOpenSidebar(!openSidebar);
   };
-
-  const dispatch = useAppDispatch();
 
   const [isVisible, setIsVisible] = useState(false);
 
@@ -45,20 +35,31 @@ const Header = () => {
   };
 
   const handleLogoutClick = async () => {
-    console.log("runing1...");
-    await dispatch(logoutUser());
-    console.log("runing2...");
+    await handleLogout();
   };
 
   useEffect(() => {
-    if (authStatus === "pending") {
-      toast.loading("Processing...");
-    } else if (authStatus === "succeeded") {
-      toast.success("Action succeeded!");
-    } else if (authStatus === "rejected") {
-      toast.error(errorAuth || "Action failed!");
+    if (status === "succeeded") {
+      toast.success("Logging out in successfully!");
+      const timer = setTimeout(() => {
+        handleReset();
+        navigate("/auth/sign-in");
+      }, 2000);
+
+      return () => {
+        toast.remove();
+        clearTimeout(timer);
+      };
+    } else if (status === "rejected" && error) {
+      toast.error(error);
+    } else if (status === "pending") {
+      toast.loading("Logging out. Please wait..");
     }
-  }, [authStatus, errorAuth]);
+
+    return () => {
+      toast.remove();
+    };
+  }, [status, error, navigate, handleReset]);
 
   return (
     <section className="mt-4 mb-4">
@@ -90,7 +91,7 @@ const Header = () => {
                 className="w-[40px]"
               />
             </div>
-            {user && (
+            {userId && (
               <div className="relative cursor-pointer group/dropdowmenu">
                 <img
                   src={"/public/user.png"}
@@ -120,7 +121,7 @@ const Header = () => {
             )}
           </div>
 
-          {!user ? (
+          {!userId ? (
             <div className="flex items-center gap-2">
               <Link to={"/auth/sign-up"}>
                 <Button variant="outline">Sign Up</Button>

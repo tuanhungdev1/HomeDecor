@@ -1,35 +1,47 @@
-import { useState, useEffect } from "react";
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  avatar?: string;
-}
+import {
+  selectAuthError,
+  selectAuthStatus,
+} from "@/stores/selectors/authSelector";
+import {
+  login,
+  logoutUser,
+  register,
+  resetAuthStatus,
+} from "@/stores/slices/authSlice";
+import { AppDispatch } from "@/stores/store";
+import { LoginData, RegisterData } from "@/types/type";
+import { useDispatch, useSelector } from "react-redux";
 
 export const useAuth = () => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const error = useSelector(selectAuthError);
+  const status = useSelector(selectAuthStatus);
 
-  useEffect(() => {
-    const storedUser = sessionStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-      setIsAuthenticated(true);
-    }
-  }, []);
-
-  const login = (userData: User) => {
-    setUser(userData);
-    setIsAuthenticated(true);
-    sessionStorage.setItem("user", JSON.stringify(userData));
+  const handleLogin = async (values: LoginData) => {
+    dispatch(resetAuthStatus());
+    return dispatch(login(values)).unwrap();
   };
 
-  const logout = () => {
-    setUser(null);
-    setIsAuthenticated(false);
-    sessionStorage.removeItem("user");
+  const handleRegister = async (values: RegisterData) => {
+    dispatch(resetAuthStatus());
+    return dispatch(register(values)).unwrap();
   };
 
-  return { user, isAuthenticated, login, logout };
+  const handleLogout = async () => {
+    dispatch(resetAuthStatus());
+    return dispatch(logoutUser()).unwrap();
+  };
+
+  const handleReset = async () => {
+    return dispatch(resetAuthStatus());
+  };
+
+  return {
+    handleLogin,
+    error,
+    status,
+    handleRegister,
+    handleLogout,
+    handleReset,
+  };
 };
