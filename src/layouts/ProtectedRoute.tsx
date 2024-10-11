@@ -1,16 +1,14 @@
 import { AccessDeniedPage } from "@/pages/errors";
-import { selectAuthUserId } from "@/stores/selectors/authSelector";
-
-import { useSelector } from "react-redux";
+import { isAuthenticated } from "@/utils/authHelper";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const userId = useSelector(selectAuthUserId);
+  const isAuthen = isAuthenticated();
 
-  if (userId) {
+  if (!isAuthen) {
     return <AccessDeniedPage />;
   }
 

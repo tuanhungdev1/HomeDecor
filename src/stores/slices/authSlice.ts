@@ -9,13 +9,22 @@ import {
 } from "@/types/type";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import {
+  isAuthenticated,
+  logout,
+  saveAuthData,
+  saveAuthDataToSession,
+} from "@/utils/authHelper";
 
 export const login = createAsyncThunk(
   "auth/login",
   async (loginData: LoginData, { rejectWithValue }) => {
     try {
       const response = await authService.login(loginData);
-      return response.data;
+      return {
+        ...response.data,
+        remember: loginData.rememberPassword,
+      };
     } catch (err) {
       if (axios.isAxiosError(err)) {
         if (err.response && err.response.data && err.response.data.message) {
@@ -81,11 +90,14 @@ export const logoutUser = createAsyncThunk(
 
 // Hàm để lấy trạng thái ban đầu từ localStorage
 const getInitialState = (): AuthState => {
-  const userId = localStorage.getItem("userId");
+  const localUserId = localStorage.getItem("userId");
+  const sessionUserId = sessionStorage.getItem("userId");
   return {
-    userId,
+    isAuthentication: isAuthenticated(),
+    userId: localUserId || sessionUserId || null,
     status: "idle",
     error: null,
+    remember: Boolean(localUserId),
   };
 };
 
@@ -109,18 +121,16 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.userId = action.payload.data;
-        localStorage.setItem(
-          "accessToken",
-          JSON.stringify(action.payload.token)
-        );
-        localStorage.setItem(
-          "refreshToken",
-          JSON.stringify(action.payload.refreshToken)
-        );
-        localStorage.setItem("userId", JSON.stringify(action.payload.data));
+        state.isAuthentication = true;
+        if (action.payload.remember) {
+          saveAuthData(action.payload);
+        } else {
+          saveAuthDataToSession(action.payload);
+        }
       })
       .addCase(login.rejected, (state, action) => {
         state.status = "rejected";
+        state.isAuthentication = false;
         state.error =
           (action.payload as string) || "Invalid username or password.";
       })
@@ -153,11 +163,9 @@ const authSlice = createSlice({
       .addCase(logoutUser.fulfilled, (state) => {
         state.status = "succeeded";
         state.userId = null;
-        state.status = "succeeded";
+        state.isAuthentication = false;
         state.error = null;
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem("userId");
+        logout();
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.status = "rejected";

@@ -107,9 +107,11 @@ export interface UserUpdate {
 }
 
 export interface AuthState {
+  isAuthentication: boolean;
   userId: string | null;
   status: "idle" | "pending" | "succeeded" | "rejected";
   error: string | null;
+  remember: boolean;
 }
 
 export interface UserState {

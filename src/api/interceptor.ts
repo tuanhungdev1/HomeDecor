@@ -1,6 +1,7 @@
 import { API_ENDPOINTS } from "@/constants";
 
 import { logoutUser } from "@/stores/slices/authSlice";
+import { getAccessToken, getRefreshToken } from "@/utils/authHelper";
 import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
@@ -25,13 +26,12 @@ export default axiosInstance;
 const onRequest = (
   config: InternalAxiosRequestConfig
 ): InternalAxiosRequestConfig => {
-  const token = localStorage.getItem("accessToken");
+  const token = getAccessToken();
 
   // Kiểm tra xem token có tồn tại và có phải chuỗi JSON hợp lệ không
   if (token) {
     try {
-      const parsedToken = JSON.parse(token);
-      config.headers.Authorization = `Bearer ${parsedToken}`;
+      config.headers.Authorization = `Bearer ${JSON.parse(token)}`;
     } catch (error) {
       console.error("Error parsing token:", error);
     }
@@ -55,27 +55,30 @@ const onResponseError = async (error: AxiosError): Promise<any> => {
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      const refreshToken = localStorage.getItem("refreshToken");
-      const accessTokenOld = localStorage.getItem("accessToken");
+      const refreshToken = getRefreshToken();
+      const accessTokenOld = getAccessToken();
 
       if (!refreshToken) {
         throw new Error("No refresh token available");
       }
 
-      const parsedRefreshToken = JSON.parse(refreshToken);
-      const parsedAccessToken = JSON.parse(accessTokenOld ?? "");
-
       const response = await axiosInstance.post(
         API_ENDPOINTS.AUTH.REFRESH_TOKEN,
         {
-          accessToken: parsedAccessToken,
-          refreshToken: parsedRefreshToken,
+          accessToken: accessTokenOld,
+          refreshToken: refreshToken,
         }
       );
 
       const { accessToken } = response.data.data;
-      console.log(response.data);
-      localStorage.setItem("accessToken", JSON.stringify(accessToken));
+      const { store } = await import("@/stores/store");
+      const isRemember = store.getState().auth.remember;
+
+      if (isRemember) {
+        sessionStorage.setItem("accessToken", JSON.stringify(accessToken));
+      } else {
+        localStorage.setItem("accessToken", JSON.stringify(accessToken));
+      }
 
       if (originalRequest.headers) {
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
