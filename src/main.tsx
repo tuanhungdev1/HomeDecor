@@ -2,22 +2,11 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./styles/index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import {
-  HomePage,
-  ProductDetailPage,
-  ShopPage,
-  UserProfilePage,
-} from "./pages";
+import { HomePage, ProductDetailPage, ShopPage } from "./pages";
 import { ProtectedRoute, RootLayout } from "./layouts";
 import { ForgotPassword, SignInPage, SignUpPage } from "./pages/auth";
 import { Provider } from "react-redux";
-import {
-  AccountSection,
-  AddressSection,
-  OrdersSection,
-  WishlistSection,
-} from "./modules/userProfile";
-import { NotFoundPage } from "./pages/errors";
+import { ErrorPage, NotFoundPage } from "./pages/errors";
 import { store } from "./stores/store";
 
 const router = createBrowserRouter([
@@ -38,33 +27,9 @@ const router = createBrowserRouter([
         path: "/product/:id",
         element: <ProductDetailPage />,
       },
-    ],
-  },
-  {
-    path: "/user-profile",
-    element: (
-      <ProtectedRoute>
-        <RootLayout>
-          <UserProfilePage />
-        </RootLayout>
-      </ProtectedRoute>
-    ),
-    children: [
       {
-        path: "",
-        element: <AccountSection />,
-      },
-      {
-        path: "address",
-        element: <AddressSection />,
-      },
-      {
-        path: "orders",
-        element: <OrdersSection />,
-      },
-      {
-        path: "wishlist",
-        element: <WishlistSection />,
+        path: "/user-profile",
+        element: <ProtectedRoute />,
       },
     ],
   },
@@ -79,6 +44,10 @@ const router = createBrowserRouter([
   {
     path: "/auth/forgot-password",
     element: <ForgotPassword />,
+  },
+  {
+    path: "/error-page",
+    element: <ErrorPage />,
   },
   {
     path: "*",

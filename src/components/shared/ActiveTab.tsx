@@ -1,5 +1,4 @@
 import { UserProfileItem } from "@/constants/userProfileItems";
-import { Link } from "react-router-dom";
 
 interface ActiveTabProps {
   itemLink: UserProfileItem;
@@ -13,8 +12,7 @@ const ActiveTab: React.FC<ActiveTabProps> = ({
   onSelectedLink,
 }) => {
   return (
-    <Link
-      to={"/user-profile"}
+    <div
       className={`${
         currenLink === itemLink.id ? "text-black" : "text-gray-400"
       } cursor-pointer text-left  w-full px-2 py-4 relative hover:bg-gray-200 rounded-sm`}
@@ -24,7 +22,7 @@ const ActiveTab: React.FC<ActiveTabProps> = ({
       {currenLink === itemLink.id && (
         <div className="absolute bottom-0 w-full duration-200 transition-all h-[2px] bg-black left-0"></div>
       )}
-    </Link>
+    </div>
   );
 };
 

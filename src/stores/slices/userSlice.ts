@@ -6,6 +6,7 @@ import { userService } from "@/services/userService";
 import { UserUpdate } from "@/types/type";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { getUserId } from "@/utils/authHelper";
 
 export const USER_ACTIONS = {
   GET_USER_INFO: "user/getInfor",
@@ -14,14 +15,21 @@ export const USER_ACTIONS = {
 
 export const getUserInfo = createAsyncThunk(
   USER_ACTIONS.GET_USER_INFO,
-  async (_, { rejectWithValue }) => {
+  async (userId: string, { rejectWithValue }) => {
     try {
-      const userId = localStorage.getItem("userId");
-      if (!userId) {
-        return rejectWithValue("User ID not found in localStorage.");
+      const currentUserId = getUserId();
+      if (!currentUserId) {
+        return rejectWithValue(
+          "User ID is not found in localStorage or sessionStorage"
+        );
+      }
+
+      if (userId !== currentUserId) {
+        return rejectWithValue("The current user ID is incorrect.");
       }
 
       const response = await userService.getUserInfor(userId);
+      console.log(response.data.data);
       return response.data.data;
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -74,7 +82,12 @@ const initialState: UserState = getInitialState();
 const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+    resetUserStatus: (state) => {
+      state.status = "idle";
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getUserInfo.pending, (state) => {
@@ -83,12 +96,10 @@ const userSlice = createSlice({
       .addCase(getUserInfo.rejected, (state, action) => {
         state.status = "rejected";
         state.error = action.payload as string;
-        console.log(action);
       })
       .addCase(getUserInfo.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.status = "succeeded";
-        state.user = action.payload.data;
+        state.user = action.payload;
       })
       .addCase(updateUserInfor.pending, (state) => {
         state.status = "pending";
@@ -104,4 +115,5 @@ const userSlice = createSlice({
   },
 });
 
+export const { resetUserStatus } = userSlice.actions;
 export default userSlice.reducer;

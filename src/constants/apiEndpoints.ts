@@ -32,7 +32,9 @@ export const API_ENDPOINTS = {
     UPDATE_ADDRESS_FOR_USER: (userId: string, addressId: string) =>
       `${API_BASE_URL}/user/${userId}/address/${addressId}`,
 
-    GET_USER_INFOR: (id: string) => `${API_BASE_URL}/user/${id}`,
+    GET_USER_INFOR: (id: string) => {
+      return `${API_BASE_URL}/user/${JSON.parse(id)}`;
+    },
   },
   // Thêm các nhóm endpoint khác tại đây
 };

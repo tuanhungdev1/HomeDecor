@@ -3,7 +3,6 @@ import Label from "@/components/label/Label";
 import { Heading } from "@/components/typography";
 import { UserUpdate } from "@/types/type";
 import { Form, Formik, FormikHelpers } from "formik";
-import { useSelector } from "react-redux";
 import * as Yup from "yup";
 
 import { useEffect, useState } from "react";
@@ -11,10 +10,8 @@ import { Button } from "@/components/button";
 import { useAppDispatch } from "@/hooks/hooks";
 
 import toast, { Toaster } from "react-hot-toast";
-import { selectUser, selectUserStatus } from "@/stores/selectors/userSelector";
-
-import { selectAuthError } from "@/stores/selectors/authSelector";
 import { updateUserInfor } from "@/stores/slices/userSlice";
+import useUser from "@/hooks/useUser";
 
 const validationSchema = Yup.object({
   firstName: Yup.string().min(2, "User name must be at least 2 characters"),
@@ -35,11 +32,7 @@ const AccountSection = () => {
   const dispatch = useAppDispatch();
   const [isUpdateProfile, setIsUpdateProfile] = useState(false);
 
-  const user = useSelector(selectUser);
-
-  const userStatus = useSelector(selectUserStatus);
-
-  const userError = useSelector(selectAuthError);
+  const { user, status, error } = useUser();
   const initialValues: UserUpdate = {
     firstName: user?.firstName,
     lastName: user?.lastName,
@@ -70,16 +63,16 @@ const AccountSection = () => {
   };
 
   useEffect(() => {
-    if (userStatus === "succeeded") {
+    if (status === "succeeded") {
       toast.success("Updated User in successfully!");
-    } else if (userStatus === "rejected" && userError) {
-      toast.error(userError);
+    } else if (status === "rejected" && error) {
+      toast.error(error);
     }
 
     return () => {
       toast.remove();
     };
-  }, [userStatus, userError]);
+  }, [status, error]);
 
   return (
     <section className="w-full">
@@ -176,7 +169,7 @@ const AccountSection = () => {
                   <Button
                     type="submit"
                     className="xl:w-[200px]"
-                    isLoading={userStatus === "pending"}
+                    isLoading={status === "pending"}
                   >
                     Update
                   </Button>

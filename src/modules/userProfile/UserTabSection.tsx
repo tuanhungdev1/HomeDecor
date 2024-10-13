@@ -1,8 +1,7 @@
 import { userProfileItemList } from "@/constants/userProfileItems";
-import { useSelector } from "react-redux";
 import { IoIosArrowDown } from "react-icons/io";
 import ActiveTab from "@/components/shared/ActiveTab";
-import { useState } from "react";
+
 import { useModal } from "@/hooks/useModal";
 import { Modal } from "@/components/modal";
 import { Button } from "@/components/button";
@@ -10,15 +9,20 @@ import { FaCamera } from "react-icons/fa";
 import { CiCamera } from "react-icons/ci";
 import { UploadAvatarUser } from "@/components/uploadFile";
 import { UploadAvatar } from "@/components/uploadAvatar";
-import { selectUser } from "@/stores/selectors/userSelector";
-const UserTabSection = () => {
-  const { isOpen, closeModal, openModal } = useModal();
-  const authUser = useSelector(selectUser);
-  const [activeTab, setActiveTab] = useState(userProfileItemList[0].id);
+import useUser from "@/hooks/useUser";
 
-  const handleSelectActiveTab = (id: string) => {
-    setActiveTab(id);
-  };
+interface UserTabSectionProps {
+  currentTab: string;
+  handleSelected: (tabId: string) => void;
+}
+
+const UserTabSection: React.FC<UserTabSectionProps> = ({
+  currentTab,
+  handleSelected,
+}) => {
+  const { user, handleGetUserInfo } = useUser();
+  const { isOpen, closeModal, openModal } = useModal();
+
   return (
     <section>
       <Modal
@@ -58,7 +62,7 @@ const UserTabSection = () => {
             <UploadAvatar />
           </div>
           <span className="text-2xl font-medium">
-            {authUser?.displayName ? authUser.displayName : "No Name"}
+            {user?.displayName ? user.displayName : "No Name"}
           </span>
         </div>
 
@@ -69,6 +73,8 @@ const UserTabSection = () => {
                 value={item.title}
                 key={item.id}
                 className="p-2 cursor-pointer"
+                defaultChecked={currentTab === item.id}
+                onClick={() => handleSelected(item.id)}
               >
                 {item.title}
               </option>
@@ -84,8 +90,8 @@ const UserTabSection = () => {
               <ActiveTab
                 itemLink={item}
                 key={item.id}
-                currenLink={activeTab}
-                onSelectedLink={handleSelectActiveTab}
+                currenLink={currentTab}
+                onSelectedLink={handleGetUserInfo}
               />
             ))}
           </ul>
