@@ -59,7 +59,7 @@ const UserTabSection: React.FC<UserTabSectionProps> = ({
       <div className="flex flex-col items-center justify-center w-full h-auto p-5 py-10 text-black rounded-md lg:px-3 gap-14 bg-secondary-gray">
         <div className="flex flex-col gap-5 text-center">
           <div onClick={openModal}>
-            <UploadAvatar />
+            <UploadAvatar urlImage={user?.profilePicture} />
           </div>
           <span className="text-2xl font-medium">
             {user?.displayName ? user.displayName : "No Name"}

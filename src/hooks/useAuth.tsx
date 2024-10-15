@@ -1,5 +1,6 @@
 import {
   selectAuthError,
+  selectAuthIsAuthen,
   selectAuthStatus,
 } from "@/stores/selectors/authSelector";
 import {
@@ -16,11 +17,13 @@ import {
   RegisterData,
 } from "@/types/type";
 import { useDispatch, useSelector } from "react-redux";
+import { useAppSelector } from "./hooks";
 
 export const useAuth = () => {
   const dispatch = useDispatch<AppDispatch>();
   const error = useSelector(selectAuthError);
   const status = useSelector(selectAuthStatus);
+  const isAuthenticated = useAppSelector(selectAuthIsAuthen);
 
   const handleLogin = async (values: LoginData) => {
     dispatch(resetAuthStatus());
@@ -50,6 +53,7 @@ export const useAuth = () => {
     handleLogin,
     error,
     status,
+    isAuthenticated,
     handleRegister,
     handleLogout,
     handleReset,

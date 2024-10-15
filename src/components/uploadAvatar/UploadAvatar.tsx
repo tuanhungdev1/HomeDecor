@@ -1,16 +1,15 @@
-import { useAppSelector } from "@/hooks/hooks";
-import { selectUser } from "@/stores/selectors/userSelector";
+import React from "react";
 import { AiOutlineCamera } from "react-icons/ai";
 
-const UploadAvatar = () => {
-  const user = useAppSelector(selectUser);
+interface UploadAvatarProps {
+  urlImage?: string;
+}
 
-  console.log(user);
-
+const UploadAvatar: React.FC<UploadAvatarProps> = React.memo(({ urlImage }) => {
   return (
     <div className="w-[130px] h-[130px] bg-red-300 rounded-full  relative cursor-pointer">
       <img
-        src={user?.profilePicture ?? "/public/default_avatar_user.png"}
+        src={urlImage ?? "/public/default_avatar_user.png"}
         alt=""
         className="w-full h-full rounded-full"
       />
@@ -19,6 +18,6 @@ const UploadAvatar = () => {
       </div>
     </div>
   );
-};
+});
 
 export default UploadAvatar;

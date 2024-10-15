@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import axiosInstance from "@/api/interceptor";
 
 const ACCESS_TOKEN_KEY = "accessToken";
@@ -15,17 +14,25 @@ export const removeAuthHeader = (): void => {
 };
 
 // Lưu data vào localStorage (remember me = true)
-export function saveAuthData(data: any): void {
-  localStorage.setItem(ACCESS_TOKEN_KEY, JSON.stringify(data.token));
-  localStorage.setItem(REFRESH_TOKEN_KEY, JSON.stringify(data.refreshToken));
-  localStorage.setItem(USER_ID_KEY, JSON.stringify(data.data));
+export function saveAuthData(data: {
+  token: string;
+  refreshToken: string;
+  data: string;
+}): void {
+  localStorage.setItem(ACCESS_TOKEN_KEY, data.token); // Lưu chuỗi trực tiếp
+  localStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken); // Lưu chuỗi trực tiếp
+  localStorage.setItem(USER_ID_KEY, JSON.stringify(data.data)); // Lưu chuỗi trực tiếp
 }
 
 // Lưu data vào sessionStorage (remember me = false)
-export function saveAuthDataToSession(data: any): void {
-  sessionStorage.setItem(ACCESS_TOKEN_KEY, JSON.stringify(data.token));
-  sessionStorage.setItem(REFRESH_TOKEN_KEY, JSON.stringify(data.refreshToken));
-  sessionStorage.setItem(USER_ID_KEY, JSON.stringify(data.data));
+export function saveAuthDataToSession(data: {
+  token: string;
+  refreshToken: string;
+  data: string;
+}): void {
+  sessionStorage.setItem(ACCESS_TOKEN_KEY, data.token); // Lưu chuỗi trực tiếp
+  sessionStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken); // Lưu chuỗi trực tiếp
+  sessionStorage.setItem(USER_ID_KEY, JSON.stringify(data.data)); // Lưu chuỗi trực tiếp
 }
 
 // Lấy access token
@@ -67,3 +74,16 @@ export function logout(): void {
   sessionStorage.removeItem(REFRESH_TOKEN_KEY);
   sessionStorage.removeItem(USER_ID_KEY);
 }
+
+export const isRemember = (): boolean | null => {
+  const accessTokenLocal = localStorage.getItem("accessToken");
+  const accessTokenSession = sessionStorage.getItem("accessToken");
+
+  if (accessTokenLocal) {
+    return true; // Access token được lưu trong localStorage
+  } else if (accessTokenSession) {
+    return false; // Access token được lưu trong sessionStorage
+  }
+
+  return null; // Không tìm thấy access token
+};

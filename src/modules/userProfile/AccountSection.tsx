@@ -7,10 +7,8 @@ import * as Yup from "yup";
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/button";
-import { useAppDispatch } from "@/hooks/hooks";
 
 import toast, { Toaster } from "react-hot-toast";
-import { updateUserInfor } from "@/stores/slices/userSlice";
 import useUser from "@/hooks/useUser";
 
 const validationSchema = Yup.object({
@@ -29,29 +27,39 @@ const validationSchema = Yup.object({
 });
 
 const AccountSection = () => {
-  const dispatch = useAppDispatch();
   const [isUpdateProfile, setIsUpdateProfile] = useState(false);
 
-  const { user, status, error } = useUser();
+  const { user, status, error, handleUpdateUserInfo } = useUser();
   const initialValues: UserUpdate = {
-    firstName: user?.firstName,
-    lastName: user?.lastName,
-    displayName: user?.displayName,
-    dateOfBirth: user?.dateOfBirth,
+    firstName: user?.firstName || "",
+    lastName: user?.lastName || "",
+    displayName: user?.displayName || "",
+    dateOfBirth: user?.dateOfBirth || "",
   };
 
   const handleSubmit = async (
     values: UserUpdate,
     { setSubmitting }: FormikHelpers<UserUpdate>
   ) => {
-    const userUpdateData = {
-      userId: user!.id,
-      userInfor: values,
-    };
-
-    await dispatch(updateUserInfor(userUpdateData)).unwrap();
+    console.log(values);
+    if (user && values) {
+      await handleUpdateUserInfo(user!.id, values);
+    }
 
     setSubmitting(false);
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleClose = (resetForm: any) => {
+    resetForm({
+      values: {
+        firstName: user?.firstName || "",
+        lastName: user?.lastName || "",
+        displayName: user?.displayName || "",
+        dateOfBirth: user?.dateOfBirth || "",
+      },
+    });
+    handleCloseUpdateProfile();
   };
 
   const handleUpdateProfile = () => {
@@ -63,9 +71,15 @@ const AccountSection = () => {
   };
 
   useEffect(() => {
-    if (status === "succeeded") {
-      toast.success("Updated User in successfully!");
+    let loadingToastId: string | undefined;
+
+    if (status === "pending") {
+      loadingToastId = toast.loading("Updating user information...");
+    } else if (status === "succeeded") {
+      toast.dismiss(loadingToastId);
+      toast.success("User information updated successfully!");
     } else if (status === "rejected" && error) {
+      toast.dismiss(loadingToastId);
       toast.error(error);
     }
 
@@ -84,109 +98,131 @@ const AccountSection = () => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          <Form className="flex flex-col w-full gap-8 pb-7">
-            <div className="flex flex-col gap-4">
-              <Label className="text-[16px] font-semibold" htmlFor="firstName">
-                FIRST NAME *
-              </Label>
-              <Input
-                name="firstName"
-                className="border-[2px] border-b-[2px] rounded-md px-3 py-3"
-                placeholder="First name"
-                id="firstName"
-                disabled={!isUpdateProfile}
-                value={user?.firstName}
-              />
-            </div>
-            <div className="flex flex-col gap-4">
-              <Label className="text-[16px] font-semibold" htmlFor="lastName">
-                LAST NAME *
-              </Label>
-              <Input
-                name="lastName"
-                className="border-[2px] border-b-[2px] rounded-md px-3 py-3"
-                placeholder="Last name"
-                id="lastName"
-                disabled={!isUpdateProfile}
-                value={user?.lastName}
-              />
-            </div>
-            <div className="flex flex-col gap-4">
-              <Label
-                className="text-[16px] font-semibold"
-                htmlFor="displayName"
-              >
-                DISPLAY NAME *
-              </Label>
-              <Input
-                name="displayName"
-                className="border-[2px] border-b-[2px] rounded-md px-3 py-3"
-                placeholder="Display name"
-                id="displayName"
-                disabled={!isUpdateProfile}
-                value={user?.displayName}
-              />
-            </div>
+          {({
+            handleChange,
+            handleBlur,
+            resetForm,
 
-            <span className="italic opacity-50 select-none">
-              This will be how your name be displayed in the account section and
-              in reviews
-            </span>
-            <div className="flex flex-col gap-4">
-              <Label
-                className="text-[16px] font-semibold"
-                htmlFor="dateOfBirth"
-              >
-                DATE OF BIRTH*
-              </Label>
-              <Input
-                type="date"
-                name="dateOfBirth"
-                className="border-[2px] border-b-[2px] rounded-md px-3 py-3"
-                placeholder="Email"
-                id="dateOfBirth"
-                disabled={!isUpdateProfile}
-                value={user?.dateOfBirth}
-              />
-            </div>
+            values,
+          }) => (
+            <Form className="flex flex-col w-full gap-8 pb-7">
+              <div className="flex flex-col gap-4">
+                <Label
+                  className="text-[16px] font-semibold"
+                  htmlFor="firstName"
+                >
+                  FIRST NAME *
+                </Label>
+                <Input
+                  name="firstName"
+                  className="border-[2px] border-b-[2px] rounded-md px-3 py-3"
+                  placeholder="First name"
+                  id="firstName"
+                  disabled={!isUpdateProfile}
+                  value={values.firstName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+              </div>
+              <div className="flex flex-col gap-4">
+                <Label className="text-[16px] font-semibold" htmlFor="lastName">
+                  LAST NAME *
+                </Label>
+                <Input
+                  name="lastName"
+                  className="border-[2px] border-b-[2px] rounded-md px-3 py-3"
+                  placeholder="Last name"
+                  id="lastName"
+                  disabled={!isUpdateProfile}
+                  value={values.lastName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+              </div>
+              <div className="flex flex-col gap-4">
+                <Label
+                  className="text-[16px] font-semibold"
+                  htmlFor="displayName"
+                >
+                  DISPLAY NAME *
+                </Label>
+                <Input
+                  name="displayName"
+                  className="border-[2px] border-b-[2px] rounded-md px-3 py-3"
+                  placeholder="Display name"
+                  id="displayName"
+                  disabled={!isUpdateProfile}
+                  value={values.displayName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+              </div>
 
-            <div className="flex flex-col gap-4">
-              <Label className="text-[16px] font-semibold" htmlFor="email">
-                EMAIL *
-              </Label>
-              <Input
-                name="email"
-                className="border-[2px] border-b-[2px] rounded-md px-3 py-3"
-                placeholder="Email"
-                id="email"
-                disabled={true}
-                value={user?.email}
-              />
-            </div>
-            <div>
-              {isUpdateProfile ? (
-                <div className="flex gap-2">
+              <span className="italic opacity-50 select-none">
+                This will be how your name be displayed in the account section
+                and in reviews
+              </span>
+              <div className="flex flex-col gap-4">
+                <Label
+                  className="text-[16px] font-semibold"
+                  htmlFor="dateOfBirth"
+                >
+                  DATE OF BIRTH*
+                </Label>
+                <Input
+                  type="date"
+                  name="dateOfBirth"
+                  className="border-[2px] border-b-[2px] rounded-md px-3 py-3"
+                  placeholder="Email"
+                  id="dateOfBirth"
+                  disabled={!isUpdateProfile}
+                  value={values.dateOfBirth}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+              </div>
+
+              <div className="flex flex-col gap-4">
+                <Label className="text-[16px] font-semibold" htmlFor="email">
+                  EMAIL *
+                </Label>
+                <Input
+                  name="email"
+                  className="border-[2px] border-b-[2px] rounded-md px-3 py-3"
+                  placeholder="Email"
+                  id="email"
+                  disabled={true}
+                  value={user?.email}
+                />
+              </div>
+              <div>
+                {isUpdateProfile ? (
+                  <div className="flex gap-2">
+                    <Button
+                      type="submit"
+                      className="xl:w-[200px]"
+                      isLoading={status === "pending"}
+                    >
+                      Update
+                    </Button>
+                    <Button
+                      onClick={() => handleClose(resetForm)}
+                      className="opacity-50 xl:w-[200px]"
+                    >
+                      Close
+                    </Button>
+                  </div>
+                ) : (
                   <Button
-                    type="submit"
-                    className="xl:w-[200px]"
-                    isLoading={status === "pending"}
+                    onClick={handleUpdateProfile}
+                    className="xl:w-[300px]"
                   >
-                    Update
+                    Update Profile
                   </Button>
-                  <Button
-                    onClick={handleCloseUpdateProfile}
-                    className="opacity-50 xl:w-[200px]"
-                  >
-                    Close
-                  </Button>
-                </div>
-              ) : (
-                <Button onClick={handleUpdateProfile} className="xl:w-[300px]">
-                  Update Profile
-                </Button>
-              )}
-            </div>
-          </Form>
+                )}
+              </div>
+            </Form>
+          )}
         </Formik>
         <Toaster />
       </div>

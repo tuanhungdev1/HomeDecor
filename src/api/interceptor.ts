@@ -1,7 +1,11 @@
-import { API_ENDPOINTS } from "@/constants";
-
-import { logoutUser } from "@/stores/slices/authSlice";
-import { getAccessToken, getRefreshToken } from "@/utils/authHelper";
+import { authService } from "@/services/authService";
+import { RefreshTokenData } from "@/types/type";
+import {
+  getAccessToken,
+  getRefreshToken,
+  isRemember,
+  logout,
+} from "@/utils/authHelper";
 import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
@@ -31,7 +35,8 @@ const onRequest = (
   // Kiểm tra xem token có tồn tại và có phải chuỗi JSON hợp lệ không
   if (token) {
     try {
-      config.headers.Authorization = `Bearer ${JSON.parse(token)}`;
+      console.log("run here");
+      config.headers.Authorization = `Bearer ${token}`;
     } catch (error) {
       console.error("Error parsing token:", error);
     }
@@ -58,26 +63,26 @@ const onResponseError = async (error: AxiosError): Promise<any> => {
       const refreshToken = getRefreshToken();
       const accessTokenOld = getAccessToken();
 
-      if (!refreshToken) {
+      if (!refreshToken || !accessTokenOld) {
         throw new Error("No refresh token available");
       }
 
-      const response = await axiosInstance.post(
-        API_ENDPOINTS.AUTH.REFRESH_TOKEN,
-        {
-          accessToken: accessTokenOld,
-          refreshToken: refreshToken,
-        }
-      );
+      const authParams: RefreshTokenData = {
+        accessToken: accessTokenOld,
+        refreshToken: refreshToken,
+      };
 
+      console.log(authParams);
+      const response = await authService.refreshToken(authParams);
+      console.log(response.data);
       const { accessToken } = response.data.data;
-      const { store } = await import("@/stores/store");
-      const isRemember = store.getState().auth.remember;
 
-      if (isRemember) {
-        sessionStorage.setItem("accessToken", JSON.stringify(accessToken));
+      const remember = isRemember();
+
+      if (remember) {
+        sessionStorage.setItem("accessToken", accessToken);
       } else {
-        localStorage.setItem("accessToken", JSON.stringify(accessToken));
+        localStorage.setItem("accessToken", accessToken);
       }
 
       if (originalRequest.headers) {
@@ -87,14 +92,9 @@ const onResponseError = async (error: AxiosError): Promise<any> => {
       return axiosInstance(originalRequest);
     }
   } catch (err) {
-    try {
-      const { store } = await import("@/stores/store");
-      store.dispatch(logoutUser());
-    } catch (logoutError) {
-      throw new Error(`Logout API call failed: ${logoutError}`);
-    }
-
-    throw err;
+    console.log(err);
+    window.location.href = "/login";
+    logout();
   }
 
   return Promise.reject(error);

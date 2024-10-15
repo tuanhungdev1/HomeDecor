@@ -29,7 +29,7 @@ export const getUserInfo = createAsyncThunk(
       }
 
       const response = await userService.getUserInfor(userId);
-      console.log(response.data.data);
+
       return response.data.data;
     } catch (err) {
       if (axios.isAxiosError(err)) {
