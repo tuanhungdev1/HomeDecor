@@ -35,7 +35,6 @@ const onRequest = (
   // Kiểm tra xem token có tồn tại và có phải chuỗi JSON hợp lệ không
   if (token) {
     try {
-      console.log("run here");
       config.headers.Authorization = `Bearer ${token}`;
     } catch (error) {
       console.error("Error parsing token:", error);
@@ -72,9 +71,8 @@ const onResponseError = async (error: AxiosError): Promise<any> => {
         refreshToken: refreshToken,
       };
 
-      console.log(authParams);
       const response = await authService.refreshToken(authParams);
-      console.log(response.data);
+
       const { accessToken } = response.data.data;
 
       const remember = isRemember();
@@ -92,8 +90,7 @@ const onResponseError = async (error: AxiosError): Promise<any> => {
       return axiosInstance(originalRequest);
     }
   } catch (err) {
-    console.log(err);
-    window.location.href = "/login";
+    window.location.href = "/auth/sign-in";
     logout();
   }
 

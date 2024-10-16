@@ -1,6 +1,5 @@
 import { useAuth } from "@/hooks/useAuth";
-
-import { AccessDeniedPage } from "@/pages/errors";
+import { Navigate, useLocation } from "react-router-dom";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -8,12 +7,15 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { isAuthenticated } = useAuth();
+  const location = useLocation();
 
   if (!isAuthenticated) {
-    return <AccessDeniedPage />;
+    return (
+      <Navigate replace to={`/auth/sign-in?redirect=${location.pathname}`} />
+    );
   }
 
-  return children;
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;

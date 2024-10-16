@@ -27,6 +27,8 @@ const useUser = () => {
       dispatch(resetUserStatus());
 
       await dispatch(getUserInfo(userId)).unwrap();
+
+      dispatch(resetUserStatus());
       return;
     }
 

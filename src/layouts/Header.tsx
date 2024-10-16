@@ -1,10 +1,10 @@
 import { ActiveLink, Logo } from "@/components/shared";
 import { menuItems } from "@/constants/menuItem";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IoMenu } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { Button } from "@/components/button";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { SearchBox } from "@/components/searchBox";
 import { dropdownMenu } from "@/constants/dropdownMenu";
 import Sidebar from "./Sidebar";
@@ -17,7 +17,8 @@ import { useAuth } from "@/hooks/useAuth";
 const Header = () => {
   const userId = useSelector(selectAuthUserId);
   const navigate = useNavigate();
-  const { status, error, handleLogout, handleReset } = useAuth();
+  const location = useLocation();
+  const { handleLogout, handleReset } = useAuth();
 
   const { isToggled: isOpenSidebarCart, toggle: handleSetOpenSidebarCart } =
     useToggle(false);
@@ -35,37 +36,21 @@ const Header = () => {
   };
 
   const handleLogoutClick = async () => {
-    await handleLogout();
-  };
-
-  useEffect(() => {
-    let toastId;
-
-    if (status === "pending") {
-      toastId = toast.loading("Logging out. Please wait..");
-    }
-
-    if (status === "succeeded") {
+    const toastId = toast.loading("Logging out. Please wait..");
+    try {
+      await handleLogout();
       toast.dismiss(toastId);
-      toast.success("Logged out successfully!");
-      const timer = setTimeout(() => {
-        handleReset();
-        navigate("/auth/sign-in");
-      }, 2000);
-
-      return () => {
-        toast.remove();
-        clearTimeout(timer);
-      };
-    } else if (status === "rejected" && error) {
-      toast.dismiss(toastId); // Dismiss the pending toast
-      toast.error(error);
+      toast.success("Logged out successfully!", {
+        duration: 4000,
+      });
+      handleReset();
+      navigate(`/auth/sign-in?redirect=${location.pathname}`);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast.dismiss(toastId);
+      toast.error(error.message || "An error occurred during logout");
     }
-
-    return () => {
-      toast.remove(); // Remove any remaining toasts when the component unmounts
-    };
-  }, [status, error, navigate, handleReset]);
+  };
 
   return (
     <section className="mt-4 mb-4">

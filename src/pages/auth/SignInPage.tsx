@@ -5,12 +5,10 @@ import Label from "@/components/label/Label";
 import { AuthLayout } from "@/layouts";
 import { LoginData } from "@/types/type";
 import { Form, Formik, FormikHelpers } from "formik";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import toast, { Toaster } from "react-hot-toast";
-import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
-
 const validationSchema = Yup.object({
   username: Yup.string()
     .min(6, "Username must be at least 6 characters")
@@ -24,7 +22,15 @@ const validationSchema = Yup.object({
 
 const SignInPage = () => {
   const { status, error, handleLogin, handleReset } = useAuth();
+  const location = useLocation();
   const navigate = useNavigate();
+
+  const handleSuccessfulLogin = () => {
+    const params = new URLSearchParams(location.search);
+    console.log(params, location);
+    const redirectUrl = params.get("redirect") || "/";
+    navigate(redirectUrl);
+  };
 
   const initialValues: LoginData = {
     username: "",
@@ -36,38 +42,26 @@ const SignInPage = () => {
     values: LoginData,
     { setSubmitting }: FormikHelpers<LoginData>
   ) => {
-    await handleLogin(values);
-
-    setSubmitting(false);
-  };
-
-  useEffect(() => {
     let toastId;
 
-    if (status === "pending") {
+    try {
       toastId = toast.loading("Logging in. Please wait...");
-    }
 
-    if (status === "succeeded") {
+      await handleLogin(values);
+
       toast.dismiss(toastId);
       toast.success("Logged in successfully!");
-      const timer = setTimeout(() => {
-        handleReset();
-        navigate("/");
-      }, 2000);
 
-      return () => {
-        clearTimeout(timer);
-      };
-    } else if (status === "rejected" && error) {
+      handleReset();
+      handleSuccessfulLogin();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err) {
       toast.dismiss(toastId);
-      toast.error(error);
+      toast.error(error || "Login failed");
+    } finally {
+      setSubmitting(false);
     }
-
-    return () => {
-      toast.remove();
-    };
-  }, [status, error, navigate, handleReset]);
+  };
 
   return (
     <AuthLayout title="Sign In">
@@ -87,7 +81,7 @@ const SignInPage = () => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          <Form className="flex flex-col w-full xl:w-[500px] 2xl:w-[600px]  gap-4 pb-7">
+          <Form className="flex flex-col w-full xl:w-[500px] 2xl:w-[600px] gap-4 pb-7">
             <Input name="username" placeholder="Username or Email" />
             <Input type="password" name="password" placeholder="Password" />
             <div className="relative flex items-center justify-between">
@@ -95,8 +89,7 @@ const SignInPage = () => {
                 name="rememberPassword"
                 className="flex-1 mt-3"
                 label={<Label>Remember me</Label>}
-              ></Checkbox>
-
+              />
               <Link to={"/auth/forgot-password"}>
                 <Label className="absolute right-0 flex-1 text-sm font-medium text-black -translate-y-[3px] top-1/2 text-end">
                   Forgot password?
