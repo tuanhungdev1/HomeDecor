@@ -8,4 +8,15 @@ export const userService = {
 
   getUserInfor: (userId: string) =>
     axiosInstance.get(API_ENDPOINTS.USERS.GET_USER_INFOR(userId)),
+
+  uploadFileUserAvatar: (userId: string, formData: FormData) =>
+    axiosInstance.post(
+      API_ENDPOINTS.USERS.UPLOAD_FILE_USER_AVATAR(userId),
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    ),
 };

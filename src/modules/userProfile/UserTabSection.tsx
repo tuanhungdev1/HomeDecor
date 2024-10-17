@@ -10,6 +10,9 @@ import { CiCamera } from "react-icons/ci";
 import { UploadAvatarUser } from "@/components/uploadFile";
 import { UploadAvatar } from "@/components/uploadAvatar";
 import useUser from "@/hooks/useUser";
+import useFileUpload from "@/hooks/useFileUpload";
+import toast, { Toaster } from "react-hot-toast";
+import { useState } from "react";
 
 interface UserTabSectionProps {
   currentTab: string;
@@ -22,9 +25,63 @@ const UserTabSection: React.FC<UserTabSectionProps> = ({
 }) => {
   const { user, handleGetUserInfo } = useUser();
   const { isOpen, closeModal, openModal } = useModal();
+  const [isUploading, setIsUploading] = useState(false);
+  const {
+    selectedFiles,
+    previewUrls,
+    uploadSingleFile,
+    resetUpload,
+    handleFileSelect,
+    uploadStatus,
+  } = useFileUpload({
+    maxSize: 2 * 2 * 1024 * 1024, // 2MB
+    allowedFormats: ["image/jpg", "image/jpeg", "image/png"],
+  });
+
+  const handleUpload = async () => {
+    if (selectedFiles.length > 0) {
+      setIsUploading(true);
+      // eslint-disable-next-line no-async-promise-executor
+      const uploadPromise = new Promise(async (resolve, reject) => {
+        try {
+          toast.loading("Đang upload hình ảnh...", { id: "uploadToast" });
+          await uploadSingleFile(selectedFiles[0]);
+          if (uploadStatus === "Upload thành công") {
+            await handleGetUserInfo();
+            resolve("Upload thành công");
+          } else {
+            reject("Upload thất bại");
+          }
+        } catch (error) {
+          console.error("Lỗi khi upload avatar:", error);
+          reject("Có lỗi xảy ra khi upload");
+        } finally {
+          setIsUploading(false);
+          closeModal();
+        }
+      });
+
+      toast.promise(
+        uploadPromise,
+        {
+          loading: "Đang upload...",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          success: (message: any) => message,
+          error: (err) => err,
+        },
+        { id: "uploadToast" }
+      );
+    }
+  };
+
+  const handleRemove = () => {
+    resetUpload();
+    toast.success("Đã xóa hình ảnh");
+  };
 
   return (
     <section>
+      <Toaster />
       <Modal
         title={
           <span className="flex items-center gap-2">
@@ -37,14 +94,28 @@ const UserTabSection: React.FC<UserTabSectionProps> = ({
         showCloseButton={true}
         footer={
           <>
-            <Button className="bg-red-600 hover:bg-red-500">Remove</Button>
-            <Button className="bg-green-600 hover:bg-green-500">Upload</Button>
+            <Button
+              className="bg-red-600 hover:bg-red-500"
+              onClick={handleRemove}
+            >
+              Remove
+            </Button>
+            <Button
+              className="bg-green-600 hover:bg-green-500"
+              onClick={handleUpload}
+              isLoading={isUploading}
+            >
+              Upload
+            </Button>
           </>
         }
       >
         <div className="flex items-center justify-center w-full ">
           <div className="w-[300px] h-[300px] rounded-full overflow-hidden">
             <UploadAvatarUser
+              handleResetUpload={handleRemove}
+              handleFileSelect={handleFileSelect}
+              preview={previewUrls[0]}
               icon={<CiCamera size={90} />}
               text={
                 <span className="text-xs">

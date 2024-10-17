@@ -1,6 +1,7 @@
 import { LoadingOverlay } from "@/components/loadingOverlay";
 import useUser from "@/hooks/useUser";
-import UserProfileLayout from "@/layouts/UserProfileLayout";
+import { UserProfileLayout } from "@/modules/userProfile";
+
 import { useEffect, useState } from "react";
 
 const UserProfilePage = () => {
@@ -8,8 +9,12 @@ const UserProfilePage = () => {
   const { handleGetUserInfo } = useUser();
 
   const handleFetchUserData = async () => {
-    await handleGetUserInfo();
-    setIsloading(false);
+    try {
+      await handleGetUserInfo();
+      setIsloading(false);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {

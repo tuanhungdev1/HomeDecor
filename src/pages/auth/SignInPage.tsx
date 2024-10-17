@@ -27,7 +27,7 @@ const SignInPage = () => {
 
   const handleSuccessfulLogin = () => {
     const params = new URLSearchParams(location.search);
-    console.log(params, location);
+
     const redirectUrl = params.get("redirect") || "/";
     navigate(redirectUrl);
   };

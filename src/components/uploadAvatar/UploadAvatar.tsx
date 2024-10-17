@@ -11,7 +11,7 @@ const UploadAvatar: React.FC<UploadAvatarProps> = React.memo(({ urlImage }) => {
       <img
         src={urlImage ?? "/public/default_avatar_user.png"}
         alt=""
-        className="w-full h-full rounded-full"
+        className="object-cover w-full h-full rounded-full"
       />
       <div className="absolute rounded-full bg-primary flex items-center justify-center w-[45px] h-[45px] z-20 bottom-0 right-0 border-[3px] border-white">
         <AiOutlineCamera className="text-xl text-white" />

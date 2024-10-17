@@ -35,6 +35,9 @@ export const API_ENDPOINTS = {
     GET_USER_INFOR: (id: string) => {
       return `${API_BASE_URL}/user/${JSON.parse(id)}`;
     },
+
+    UPLOAD_FILE_USER_AVATAR: (userId: string) =>
+      `${API_BASE_URL}/user/${JSON.parse(userId)}/upload-avatar`,
   },
   // Thêm các nhóm endpoint khác tại đây
 };
