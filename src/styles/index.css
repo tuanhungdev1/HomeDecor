@@ -7,6 +7,14 @@
 }
 
 @layer utilities {
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
+
+  .full-cover {
+    @apply w-full h-full object-cover;
+  }
+
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }

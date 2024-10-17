@@ -6,3 +6,4 @@ export { default as Footer } from "./Footer";
 export { default as ProtectedRoute } from "../routes/ProtectedRoute";
 export { default as Sidebar } from "./Sidebar";
 export { default as SidebarCart } from "./SidebarCart";
+export { default as AuthAdminLayout } from "./AuthAdminLayout";

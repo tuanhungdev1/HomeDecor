@@ -13,6 +13,7 @@ import { ForgotPassword, SignInPage, SignUpPage } from "./pages/auth";
 import { Provider } from "react-redux";
 import { ErrorPage, NotFoundPage } from "./pages/errors";
 import { store } from "./stores/store";
+import { LoginAdminPage, SignUpAdminPage } from "./pages/admin";
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,14 @@ const router = createBrowserRouter([
   {
     path: "/auth/sign-in",
     element: <SignInPage />,
+  },
+  {
+    path: "/admin/login",
+    element: <LoginAdminPage />,
+  },
+  {
+    path: "/admin/sign-up",
+    element: <SignUpAdminPage />,
   },
   {
     path: "/auth/sign-up",
