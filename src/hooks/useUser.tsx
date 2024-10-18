@@ -14,6 +14,7 @@ import {
 import { UserUpdate } from "@/types/type";
 import { getUserId } from "@/utils/authHelper";
 import { logoutUser } from "@/stores/slices/authSlice";
+import { useEffect } from "react";
 
 const useUser = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -47,6 +48,13 @@ const useUser = () => {
       })
     ).unwrap();
   };
+
+  useEffect(() => {
+    if (userId) {
+      handleGetUserInfo();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]);
 
   return {
     user,

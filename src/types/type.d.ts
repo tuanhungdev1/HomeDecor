@@ -95,6 +95,7 @@ export interface User {
   profilePicture?: string;
   dateOfBirth?: string;
   addressList?: Address[];
+  roles?: UserRole[];
   createdAt?: Date;
   updatedAt?: Date;
 }

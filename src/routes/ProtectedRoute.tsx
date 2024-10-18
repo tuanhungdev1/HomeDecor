@@ -1,21 +1,30 @@
-import { useAuth } from "@/hooks/useAuth";
-import { Navigate, useLocation } from "react-router-dom";
+import useUser from "@/hooks/useUser";
+import { UserRole } from "@/types/Enums";
+import React from "react";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 interface ProtectedRouteProps {
-  children: React.ReactNode;
+  role: UserRole;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ role }) => {
+  const { user } = useUser();
   const location = useLocation();
 
-  if (!isAuthenticated) {
+  // Nếu chưa đăng nhập, điều hướng về trang đăng nhập
+  if (!user) {
     return (
-      <Navigate replace to={`/auth/sign-in?redirect=${location.pathname}`} />
+      <Navigate to={`/admin/login?redirect=${location.pathname}`} replace />
     );
   }
 
-  return <>{children}</>;
+  // Nếu không có quyền, điều hướng đến trang lỗi
+  if (!user.roles?.includes(role)) {
+    return <Navigate to="/error-page" replace />;
+  }
+
+  // Nếu hợp lệ, hiển thị các route con (nếu có)
+  return <Outlet />;
 };
 
 export default ProtectedRoute;

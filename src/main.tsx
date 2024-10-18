@@ -8,12 +8,13 @@ import {
   ShopPage,
   UserProfilePage,
 } from "./pages";
-import { ProtectedRoute, RootLayout } from "./layouts";
+import { RootLayout } from "./layouts";
 import { ForgotPassword, SignInPage, SignUpPage } from "./pages/auth";
 import { Provider } from "react-redux";
 import { ErrorPage, NotFoundPage } from "./pages/errors";
 import { store } from "./stores/store";
 import { LoginAdminPage, SignUpAdminPage } from "./pages/admin";
+import { ProtectedUserRoute } from "./routes";
 
 const router = createBrowserRouter([
   {
@@ -36,9 +37,9 @@ const router = createBrowserRouter([
       {
         path: "/user-profile",
         element: (
-          <ProtectedRoute>
+          <ProtectedUserRoute>
             <UserProfilePage />
-          </ProtectedRoute>
+          </ProtectedUserRoute>
         ),
       },
     ],

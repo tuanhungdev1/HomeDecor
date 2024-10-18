@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { API_ENDPOINTS } from "@/constants";
 import { authService } from "@/services/authService";
 import { RefreshTokenData } from "@/types/type";
 import {
@@ -10,16 +12,21 @@ import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 
-interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
-  _retry?: boolean;
+interface QueueItem {
+  resolve: (value?: any) => void;
+  reject: (reason?: any) => void;
+}
+
+interface Tokens {
+  accessToken: string;
+  refreshToken: string;
 }
 
 const axiosConfig: AxiosRequestConfig = {
   baseURL: "https://localhost:5173",
-  timeout: 30000,
+  timeout: 300000,
   headers: {
     "Content-Type": "application/json",
-    Accept: "application/json",
   },
 };
 
@@ -27,18 +34,29 @@ const axiosInstance: AxiosInstance = axios.create(axiosConfig);
 
 export default axiosInstance;
 
+let failedQueue: QueueItem[] = [];
+let isRefreshing = false;
+
+const processQueue = (error: AxiosError | null): void => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve();
+    }
+  });
+
+  failedQueue = [];
+};
+
 const onRequest = (
   config: InternalAxiosRequestConfig
 ): InternalAxiosRequestConfig => {
   const token = getAccessToken();
 
-  // Kiểm tra xem token có tồn tại và có phải chuỗi JSON hợp lệ không
   if (token) {
-    try {
-      config.headers.Authorization = `Bearer ${token}`;
-    } catch (error) {
-      console.error("Error parsing token:", error);
-    }
+    config.headers = config.headers || {};
+    config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 };
@@ -51,49 +69,82 @@ const onResponse = (response: AxiosResponse) => {
   return response;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const onResponseError = async (error: AxiosError): Promise<any> => {
-  const originalRequest = error.config as CustomAxiosRequestConfig;
+const onResponseError = async (
+  error: AxiosError
+): Promise<AxiosResponse | AxiosError> => {
+  const originalRequest = error.config as AxiosRequestConfig & {
+    _retry?: boolean;
+  };
 
-  try {
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
+  originalRequest.headers = JSON.parse(
+    JSON.stringify(originalRequest.headers || {})
+  );
+  const refreshToken = getRefreshToken();
+  const accessTokenOld = getAccessToken();
 
-      const refreshToken = getRefreshToken();
-      const accessTokenOld = getAccessToken();
+  const handleError = async (error: AxiosError): Promise<AxiosError> => {
+    processQueue(error);
+    logout();
+    return Promise.reject(error);
+  };
 
+  if (
+    refreshToken &&
+    error.response?.status === 401 &&
+    (error.response.data as any).message === "TokenExpireError" &&
+    originalRequest.url !== API_ENDPOINTS.AUTH.REFRESH_TOKEN &&
+    originalRequest._retry !== true
+  ) {
+    if (isRefreshing) {
+      return new Promise<AxiosResponse>((resolve, reject) => {
+        failedQueue.push({ resolve, reject });
+      })
+        .then(() => {
+          return axiosInstance(originalRequest);
+        })
+        .catch((err) => {
+          return Promise.reject(err);
+        });
+    }
+
+    isRefreshing = true;
+    originalRequest._retry = true;
+
+    try {
       if (!refreshToken || !accessTokenOld) {
-        throw new Error("No refresh token available");
+        throw new Error("Refresh token or Access token was not found.");
       }
-
       const authParams: RefreshTokenData = {
         accessToken: accessTokenOld,
         refreshToken: refreshToken,
       };
 
       const response = await authService.refreshToken(authParams);
-
-      const { accessToken } = response.data.data;
-
+      const tokens: Tokens = {
+        accessToken: response.data.data.accessToken,
+        refreshToken: response.data.data.refreshToken,
+      };
       const remember = isRemember();
-
       if (remember) {
-        sessionStorage.setItem("accessToken", accessToken);
+        sessionStorage.setItem("accessToken", tokens.accessToken);
       } else {
-        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("accessToken", tokens.accessToken);
       }
-
-      if (originalRequest.headers) {
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-      }
-
+      processQueue(null);
       return axiosInstance(originalRequest);
+    } catch (refreshError) {
+      return handleError(refreshError as AxiosError);
+    } finally {
+      isRefreshing = false;
     }
-  } catch (err) {
-    window.location.href = "/auth/sign-in";
-    logout();
   }
 
+  if (
+    error.response?.status === 401 &&
+    (error.response.data as any).message === "TokenExpiredError"
+  ) {
+    return handleError(error);
+  }
   return Promise.reject(error);
 };
 

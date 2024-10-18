@@ -56,6 +56,10 @@ const LoginAdminPage = () => {
               min: 3,
               message: "Username phải lơn hơn 3 kí tự",
             },
+            {
+              pattern: /^[a-zA-Z0-9_]+$/,
+              message: "Username chỉ được chứa chữ cái, số và dấu gạch dưới",
+            },
           ]}
         >
           <Input allowClear maxLength={100} placeholder="Enter your Username" />
@@ -69,6 +73,16 @@ const LoginAdminPage = () => {
             {
               required: true,
               message: "Vui lòng nhập mật khẩu",
+            },
+            {
+              pattern:
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+              message:
+                "Mật khẩu phải chứa ít nhất một chữ hoa, một chữ thường, một số và một ký tự đặc biệt",
+            },
+            {
+              min: 8,
+              message: "Mật khẩu phải có ít nhất 8 ký tự",
             },
           ]}
         >
