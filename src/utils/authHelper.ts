@@ -1,4 +1,5 @@
 import axiosInstance from "@/api/interceptor";
+import { User } from "@/types/type";
 
 const ACCESS_TOKEN_KEY = "accessToken";
 const REFRESH_TOKEN_KEY = "refreshToken";
@@ -17,22 +18,22 @@ export const removeAuthHeader = (): void => {
 export function saveAuthData(data: {
   token: string;
   refreshToken: string;
-  data: string;
+  data: User;
 }): void {
   localStorage.setItem(ACCESS_TOKEN_KEY, data.token); // Lưu chuỗi trực tiếp
   localStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken); // Lưu chuỗi trực tiếp
-  localStorage.setItem(USER_ID_KEY, JSON.stringify(data.data)); // Lưu chuỗi trực tiếp
+  localStorage.setItem(USER_ID_KEY, JSON.stringify(data.data.id)); // Lưu chuỗi trực tiếp
 }
 
 // Lưu data vào sessionStorage (remember me = false)
 export function saveAuthDataToSession(data: {
   token: string;
   refreshToken: string;
-  data: string;
+  data: User;
 }): void {
   sessionStorage.setItem(ACCESS_TOKEN_KEY, data.token); // Lưu chuỗi trực tiếp
   sessionStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken); // Lưu chuỗi trực tiếp
-  sessionStorage.setItem(USER_ID_KEY, JSON.stringify(data.data)); // Lưu chuỗi trực tiếp
+  sessionStorage.setItem(USER_ID_KEY, JSON.stringify(data.data.id)); // Lưu chuỗi trực tiếp
 }
 
 // Lấy access token

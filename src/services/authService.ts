@@ -6,10 +6,14 @@ import {
   RefreshTokenData,
 } from "@/types/type";
 import { FieldSignUpType } from "@/pages/admin/SignUpAdminPage";
+import { FieldLoginType } from "@/pages/admin/LoginAdminPage";
 
 export const authService = {
   login: (credentials: LoginData) =>
     axiosInstance.post(API_ENDPOINTS.AUTH.LOGIN, credentials),
+
+  loginAdmin: (credentials: FieldLoginType) =>
+    axiosInstance.post(API_ENDPOINTS.AUTH.ADMIN_LOGIN, credentials),
 
   register: (signUpform: FieldSignUpType) =>
     axiosInstance.post(API_ENDPOINTS.AUTH.REGISTER, signUpform),

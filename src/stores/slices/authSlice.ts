@@ -1,5 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AuthState, LoginData, ForgotPasswordFormValues } from "@/types/type";
+import {
+  AuthState,
+  LoginData,
+  ForgotPasswordFormValues,
+  User,
+} from "@/types/type";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { authService } from "@/services/authService";
 import { FieldSignUpType } from "@/pages/admin/SignUpAdminPage";
@@ -8,6 +13,7 @@ import {
   saveAuthDataToSession,
   logout,
 } from "@/utils/authHelper";
+import { FieldLoginType } from "@/pages/admin/LoginAdminPage";
 
 interface ErrorResponseType {
   success: boolean;
@@ -23,6 +29,16 @@ interface SuccessResponseType {
   statusCode: number;
 }
 
+interface SuccessResponseAuthType {
+  success: boolean;
+  message: string;
+  data: User;
+  token?: string;
+  refreshToken?: string;
+  statusCode: number;
+  remember?: boolean;
+}
+
 // Async Thunks
 export const login = createAsyncThunk(
   "auth/login",
@@ -35,6 +51,21 @@ export const login = createAsyncThunk(
     }
   }
 );
+
+export const loginAdmin = createAsyncThunk<
+  SuccessResponseAuthType,
+  FieldLoginType,
+  {
+    rejectValue: ErrorResponseType;
+  }
+>("auth/loginAdmin", async (loginForm: FieldLoginType, { rejectWithValue }) => {
+  try {
+    const response = await authService.loginAdmin(loginForm);
+    return { ...response.data, remember: loginForm.remember };
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.message || "Login failed");
+  }
+});
 
 export const register = createAsyncThunk<
   SuccessResponseType,
@@ -101,6 +132,7 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.status = "succeeded";
+        state.user = action.payload.data;
         action.payload.remember
           ? saveAuthData(action.payload)
           : saveAuthDataToSession(action.payload);
@@ -108,6 +140,32 @@ const authSlice = createSlice({
       .addCase(login.rejected, (state, action) => {
         state.status = "rejected";
         state.error = action.payload as string;
+      })
+      .addCase(loginAdmin.pending, (state) => {
+        state.status = "pending";
+        state.error = null;
+      })
+      .addCase(loginAdmin.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.user = action.payload.data;
+        const data = action.payload;
+        if (data.refreshToken && data.token && data.data) {
+          action.payload.remember
+            ? saveAuthData({
+                token: data.token,
+                refreshToken: data.refreshToken,
+                data: data.data,
+              })
+            : saveAuthDataToSession({
+                token: data.token,
+                refreshToken: data.refreshToken,
+                data: data.data,
+              });
+        }
+      })
+      .addCase(loginAdmin.rejected, (state, action) => {
+        state.status = "rejected";
+        state.error = action.payload?.message || "Đăng nhập thất bại";
       })
       .addCase(register.pending, (state) => {
         state.status = "pending";

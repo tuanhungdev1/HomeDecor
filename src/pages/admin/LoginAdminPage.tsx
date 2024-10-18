@@ -1,8 +1,12 @@
 import SocialButton from "@/components/button/SocialButton";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { AuthAdminLayout } from "@/layouts";
+import { selectAuth } from "@/stores/selectors/authSelector";
+import { loginAdmin, resetAuthStatus } from "@/stores/slices/authSlice";
+import { showToast } from "@/utils/toast";
 
 import { Button, Checkbox, Flex, Form, Input, Typography } from "antd";
-import { useState } from "react";
+import { Toaster } from "react-hot-toast";
 import { Link } from "react-router-dom";
 
 const { Title, Paragraph } = Typography;
@@ -10,23 +14,39 @@ const { Title, Paragraph } = Typography;
 export type FieldLoginType = {
   username?: string;
   password?: string;
-  remember?: string;
+  remember?: boolean;
 };
 
 const LoginAdminPage = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [isRemember, setIsRemember] = useState(false);
+  const dispatch = useAppDispatch();
+  const { status } = useAppSelector(selectAuth);
 
   const [form] = Form.useForm();
 
-  const handleLogin = (values: FieldLoginType) => {
-    setIsLoading(true);
-    console.log(values);
-    setIsLoading(false);
+  const handleLogin = async (values: FieldLoginType) => {
+    try {
+      const resultAction = await dispatch(loginAdmin(values));
+      if (loginAdmin.fulfilled.match(resultAction)) {
+        showToast(
+          resultAction.payload.message || "ADMIN đăng nhập thành công!",
+          "success"
+        );
+      } else if (loginAdmin.rejected.match(resultAction)) {
+        showToast(
+          resultAction.payload?.message || "Đăng nhập thất bại",
+          "error"
+        );
+      }
+    } catch (err) {
+      showToast("Có lỗi xảy ra khi đăng kí", "error");
+    } finally {
+      dispatch(resetAuthStatus());
+    }
   };
 
   return (
     <AuthAdminLayout image="/public/admin-login-page.jpg">
+      <Toaster />
       <Typography className="text-center">
         <Title level={2}>Log in to your account</Title>
         <Paragraph className="text-gray-500">
@@ -36,7 +56,7 @@ const LoginAdminPage = () => {
       <Form
         name="admin-login-form"
         form={form}
-        disabled={isLoading}
+        disabled={status === "pending"}
         layout="vertical"
         onFinish={handleLogin}
         size="large"
@@ -91,12 +111,7 @@ const LoginAdminPage = () => {
         <Form.Item>
           <Flex justify="space-between" align="center">
             <Form.Item name={"remember"} valuePropName="checked" noStyle>
-              <Checkbox
-                value={isRemember}
-                onChange={() => setIsRemember(!isRemember)}
-              >
-                Remember me
-              </Checkbox>
+              <Checkbox>Remember me</Checkbox>
             </Form.Item>
             <Link to="/admin/forgot-password">Forgot password</Link>
           </Flex>
@@ -108,7 +123,7 @@ const LoginAdminPage = () => {
             type="primary"
             className="w-full"
             size="large"
-            loading={isLoading}
+            loading={status === "pending"}
           >
             Login
           </Button>
