@@ -1,7 +1,13 @@
 import SocialButton from "@/components/button/SocialButton";
+import { useAppDispatch } from "@/hooks/hooks";
 import { AuthAdminLayout } from "@/layouts";
+import { selectAuth } from "@/stores/selectors/authSelector";
+import { register, resetAuthStatus } from "@/stores/slices/authSlice";
+import { UserRole } from "@/types/Enums";
+import { showToast } from "@/utils/toast";
 import { Button, Flex, Form, Input, Typography } from "antd";
-import { useState } from "react";
+import { Toaster } from "react-hot-toast";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 export type FieldSignUpType = {
@@ -10,19 +16,39 @@ export type FieldSignUpType = {
   username?: string;
   email?: string;
   password?: string;
+  confirm?: string;
+  roles?: UserRole[];
 };
 
 const { Paragraph, Title } = Typography;
 
 const SignUpAdminPage = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useAppDispatch();
+  const { status } = useSelector(selectAuth);
 
   const [form] = Form.useForm();
 
-  const handleSignUp = (values: FieldSignUpType) => {
-    setIsLoading(true);
-    console.log(values);
-    setIsLoading(false);
+  const handleSignUp = async (values: FieldSignUpType) => {
+    const signUpForm: FieldSignUpType = {
+      ...values,
+      roles: [UserRole.Admin, UserRole.Customer],
+    };
+
+    try {
+      const resultAction = await dispatch(register(signUpForm));
+      if (register.fulfilled.match(resultAction)) {
+        showToast(
+          resultAction.payload.message || "Đăng kí thành công!",
+          "success"
+        );
+      } else if (register.rejected.match(resultAction)) {
+        showToast(resultAction.payload?.message || "Đăng ký thất bại", "error");
+      }
+    } catch (err) {
+      showToast("Có lỗi xảy ra khi đăng kí", "error");
+    } finally {
+      dispatch(resetAuthStatus());
+    }
   };
 
   return (
@@ -36,7 +62,7 @@ const SignUpAdminPage = () => {
       <Form
         name="admin-sign-up-form"
         form={form}
-        disabled={isLoading}
+        disabled={status === "pending"}
         layout="vertical"
         onFinish={handleSignUp}
         size="large"
@@ -181,7 +207,7 @@ const SignUpAdminPage = () => {
             type="primary"
             className="w-full"
             size="large"
-            loading={isLoading}
+            loading={status === "pending"}
           >
             Get started
           </Button>
@@ -200,6 +226,7 @@ const SignUpAdminPage = () => {
           </Link>
         </Flex>
       </Form>
+      <Toaster />
     </AuthAdminLayout>
   );
 };

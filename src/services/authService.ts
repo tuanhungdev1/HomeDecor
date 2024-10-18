@@ -4,15 +4,15 @@ import {
   ForgotPasswordFormValues,
   LoginData,
   RefreshTokenData,
-  RegisterData,
 } from "@/types/type";
+import { FieldSignUpType } from "@/pages/admin/SignUpAdminPage";
 
 export const authService = {
   login: (credentials: LoginData) =>
     axiosInstance.post(API_ENDPOINTS.AUTH.LOGIN, credentials),
 
-  register: (userData: RegisterData) =>
-    axiosInstance.post(API_ENDPOINTS.AUTH.REGISTER, userData),
+  register: (signUpform: FieldSignUpType) =>
+    axiosInstance.post(API_ENDPOINTS.AUTH.REGISTER, signUpform),
 
   logout: () => axiosInstance.post(API_ENDPOINTS.AUTH.LOGOUT),
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AddressType, UserRole } from "./Enums";
 
 export interface IMenuItem {
@@ -92,6 +93,9 @@ export interface User {
   lastName?: string;
   displayName?: string;
   email: string;
+  phoneNumber?: string;
+  age?: number;
+  address?: string;
   profilePicture?: string;
   dateOfBirth?: string;
   addressList?: Address[];
@@ -108,11 +112,9 @@ export interface UserUpdate {
 }
 
 export interface AuthState {
-  isAuthentication: boolean;
-  userId: string | null;
+  user: User | null;
   status: "idle" | "pending" | "succeeded" | "rejected";
-  error: string | null;
-  remember: boolean;
+  error: any;
 }
 
 export interface UserState {

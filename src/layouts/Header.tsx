@@ -2,7 +2,6 @@ import { ActiveLink, Logo } from "@/components/shared";
 import { menuItems } from "@/constants/menuItem";
 import { useState } from "react";
 import { IoMenu } from "react-icons/io5";
-import { useSelector } from "react-redux";
 import { Button } from "@/components/button";
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { SearchBox } from "@/components/searchBox";
@@ -10,12 +9,12 @@ import { dropdownMenu } from "@/constants/dropdownMenu";
 import Sidebar from "./Sidebar";
 import SidebarCart from "./SidebarCart";
 import useToggle from "@/hooks/useToggle";
-import { selectAuthUserId } from "@/stores/selectors/authSelector";
 import toast, { Toaster } from "react-hot-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { isAuthenticated } from "@/utils/authHelper";
 
 const Header = () => {
-  const userId = useSelector(selectAuthUserId);
+  const isAuth = isAuthenticated();
   const navigate = useNavigate();
   const location = useLocation();
   const { handleLogout, handleReset } = useAuth();
@@ -82,7 +81,7 @@ const Header = () => {
                 className="w-[40px]"
               />
             </div>
-            {userId && (
+            {isAuth && (
               <div className="relative cursor-pointer group/dropdowmenu">
                 <img
                   src={"/public/user.png"}
@@ -112,7 +111,7 @@ const Header = () => {
             )}
           </div>
 
-          {!userId ? (
+          {!isAuth ? (
             <div className="flex items-center gap-2">
               <Link to={"/auth/sign-up"}>
                 <Button variant="outline">Sign Up</Button>
