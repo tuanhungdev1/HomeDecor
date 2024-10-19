@@ -8,5 +8,23 @@
       "path": "./tsconfig.node.json"
     }
   ],
-  
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@components/*": ["src/components/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@utils/*": ["src/utils/*"],
+      "@services/*": ["src/services/*"],
+      "@styles/*": ["src/styles/*"],
+      "@types/*": ["src/types/*"],
+      "@store/*": ["src/store/*"],
+      "@constants": ["src/constants/*"],
+      "@layouts": ["src/layouts/*"],
+      "@pages": ["src/pages/*"],
+      "@routes": ["src/routes/*"],
+      "@stores": ["src/stores/*"],
+      "@modules": ["src/modules/*"]
+    }
+  }
 }
