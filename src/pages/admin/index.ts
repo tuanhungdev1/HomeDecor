@@ -1,3 +1,9 @@
 export { default as LoginAdminPage } from "./LoginAdminPage";
 export { default as SignUpAdminPage } from "./SignUpAdminPage";
 export { default as AdminHomePage } from "./AdminHomePage";
+export { default as AdminDashboard } from "./AdminDashboard";
+export { default as AdminInventory } from "./AdminInventory";
+export { default as AdminReports } from "./AdminReports";
+export { default as AdminSuppliers } from "./AdminSuppliers";
+export { default as AdminManageStore } from "./AdminManageStore";
+export { default as AdminOrders } from "./AdminOrders";

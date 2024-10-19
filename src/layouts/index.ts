@@ -6,3 +6,4 @@ export { default as Footer } from "./Footer";
 export { default as Sidebar } from "./Sidebar";
 export { default as SidebarCart } from "./SidebarCart";
 export { default as AuthAdminLayout } from "./AuthAdminLayout";
+export { default as SibarAdmin } from "./SibarAdmin";
