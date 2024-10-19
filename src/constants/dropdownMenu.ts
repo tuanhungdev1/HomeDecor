@@ -30,4 +30,9 @@ export const dropdownMenu: DropDownItem[] = [
     title: "Reset Password",
     path: "/auth/forgot-password",
   },
+  {
+    id: 6,
+    title: "Admin",
+    path: "/admin",
+  },
 ];

@@ -6,9 +6,10 @@ import { register, resetAuthStatus } from "@/stores/slices/authSlice";
 import { UserRole } from "@/types/Enums";
 import { showToast } from "@/utils/toast";
 import { Button, Flex, Form, Input, Typography } from "antd";
-import { Toaster } from "react-hot-toast";
+import { useEffect } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export type FieldSignUpType = {
   firstname?: string;
@@ -25,6 +26,7 @@ const { Paragraph, Title } = Typography;
 const SignUpAdminPage = () => {
   const dispatch = useAppDispatch();
   const { status } = useSelector(selectAuth);
+  const navigate = useNavigate();
 
   const [form] = Form.useForm();
 
@@ -41,6 +43,10 @@ const SignUpAdminPage = () => {
           resultAction.payload.message || "Đăng kí thành công!",
           "success"
         );
+
+        setTimeout(() => {
+          navigate("/admin/login");
+        }, 2000);
       } else if (register.rejected.match(resultAction)) {
         showToast(resultAction.payload?.message || "Đăng ký thất bại", "error");
       }
@@ -50,6 +56,12 @@ const SignUpAdminPage = () => {
       dispatch(resetAuthStatus());
     }
   };
+
+  useEffect(() => {
+    return () => {
+      toast.remove();
+    };
+  }, []);
 
   return (
     <AuthAdminLayout image="/public/sign-up-admin.jpg">

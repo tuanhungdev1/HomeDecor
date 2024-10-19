@@ -7,7 +7,7 @@ import * as Yup from "yup";
 import { useState } from "react";
 import { Button } from "@/components/button";
 import toast, { Toaster } from "react-hot-toast";
-import useUser from "@/hooks/useUser";
+import { useAuth } from "@/hooks/useAuth";
 
 const validationSchema = Yup.object({
   firstName: Yup.string().min(2, "User name must be at least 2 characters"),
@@ -25,7 +25,7 @@ const validationSchema = Yup.object({
 const AccountSection = () => {
   const [isUpdateProfile, setIsUpdateProfile] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { user, handleUpdateUserInfo, handleGetUserInfo } = useUser();
+  const { user, handleUpdateUserInfo, handleGetUserInfo } = useAuth();
 
   const initialValues: UserUpdate = {
     firstName: user?.firstName || "",

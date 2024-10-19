@@ -4,6 +4,7 @@ import {
   LoginData,
   ForgotPasswordFormValues,
   User,
+  UserUpdate,
 } from "@/types/type";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { authService } from "@/services/authService";
@@ -12,24 +13,26 @@ import {
   saveAuthData,
   saveAuthDataToSession,
   logout,
+  getUserId,
 } from "@/utils/authHelper";
 import { FieldLoginType } from "@/pages/admin/LoginAdminPage";
+import { userService } from "@/services/userService";
 
-interface ErrorResponseType {
+export interface ErrorResponseType {
   success: boolean;
   message: string;
   statusCode: number;
   errors: any[];
 }
 
-interface SuccessResponseType {
+export interface SuccessResponseType {
   success: boolean;
   message: string;
   data: any;
   statusCode: number;
 }
 
-interface SuccessResponseAuthType {
+export interface SuccessResponseAuthType {
   success: boolean;
   message: string;
   data: User;
@@ -39,9 +42,19 @@ interface SuccessResponseAuthType {
   remember?: boolean;
 }
 
+export const AUTH_ACTIONS = {
+  GET_USER: "auth/getUser",
+  UPDATE_USER: "auth/updateUser",
+  LOGIN: "auth/login",
+  REGISTER: "auth/register",
+  LOGIN_ADMIN: "auth/loginAdmin",
+  CHANGE_PASSWORD: "auth/changePassword",
+  LOGOUT: "auth/logout",
+};
+
 // Async Thunks
 export const login = createAsyncThunk(
-  "auth/login",
+  AUTH_ACTIONS.LOGIN,
   async (loginData: LoginData, { rejectWithValue }) => {
     try {
       const response = await authService.login(loginData);
@@ -58,14 +71,17 @@ export const loginAdmin = createAsyncThunk<
   {
     rejectValue: ErrorResponseType;
   }
->("auth/loginAdmin", async (loginForm: FieldLoginType, { rejectWithValue }) => {
-  try {
-    const response = await authService.loginAdmin(loginForm);
-    return { ...response.data, remember: loginForm.remember };
-  } catch (error: any) {
-    return rejectWithValue(error.response?.data?.message || "Login failed");
+>(
+  AUTH_ACTIONS.LOGIN_ADMIN,
+  async (loginForm: FieldLoginType, { rejectWithValue }) => {
+    try {
+      const response = await authService.loginAdmin(loginForm);
+      return { ...response.data, remember: loginForm.remember };
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Login failed");
+    }
   }
-});
+);
 
 export const register = createAsyncThunk<
   SuccessResponseType,
@@ -73,17 +89,20 @@ export const register = createAsyncThunk<
   {
     rejectValue: ErrorResponseType;
   }
->("auth/register", async (signUpForm: FieldSignUpType, { rejectWithValue }) => {
-  try {
-    const response = await authService.register(signUpForm);
-    return response.data;
-  } catch (error: any) {
-    return rejectWithValue(error.response?.data || "Registration failed");
+>(
+  AUTH_ACTIONS.REGISTER,
+  async (signUpForm: FieldSignUpType, { rejectWithValue }) => {
+    try {
+      const response = await authService.register(signUpForm);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || "Registration failed");
+    }
   }
-});
+);
 
 export const changePassword = createAsyncThunk(
-  "auth/changePassword",
+  AUTH_ACTIONS.CHANGE_PASSWORD,
   async (changePasswordData: ForgotPasswordFormValues, { rejectWithValue }) => {
     try {
       const response = await authService.changePassword(changePasswordData);
@@ -97,12 +116,57 @@ export const changePassword = createAsyncThunk(
 );
 
 export const logoutUser = createAsyncThunk(
-  "auth/logout",
+  AUTH_ACTIONS.LOGOUT,
   async (_, { rejectWithValue }) => {
     try {
       await authService.logout();
     } catch (error) {
       return rejectWithValue("Logout failed");
+    }
+  }
+);
+
+export const getUserInfo = createAsyncThunk(
+  AUTH_ACTIONS.GET_USER,
+  async (userId: string, { rejectWithValue }) => {
+    try {
+      const currentUserId = getUserId();
+      if (!currentUserId) {
+        return rejectWithValue(
+          "User ID is not found in localStorage or sessionStorage"
+        );
+      }
+
+      if (userId !== currentUserId) {
+        return rejectWithValue("The current user ID is incorrect.");
+      }
+
+      const response = await userService.getUserInfor(userId);
+
+      return response.data.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Không thể lấy thông tin người dùng"
+      );
+    }
+  }
+);
+
+// Thunk cho cập nhật thông tin User
+export const updateUserInfor = createAsyncThunk(
+  AUTH_ACTIONS.UPDATE_USER,
+  async (
+    { userId, userInfor }: { userId: string; userInfor: UserUpdate },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await userService.updateUserInfor(userId, userInfor);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message ||
+          "Không thể cập nhật thông tin của người dùng."
+      );
     }
   }
 );
@@ -122,6 +186,9 @@ const authSlice = createSlice({
     resetAuthStatus: (state) => {
       state.status = "idle";
       state.error = null;
+    },
+    addAuth: (state, action) => {
+      state.user = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -193,9 +260,31 @@ const authSlice = createSlice({
         state.status = "succeeded";
         state.error = null;
         logout();
+      })
+      .addCase(getUserInfo.pending, (state) => {
+        state.status = "pending";
+      })
+      .addCase(getUserInfo.rejected, (state, action) => {
+        state.status = "rejected";
+        state.error = action.payload as string;
+      })
+      .addCase(getUserInfo.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.user = action.payload.data;
+      })
+      .addCase(updateUserInfor.pending, (state) => {
+        state.status = "pending";
+      })
+      .addCase(updateUserInfor.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.user = action.payload.data;
+      })
+      .addCase(updateUserInfor.rejected, (state, action) => {
+        state.status = "rejected";
+        state.error = action.payload as string;
       });
   },
 });
 
-export const { resetAuthStatus } = authSlice.actions;
+export const { resetAuthStatus, addAuth } = authSlice.actions;
 export default authSlice.reducer;

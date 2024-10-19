@@ -1,30 +1,38 @@
-import useUser from "@/hooks/useUser";
+import { LoadingOverlay } from "@/components/loadingOverlay";
+import { useAuth } from "@/hooks/useAuth";
 import { UserRole } from "@/types/Enums";
 import React from "react";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
 interface ProtectedRouteProps {
-  role: UserRole;
+  roles: UserRole[];
+  navigateTo: string;
+  children: React.ReactNode;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ role }) => {
-  const { user } = useUser();
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  roles,
+  navigateTo,
+  children,
+}) => {
   const location = useLocation();
+  const { isLoading, user } = useAuth();
 
-  // Nếu chưa đăng nhập, điều hướng về trang đăng nhập
+  if (isLoading) {
+    return <LoadingOverlay />;
+  }
+
   if (!user) {
-    return (
-      <Navigate to={`/admin/login?redirect=${location.pathname}`} replace />
-    );
+    return <Navigate to={`${navigateTo}?redirect=${location.pathname}`} />;
   }
 
-  // Nếu không có quyền, điều hướng đến trang lỗi
-  if (!user.roles?.includes(role)) {
-    return <Navigate to="/error-page" replace />;
+  const hasAllRequiredRoles = roles.every((role) => user.roles?.includes(role));
+
+  if (!hasAllRequiredRoles) {
+    return <Navigate to="/error-page" />;
   }
 
-  // Nếu hợp lệ, hiển thị các route con (nếu có)
-  return <Outlet />;
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;

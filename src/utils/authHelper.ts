@@ -1,9 +1,11 @@
 import axiosInstance from "@/api/interceptor";
+import {
+  ACCESS_TOKEN_KEY,
+  REFRESH_TOKEN_KEY,
+  USER_DATA,
+  USER_ID_KEY,
+} from "@/constants/appInfo";
 import { User } from "@/types/type";
-
-const ACCESS_TOKEN_KEY = "accessToken";
-const REFRESH_TOKEN_KEY = "refreshToken";
-const USER_ID_KEY = "userId";
 
 // Export các function helper
 export const setAuthHeader = (token: string): void => {
@@ -23,6 +25,7 @@ export function saveAuthData(data: {
   localStorage.setItem(ACCESS_TOKEN_KEY, data.token); // Lưu chuỗi trực tiếp
   localStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken); // Lưu chuỗi trực tiếp
   localStorage.setItem(USER_ID_KEY, JSON.stringify(data.data.id)); // Lưu chuỗi trực tiếp
+  localStorage.setItem(USER_DATA, JSON.stringify(data.data));
 }
 
 // Lưu data vào sessionStorage (remember me = false)
@@ -34,6 +37,7 @@ export function saveAuthDataToSession(data: {
   sessionStorage.setItem(ACCESS_TOKEN_KEY, data.token); // Lưu chuỗi trực tiếp
   sessionStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken); // Lưu chuỗi trực tiếp
   sessionStorage.setItem(USER_ID_KEY, JSON.stringify(data.data.id)); // Lưu chuỗi trực tiếp
+  sessionStorage.setItem(USER_DATA, JSON.stringify(data.data));
 }
 
 // Lấy access token
@@ -50,6 +54,10 @@ export function getRefreshToken(): string | null {
     localStorage.getItem(REFRESH_TOKEN_KEY) ||
     sessionStorage.getItem(REFRESH_TOKEN_KEY)
   );
+}
+
+export function getUserData(): string | null {
+  return localStorage.getItem(USER_DATA) || sessionStorage.getItem(USER_DATA);
 }
 
 // Lấy user ID
@@ -70,10 +78,12 @@ export function logout(): void {
   localStorage.removeItem(ACCESS_TOKEN_KEY);
   localStorage.removeItem(REFRESH_TOKEN_KEY);
   localStorage.removeItem(USER_ID_KEY);
+  localStorage.removeItem(USER_DATA);
 
   sessionStorage.removeItem(ACCESS_TOKEN_KEY);
   sessionStorage.removeItem(REFRESH_TOKEN_KEY);
   sessionStorage.removeItem(USER_ID_KEY);
+  sessionStorage.removeItem(USER_DATA);
 }
 
 export const isRemember = (): boolean | null => {

@@ -3,11 +3,13 @@ import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { AuthAdminLayout } from "@/layouts";
 import { selectAuth } from "@/stores/selectors/authSelector";
 import { loginAdmin, resetAuthStatus } from "@/stores/slices/authSlice";
+import { getRedirectFromUrl } from "@/utils/getRedirectFromUrl";
 import { showToast } from "@/utils/toast";
 
 import { Button, Checkbox, Flex, Form, Input, Typography } from "antd";
-import { Toaster } from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import toast, { Toaster } from "react-hot-toast";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const { Title, Paragraph } = Typography;
 
@@ -20,6 +22,8 @@ export type FieldLoginType = {
 const LoginAdminPage = () => {
   const dispatch = useAppDispatch();
   const { status } = useAppSelector(selectAuth);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [form] = Form.useForm();
 
@@ -31,6 +35,10 @@ const LoginAdminPage = () => {
           resultAction.payload.message || "ADMIN đăng nhập thành công!",
           "success"
         );
+
+        setTimeout(() => {
+          navigate(getRedirectFromUrl(location.search));
+        }, 2000);
       } else if (loginAdmin.rejected.match(resultAction)) {
         showToast(
           resultAction.payload?.message || "Đăng nhập thất bại",
@@ -43,6 +51,12 @@ const LoginAdminPage = () => {
       dispatch(resetAuthStatus());
     }
   };
+
+  useEffect(() => {
+    return () => {
+      toast.remove();
+    };
+  }, []);
 
   return (
     <AuthAdminLayout image="/public/admin-login-page.jpg">

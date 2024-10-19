@@ -9,10 +9,10 @@ import { FaCamera } from "react-icons/fa";
 import { CiCamera } from "react-icons/ci";
 import { UploadAvatarUser } from "@/components/uploadFile";
 import { UploadAvatar } from "@/components/uploadAvatar";
-import useUser from "@/hooks/useUser";
 import useFileUpload from "@/hooks/useFileUpload";
 import toast, { Toaster } from "react-hot-toast";
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 interface UserTabSectionProps {
   currentTab: string;
@@ -23,7 +23,7 @@ const UserTabSection: React.FC<UserTabSectionProps> = ({
   currentTab,
   handleSelected,
 }) => {
-  const { user, handleGetUserInfo } = useUser();
+  const { user, handleGetUserInfo } = useAuth();
   const { isOpen, closeModal, openModal } = useModal();
   const [isUploading, setIsUploading] = useState(false);
   const {

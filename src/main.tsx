@@ -13,8 +13,9 @@ import { ForgotPassword, SignInPage, SignUpPage } from "./pages/auth";
 import { Provider } from "react-redux";
 import { ErrorPage, NotFoundPage } from "./pages/errors";
 import { store } from "./stores/store";
-import { LoginAdminPage, SignUpAdminPage } from "./pages/admin";
-import { ProtectedUserRoute } from "./routes";
+import { AdminHomePage, LoginAdminPage, SignUpAdminPage } from "./pages/admin";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import { UserRole } from "./types/Enums";
 
 const router = createBrowserRouter([
   {
@@ -37,12 +38,23 @@ const router = createBrowserRouter([
       {
         path: "/user-profile",
         element: (
-          <ProtectedUserRoute>
+          <ProtectedRoute
+            navigateTo="/auth/sign-in"
+            roles={[UserRole.Customer]}
+          >
             <UserProfilePage />
-          </ProtectedUserRoute>
+          </ProtectedRoute>
         ),
       },
     ],
+  },
+  {
+    path: "/admin",
+    element: (
+      <ProtectedRoute navigateTo="/admin/login" roles={[UserRole.Admin]}>
+        <AdminHomePage />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/auth/sign-in",
