@@ -7,3 +7,4 @@ export { default as Sidebar } from "./Sidebar";
 export { default as SidebarCart } from "./SidebarCart";
 export { default as AuthAdminLayout } from "./AuthAdminLayout";
 export { default as SibarAdmin } from "./SibarAdmin";
+export { default as HeaderAdmin } from "./HeaderAdmin";

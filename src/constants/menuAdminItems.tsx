@@ -11,33 +11,76 @@ type MenuItem = Required<MenuProps>["items"][number];
 
 export const menuAdminItems: MenuItem[] = [
   {
-    label: <Link to={"/dashboard"}>Dashboard</Link>,
+    label: (
+      <Link
+        className="flex items-center justify-center gap-3 px-6 text-base font-medium"
+        to={"/admin/dashboard"}
+      >
+        <IoHomeOutline size={24} className="mr-2" />
+        Dashboard
+      </Link>
+    ),
     key: "dashboard",
-    icon: <IoHomeOutline size={20} />,
   },
   {
-    label: <Link to={"/"}>Inventory</Link>,
+    label: (
+      <Link
+        className="flex items-center justify-center gap-3 px-6 text-base font-medium"
+        to={"/admin/inventory"}
+      >
+        <RxDashboard size={24} className="mr-2" />
+        Inventory
+      </Link>
+    ),
     key: "inventory",
-    icon: <RxDashboard size={20} />,
   },
   {
-    label: <Link to={"/"}>Reports</Link>,
+    label: (
+      <Link
+        className="flex items-center justify-center gap-3 px-6 text-base font-medium"
+        to={"/admin/reports"}
+      >
+        <TbReportOff size={24} className="mr-2" />
+        Reports
+      </Link>
+    ),
     key: "reports",
-    icon: <TbReportOff size={20} />,
   },
   {
-    label: <Link to={"/"}>Suppliers</Link>,
+    label: (
+      <Link
+        className="flex items-center justify-center gap-3 px-6 text-base font-medium"
+        to={"/admin/suppliers"}
+      >
+        <FaRegCircleUser size={24} className="mr-2" />
+        Suppliers
+      </Link>
+    ),
     key: "suppliers",
-    icon: <FaRegCircleUser size={20} />,
   },
   {
-    label: <Link to={"/"}>Orders</Link>,
+    label: (
+      <Link
+        className="flex items-center justify-center gap-3 px-6 text-base font-medium"
+        to={"/admin/orders"}
+      >
+        <CgShoppingBag size={24} className="mr-2" />
+        Orders
+      </Link>
+    ),
     key: "orders",
-    icon: <CgShoppingBag size={20} />,
   },
   {
-    label: <Link to={"/"}>Manage Store</Link>,
+    label: (
+      <Link
+        className="flex items-center justify-center gap-3 px-6 text-base font-medium"
+        to={"/admin/manage-store"}
+      >
+        <RiStore2Line size={24} className="mr-2" />
+        Manage Store
+      </Link>
+    ),
     key: "manageStore",
-    icon: <RiStore2Line size={20} />,
+    className: "custom-menu-item-wrapper",
   },
 ];

@@ -1,7 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./styles/index.css";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import {
   HomePage,
   ProductDetailPage,
@@ -13,7 +17,17 @@ import { ForgotPassword, SignInPage, SignUpPage } from "./pages/auth";
 import { Provider } from "react-redux";
 import { ErrorPage, NotFoundPage } from "./pages/errors";
 import { store } from "./stores/store";
-import { AdminHomePage, LoginAdminPage, SignUpAdminPage } from "./pages/admin";
+import {
+  AdminDashboard,
+  AdminHomePage,
+  AdminInventory,
+  AdminManageStore,
+  AdminOrders,
+  AdminReports,
+  AdminSuppliers,
+  LoginAdminPage,
+  SignUpAdminPage,
+} from "./pages/admin";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { UserRole } from "./types/Enums";
 
@@ -55,6 +69,36 @@ const router = createBrowserRouter([
         <AdminHomePage />
       </ProtectedRoute>
     ),
+    children: [
+      {
+        path: "",
+        element: <Navigate to="/admin/dashboard" />,
+      },
+      {
+        path: "dashboard",
+        element: <AdminDashboard />,
+      },
+      {
+        path: "inventory",
+        element: <AdminInventory />,
+      },
+      {
+        path: "reports",
+        element: <AdminReports />,
+      },
+      {
+        path: "suppliers",
+        element: <AdminSuppliers />,
+      },
+      {
+        path: "orders",
+        element: <AdminOrders />,
+      },
+      {
+        path: "manage-store",
+        element: <AdminManageStore />,
+      },
+    ],
   },
   {
     path: "/auth/sign-in",
