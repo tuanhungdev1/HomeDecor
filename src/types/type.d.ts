@@ -155,3 +155,15 @@ export interface Address {
   isDefault: boolean;
   type: AddressType;
 }
+
+export interface RequestParams {
+  pageSize?: number;
+  pageNumber?: number;
+  searchTerm?: string;
+  orderBy?: string;
+}
+
+export interface PagedResult<T> {
+  data: T[];
+  totalCount: number;
+}

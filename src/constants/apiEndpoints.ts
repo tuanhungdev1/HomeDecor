@@ -41,4 +41,14 @@ export const API_ENDPOINTS = {
       `${API_BASE_URL}/user/${JSON.parse(userId)}/upload-avatar`,
   },
   // Thêm các nhóm endpoint khác tại đây
+
+  // BRAND
+  BRAND: {
+    GET_ALL_BRAND: `${API_BASE_URL}/brand`,
+    GET_BRAND_BY_ID: (brandId: number) => `${API_BASE_URL}/brand/${brandId}`,
+    UPDATE_BRAND: (brandId: number) => `${API_BASE_URL}/brand/${brandId}`,
+    DELETE_BRAND_BY_ID: (brandId: number) => `${API_BASE_URL}/brand/${brandId}`,
+    CREATE_BRAND: `${API_BASE_URL}/brand`,
+  },
+  // BRAND
 };

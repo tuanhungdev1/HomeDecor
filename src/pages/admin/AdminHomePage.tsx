@@ -11,7 +11,7 @@ const AdminHomePage = () => {
         <SibarAdmin />
         <Layout>
           <HeaderAdmin />
-          <Content className="mx-4 mt-4">
+          <Content className="px-4 py-4">
             <Outlet />
           </Content>
           <Footer />
