@@ -14,7 +14,7 @@ const SibarAdmin = () => {
         items={menuAdminItems}
         defaultSelectedKeys={["dashboard"]}
         className="
-        
+          
           [&_.ant-menu-item]:my-2 
           [&_.ant-menu-item]:flex
           [&_.ant-menu-item]:items-center

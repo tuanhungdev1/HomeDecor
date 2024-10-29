@@ -6,6 +6,9 @@ import { TbReportOff } from "react-icons/tb";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { CgShoppingBag } from "react-icons/cg";
 import { RiStore2Line } from "react-icons/ri";
+import { TbBrandAirtable } from "react-icons/tb";
+import { FaRegBuilding } from "react-icons/fa";
+import { BiCategory } from "react-icons/bi";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -52,11 +55,47 @@ export const menuAdminItems: MenuItem[] = [
         className="flex items-center justify-center gap-3 px-6 text-base font-medium"
         to={"/admin/suppliers"}
       >
-        <FaRegCircleUser size={24} className="mr-2" />
+        <FaRegBuilding size={24} className="mr-2" />
         Suppliers
       </Link>
     ),
     key: "suppliers",
+  },
+  {
+    label: (
+      <Link
+        className="flex items-center justify-center gap-3 px-6 text-base font-medium"
+        to={"/admin/users"}
+      >
+        <FaRegCircleUser size={24} className="mr-2" />
+        Users
+      </Link>
+    ),
+    key: "users",
+  },
+  {
+    label: (
+      <Link
+        className="flex items-center justify-center gap-3 px-6 text-base font-medium"
+        to={"/admin/brands"}
+      >
+        <TbBrandAirtable size={24} className="mr-2" />
+        Brands
+      </Link>
+    ),
+    key: "brands",
+  },
+  {
+    label: (
+      <Link
+        className="flex items-center justify-center gap-3 px-6 text-base font-medium"
+        to={"/admin/categories"}
+      >
+        <BiCategory size={24} className="mr-2" />
+        Categories
+      </Link>
+    ),
+    key: "categories",
   },
   {
     label: (

@@ -7,3 +7,6 @@ export { default as AdminReports } from "./AdminReports";
 export { default as AdminSuppliers } from "./AdminSuppliers";
 export { default as AdminManageStore } from "./AdminManageStore";
 export { default as AdminOrders } from "./AdminOrders";
+export { default as AdminUser } from "./AdminUser";
+export { default as AdminCategory } from "./AdminCategory";
+export { default as AdminBrand } from "./AdminBrand";

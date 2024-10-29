@@ -18,6 +18,8 @@ import { Provider } from "react-redux";
 import { ErrorPage, NotFoundPage } from "./pages/errors";
 import { store } from "./stores/store";
 import {
+  AdminBrand,
+  AdminCategory,
   AdminDashboard,
   AdminHomePage,
   AdminInventory,
@@ -25,6 +27,7 @@ import {
   AdminOrders,
   AdminReports,
   AdminSuppliers,
+  AdminUser,
   LoginAdminPage,
   SignUpAdminPage,
 } from "./pages/admin";
@@ -77,6 +80,18 @@ const router = createBrowserRouter([
       {
         path: "dashboard",
         element: <AdminDashboard />,
+      },
+      {
+        path: "brands",
+        element: <AdminBrand />,
+      },
+      {
+        path: "categories",
+        element: <AdminCategory />,
+      },
+      {
+        path: "users",
+        element: <AdminUser />,
       },
       {
         path: "inventory",
