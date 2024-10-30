@@ -8,6 +8,7 @@ export interface Brand {
   description?: string;
   logoUrl?: string;
   isActive?: boolean;
+  createdAt?: Date;
   products?: Product[];
 }
 export interface BrandForCreate {
@@ -26,7 +27,7 @@ export interface BrandForUpdate {
 
 export const brandService = {
   getAllBrands: (brandRequestParams: RequestParams) => {
-    return axiosInstance.get(API_ENDPOINTS.BRAND.GET_ALL_BRAND, {
+    return axiosInstance.get<Brand[]>(API_ENDPOINTS.BRAND.GET_ALL_BRAND, {
       params: brandRequestParams,
     });
   },

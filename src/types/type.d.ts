@@ -161,6 +161,11 @@ export interface RequestParams {
   pageNumber?: number;
   searchTerm?: string;
   orderBy?: string;
+  startDate?: string;
+  endDate?: string;
+  isActive?: boolean;
+  sortKey?: string;
+  orderBy?: "asc" | "desc";
 }
 
 export interface PagedResult<T> {
