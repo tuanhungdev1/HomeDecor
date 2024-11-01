@@ -20,9 +20,11 @@ import { store } from "./stores/store";
 import {
   AdminBrand,
   AdminCategory,
+  AdminCreateProduct,
   AdminDashboard,
   AdminHomePage,
   AdminInventory,
+  AdminManageProducts,
   AdminManageStore,
   AdminOrders,
   AdminReports,
@@ -80,6 +82,14 @@ const router = createBrowserRouter([
       {
         path: "dashboard",
         element: <AdminDashboard />,
+      },
+      {
+        path: "manage-product",
+        element: <AdminManageProducts />,
+      },
+      {
+        path: "create-product",
+        element: <AdminCreateProduct />,
       },
       {
         path: "brands",

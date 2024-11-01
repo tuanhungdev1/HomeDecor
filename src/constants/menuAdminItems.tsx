@@ -9,6 +9,8 @@ import { RiStore2Line } from "react-icons/ri";
 import { TbBrandAirtable } from "react-icons/tb";
 import { FaRegBuilding } from "react-icons/fa";
 import { BiCategory } from "react-icons/bi";
+import { TbCubePlus } from "react-icons/tb";
+import { BsBoxes } from "react-icons/bs";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -36,6 +38,30 @@ export const menuAdminItems: MenuItem[] = [
       </Link>
     ),
     key: "inventory",
+  },
+  {
+    label: (
+      <Link
+        className="flex items-center justify-center gap-3 px-6 text-base font-medium"
+        to={"/admin/create-product"}
+      >
+        <TbCubePlus size={24} className="mr-2" />
+        Create Product
+      </Link>
+    ),
+    key: "create-product",
+  },
+  {
+    label: (
+      <Link
+        className="flex items-center justify-center gap-3 px-6 text-base font-medium"
+        to={"/admin/manage-product"}
+      >
+        <BsBoxes size={24} className="mr-2" />
+        Manage Product
+      </Link>
+    ),
+    key: "manage-product",
   },
   {
     label: (

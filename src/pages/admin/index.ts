@@ -10,3 +10,5 @@ export { default as AdminOrders } from "./AdminOrders";
 export { default as AdminUser } from "./AdminUser";
 export { default as AdminCategory } from "./AdminCategory";
 export { default as AdminBrand } from "./AdminBrand";
+export { default as AdminCreateProduct } from "./AdminCreateProduct";
+export { default as AdminManageProducts } from "./AdminManageProducts";

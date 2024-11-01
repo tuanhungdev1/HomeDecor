@@ -11,6 +11,7 @@ const SibarAdmin = () => {
         <Logo className="text-3xl text-black hover:bg-transparent hover:text-black" />
       </div>
       <Menu
+        style={{ borderInlineEnd: "none" }}
         items={menuAdminItems}
         defaultSelectedKeys={["dashboard"]}
         className="

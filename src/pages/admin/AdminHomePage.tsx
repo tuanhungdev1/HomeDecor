@@ -2,20 +2,17 @@ import { HeaderAdmin, SibarAdmin } from "@/layouts";
 import { Layout } from "antd";
 import { Outlet } from "react-router-dom";
 
-const { Footer, Content } = Layout;
-
 const AdminHomePage = () => {
   return (
     <>
-      <Layout>
+      <Layout style={{ minHeight: "100vh", overflow: "hidden" }}>
         <SibarAdmin />
-        <Layout>
+        <div className="flex flex-col w-full min-h-screen overflow-y-scroll">
           <HeaderAdmin />
-          <Content className="px-4 py-4">
+          <div className="overflow-y-scroll bg-white pt-28">
             <Outlet />
-          </Content>
-          <Footer />
-        </Layout>
+          </div>
+        </div>
       </Layout>
     </>
   );
