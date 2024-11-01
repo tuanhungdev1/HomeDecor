@@ -23,12 +23,20 @@ import useTable from "@/hooks/useTable";
 import * as XLSX from "xlsx";
 import { useModal } from "@/hooks/useModal";
 import dayjs from "dayjs";
-import { Brand, BrandForUpdate } from "@/services/brandService";
+import { Brand, BrandForCreate, BrandForUpdate } from "@/services/brandService";
 import useFetch from "@/hooks/useFetch";
 import { API_ENDPOINTS } from "@/constants";
 import { RequestParams } from "@/types/type";
+import { ModalCreateBrand, ModalEditBrand } from "@/modules/admin/brand";
 
 const { RangePicker } = DatePicker;
+
+interface PaginationInfo {
+  totalCount: number;
+  totalPages: number;
+  currentPage: number;
+  pageSize: number;
+}
 
 interface FilterValues {
   isActive?: boolean;
@@ -58,6 +66,12 @@ const AdminBrand = () => {
     handleCancel: cancelEditModal,
   } = useModal();
 
+  const {
+    isModalVisble: isCreateModalOpen,
+    showModal: showCreateModal,
+    handleCancel: cancelCreateModal,
+  } = useModal();
+
   // Filter drawer state
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
   const [filterValues, setFilterValues] = useState<FilterValues>({});
@@ -65,8 +79,6 @@ const AdminBrand = () => {
   const [params, setParams] = useState<BrandRequestParams>();
   const [form] = Form.useForm();
   const [filterForm] = Form.useForm();
-
-  const [isEditing, setIsEditing] = useState(false);
   const {
     pageSize,
     pageNumber,
@@ -119,16 +131,6 @@ const AdminBrand = () => {
   //   });
   // };
 
-  const handleStartEditing = () => {
-    setIsEditing(true);
-  };
-
-  const handleCancelEditing = () => {
-    setIsEditing(false);
-    // Reset form về giá trị ban đầu
-    form.setFieldsValue(selectedBrand);
-  };
-
   // Handle filter submit
   const handleFilterSubmit = async (values: FilterValues) => {
     const { dateRange, ...restValues } = values;
@@ -147,15 +149,6 @@ const AdminBrand = () => {
     setIsFilterDrawerOpen(false);
 
     try {
-      // Here you would make an API call with the filter values
-      // await fetchBrands({
-      //   ...values,
-      //   page: currentPage,
-      //   pageSize,
-      //   searchTerm,
-      //   sortKey,
-      //   sortOrder
-      // });
       message.success("Filters applied successfully");
       setFilterValues({});
     } catch (error) {
@@ -226,8 +219,11 @@ const AdminBrand = () => {
   const handleEdit = (record: Brand) => {
     setSelectedBrand(record);
     form.setFieldsValue(record);
-    setIsEditing(false);
     showEditModal();
+  };
+
+  const handleCreateBrandSubmit = (values: BrandForCreate) => {
+    console.log(values);
   };
 
   const handleEditSubmit = async (values: BrandForUpdate) => {
@@ -235,7 +231,6 @@ const AdminBrand = () => {
       if (selectedBrand) {
         await handleUpdateBrand(selectedBrand.id, values);
         message.success("Brand updated successfully");
-        setIsEditing(false);
         cancelEditModal();
         handleFetchData();
       }
@@ -298,6 +293,13 @@ const AdminBrand = () => {
             />
             <Button
               size="large"
+              onClick={() => showCreateModal()}
+              type={"primary"}
+            >
+              Create Brand
+            </Button>
+            <Button
+              size="large"
               icon={<LuListFilter size={24} />}
               onClick={() => setIsFilterDrawerOpen(true)}
               type={
@@ -317,10 +319,10 @@ const AdminBrand = () => {
           className="mt-4"
           columns={columns}
           pagination={{
-            current: pageNumber,
-            pageSize: pageSize,
+            current: pagination?.currentPage,
+            pageSize: pagination?.pageSize,
             total: pagination?.totalCount,
-            pageSizeOptions: [5, 10, 15],
+            pageSizeOptions: [5, 10, 15, 20],
             onChange: (page) => setPageNumber(page),
             showSizeChanger: true,
             onShowSizeChange: (_, size) => {
@@ -391,73 +393,18 @@ const AdminBrand = () => {
         </Drawer>
 
         {/* Edit Modal */}
-        <Modal
-          title="Edit Brand"
-          open={isEditModalOpen}
-          onCancel={() => {
-            cancelEditModal();
-            setIsEditing(false);
-          }}
-          footer={
-            isEditing ? (
-              <Flex gap={8} justify="end">
-                <Button onClick={handleCancelEditing}>Close</Button>
-                <Button type="primary" onClick={() => form.submit()}>
-                  Submit
-                </Button>
-              </Flex>
-            ) : (
-              <Flex gap={8} justify="end">
-                <Button onClick={cancelEditModal}>Close</Button>
-                <Button type="primary" onClick={handleStartEditing}>
-                  Update Brand
-                </Button>
-              </Flex>
-            )
-          }
-        >
-          <Form
-            form={form}
-            layout="vertical"
-            onFinish={handleEditSubmit}
-            initialValues={selectedBrand || {}}
-          >
-            <Form.Item
-              name="name"
-              label="Brand Name"
-              rules={[{ required: true, message: "Please input brand name!" }]}
-            >
-              <Input disabled={!isEditing} />
-            </Form.Item>
+        <ModalEditBrand
+          visible={isEditModalOpen}
+          onClose={cancelEditModal}
+          brand={selectedBrand}
+          onSubmit={() => {}}
+        />
 
-            <Form.Item name="description" label="Description">
-              <Input.TextArea disabled={!isEditing} />
-            </Form.Item>
-
-            <Form.Item name="logoUrl" label="Logo URL">
-              <Input disabled={!isEditing} />
-            </Form.Item>
-
-            <Form.Item name="isActive" label="Status">
-              <Select disabled={!isEditing}>
-                <Select.Option value={true}>Active</Select.Option>
-                <Select.Option value={false}>Inactive</Select.Option>
-              </Select>
-            </Form.Item>
-
-            <Form.Item name="createdAt" label="Created At">
-              <Input
-                disabled={true}
-                value={
-                  selectedBrand?.createdAt
-                    ? dayjs(selectedBrand.createdAt).format("DD-MM-YYYY")
-                    : "-"
-                }
-              />
-            </Form.Item>
-          </Form>
-        </Modal>
-
+        <ModalCreateBrand
+          visible={isCreateModalOpen}
+          onClose={cancelCreateModal}
+          onSubmit={handleCreateBrandSubmit}
+        />
         {/* Delete Confirmation Modal */}
         <Modal
           title="⚠️ Delete Brand"

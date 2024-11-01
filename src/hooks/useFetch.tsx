@@ -12,6 +12,12 @@ interface Pagination {
   hasPrevious: boolean;
 }
 
+// Định nghĩa interface cho dữ liệu trả về của API
+interface ApiResponse<T> {
+  data: T;
+  pagination: Pagination; // Thêm thuộc tính pagination
+}
+
 interface UseFetchResult<T> {
   data: T | null;
   loading: boolean;
@@ -34,26 +40,15 @@ function useFetch<T>(
       try {
         setLoading(true);
         setError(null);
-        const response = await axiosInstance({
+
+        const response = await axiosInstance<ApiResponse<T>>({
           url,
           ...options,
           ...config,
         });
 
         setData(response.data.data);
-
-        const paginationHeaders = JSON.parse(response.headers["x-pagination"]);
-
-        const pagination: Pagination = {
-          currentPage: parseInt(paginationHeaders.currentPage || "1", 10),
-          totalPages: parseInt(paginationHeaders.totalPage || "1", 10),
-          pageSize: parseInt(paginationHeaders.pageSize || "10", 10),
-          totalCount: parseInt(paginationHeaders.totalCount || "0", 10),
-          hasNext: Boolean(paginationHeaders.hasNext),
-          hasPrevious: Boolean(paginationHeaders.hasPrevious),
-        };
-
-        setPagination(pagination);
+        setPagination(response.pagination ?? null);
       } catch (err) {
         const error = err as AxiosError;
         setError(error.message);

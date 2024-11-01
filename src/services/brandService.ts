@@ -14,7 +14,7 @@ export interface Brand {
 export interface BrandForCreate {
   name: string;
   description?: string;
-  logoUrl?: string;
+  logoFile?: string;
   isActive?: boolean;
 }
 

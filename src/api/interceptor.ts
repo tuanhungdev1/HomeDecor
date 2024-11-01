@@ -66,7 +66,35 @@ const onRequestError = (error: AxiosError): Promise<AxiosError> => {
 };
 
 const onResponse = (response: AxiosResponse) => {
-  return response;
+  const paginationHeader = response.headers["x-pagination"];
+  let paginationInfo = {
+    totalCount: 0,
+    totalPage: 0,
+    currentPage: 1,
+    pageSize: 10,
+    hasPrevious: false,
+    hasNext: false,
+  };
+  if (paginationHeader) {
+    try {
+      const paginationData = JSON.parse(paginationHeader);
+      paginationInfo = {
+        totalCount: paginationData.totalCount || 0,
+        totalPage: paginationData.totalPage || 0,
+        currentPage: paginationData.currentPage || 1,
+        pageSize: paginationData.pageSize || 10,
+        hasPrevious: paginationData.hasPrevious || false,
+        hasNext: paginationData.hasNext || false,
+      };
+    } catch (error) {
+      console.error("Error parsing X-Pagination header:", error);
+    }
+  }
+
+  return {
+    ...response,
+    pagination: paginationInfo,
+  };
 };
 
 const onResponseError = async (
