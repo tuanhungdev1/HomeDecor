@@ -1,4 +1,3 @@
-import axiosInstance from "@/api/interceptor";
 import { API_ENDPOINTS } from "../constants/apiEndpoints";
 import {
   ForgotPasswordFormValues,
@@ -7,27 +6,42 @@ import {
 } from "@/types/type";
 import { FieldSignUpType } from "@/pages/admin/SignUpAdminPage";
 import { FieldLoginType } from "@/pages/admin/LoginAdminPage";
+import axiosInstance from "@/api/interceptor";
 
-export const authService = {
-  login: (credentials: LoginData) =>
-    axiosInstance.post(API_ENDPOINTS.AUTH.LOGIN, credentials),
+class AuthService {
+  login(credentials: LoginData) {
+    return axiosInstance.post(API_ENDPOINTS.AUTH.LOGIN, credentials);
+  }
 
-  loginAdmin: (credentials: FieldLoginType) =>
-    axiosInstance.post(API_ENDPOINTS.AUTH.ADMIN_LOGIN, credentials),
+  loginAdmin(credentials: FieldLoginType) {
+    return axiosInstance.post(API_ENDPOINTS.AUTH.ADMIN_LOGIN, credentials);
+  }
 
-  register: (signUpform: FieldSignUpType) =>
-    axiosInstance.post(API_ENDPOINTS.AUTH.REGISTER, signUpform),
+  register(signUpform: FieldSignUpType) {
+    return axiosInstance.post(API_ENDPOINTS.AUTH.REGISTER, signUpform);
+  }
 
-  logout: () => axiosInstance.post(API_ENDPOINTS.AUTH.LOGOUT),
+  logout() {
+    return axiosInstance.post(API_ENDPOINTS.AUTH.LOGOUT);
+  }
 
-  changePassword: (userForgotPasswordData: ForgotPasswordFormValues) =>
-    axiosInstance.post(
+  changePassword(userForgotPasswordData: ForgotPasswordFormValues) {
+    return axiosInstance.post(
       API_ENDPOINTS.AUTH.CHANGE_PASSWORD,
       userForgotPasswordData
-    ),
+    );
+  }
 
-  refreshToken: (refreshTokenData: RefreshTokenData) =>
-    axiosInstance.post(API_ENDPOINTS.AUTH.REFRESH_TOKEN, refreshTokenData),
+  refreshToken(refreshTokenData: RefreshTokenData) {
+    return axiosInstance.post(
+      API_ENDPOINTS.AUTH.REFRESH_TOKEN,
+      refreshTokenData
+    );
+  }
 
-  getCurrentUser: () => axiosInstance.get(API_ENDPOINTS.AUTH.CURRENT_USER),
-};
+  getCurrentUser() {
+    return axiosInstance.get(API_ENDPOINTS.AUTH.CURRENT_USER);
+  }
+}
+
+export const authService = new AuthService();

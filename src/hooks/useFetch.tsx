@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axiosInstance from "@/api/interceptor";
 import { AxiosError, AxiosRequestConfig } from "axios";
 import { useCallback, useEffect, useState } from "react";
@@ -12,10 +13,9 @@ interface Pagination {
   hasPrevious: boolean;
 }
 
-// Định nghĩa interface cho dữ liệu trả về của API
 interface ApiResponse<T> {
   data: T;
-  pagination: Pagination; // Thêm thuộc tính pagination
+  pagination: Pagination;
 }
 
 interface UseFetchResult<T> {
@@ -28,7 +28,8 @@ interface UseFetchResult<T> {
 
 function useFetch<T>(
   url: string,
-  options?: AxiosRequestConfig
+  options?: AxiosRequestConfig,
+  manual: boolean = false
 ): UseFetchResult<T> {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -40,28 +41,38 @@ function useFetch<T>(
       try {
         setLoading(true);
         setError(null);
-
-        const response = await axiosInstance<ApiResponse<T>>({
-          url,
-          ...options,
-          ...config,
+        console.log("Options: ", { ...options });
+        console.log("Config: ", { ...config });
+        console.log("Url ", url);
+        const params = {
+          ...options?.params,
+          ...config?.params,
+        };
+        const response = await axiosInstance.request<ApiResponse<T>>({
+          ...options, // Spread options trước
+          ...config, // Ghi đè bằng config nếu có
+          url, // Đặt URL riêng biệt
+          params,
         });
 
         setData(response.data.data);
-        setPagination(response.pagination ?? null);
+        setPagination(response.pagination! ?? null);
       } catch (err) {
         const error = err as AxiosError;
         setError(error.message);
+        console.error("Fetch Error:", error);
       } finally {
         setLoading(false);
       }
     },
     [url, JSON.stringify(options)]
   );
-
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    if (!manual) {
+      console.log();
+      fetchData();
+    }
+  }, [fetchData, manual]);
 
   return { data, loading, error, pagination, fetchData };
 }

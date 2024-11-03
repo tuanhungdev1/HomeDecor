@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { API_ENDPOINTS } from "@/constants";
 import { authService } from "@/services/authService";
 import { RefreshTokenData } from "@/types/type";
 import {
@@ -9,13 +8,7 @@ import {
   logout,
 } from "@/utils/authHelper";
 import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
-
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
-
-interface QueueItem {
-  resolve: (value?: any) => void;
-  reject: (reason?: any) => void;
-}
 
 interface Tokens {
   accessToken: string;
@@ -32,20 +25,18 @@ const axiosConfig: AxiosRequestConfig = {
 
 const axiosInstance: AxiosInstance = axios.create(axiosConfig);
 
-export default axiosInstance;
-
-let failedQueue: QueueItem[] = [];
+// Biến để theo dõi trạng thái refresh token
 let isRefreshing = false;
+let failedQueue: any[] = [];
 
-const processQueue = (error: AxiosError | null): void => {
+const processQueue = (error: any, token: string | null = null) => {
   failedQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);
     } else {
-      prom.resolve();
+      prom.resolve(token);
     }
   });
-
   failedQueue = [];
 };
 
@@ -53,7 +44,6 @@ const onRequest = (
   config: InternalAxiosRequestConfig
 ): InternalAxiosRequestConfig => {
   const token = getAccessToken();
-
   if (token) {
     config.headers = config.headers || {};
     config.headers.Authorization = `Bearer ${token}`;
@@ -75,6 +65,7 @@ const onResponse = (response: AxiosResponse) => {
     hasPrevious: false,
     hasNext: false,
   };
+
   if (paginationHeader) {
     try {
       const paginationData = JSON.parse(paginationHeader);
@@ -104,44 +95,36 @@ const onResponseError = async (
     _retry?: boolean;
   };
 
-  originalRequest.headers = JSON.parse(
-    JSON.stringify(originalRequest.headers || {})
-  );
+  // Kiểm tra nếu lỗi không phải 401 hoặc không có config
+  if (!error.response || error.response.status !== 401 || !originalRequest) {
+    return Promise.reject(error);
+  }
+
   const refreshToken = getRefreshToken();
   const accessTokenOld = getAccessToken();
 
-  const handleError = async (error: AxiosError): Promise<AxiosError> => {
-    processQueue(error);
+  // Nếu không có token, logout
+  if (!refreshToken || !accessTokenOld) {
     logout();
     return Promise.reject(error);
-  };
+  }
 
-  if (
-    refreshToken &&
-    error.response?.status === 401 &&
-    (error.response.data as any).message === "TokenExpireError" &&
-    originalRequest.url !== API_ENDPOINTS.AUTH.REFRESH_TOKEN &&
-    originalRequest._retry !== true
-  ) {
+  if (!originalRequest._retry) {
     if (isRefreshing) {
-      return new Promise<AxiosResponse>((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         failedQueue.push({ resolve, reject });
       })
-        .then(() => {
+        .then((token) => {
+          originalRequest.headers!.Authorization = `Bearer ${token}`;
           return axiosInstance(originalRequest);
         })
-        .catch((err) => {
-          return Promise.reject(err);
-        });
+        .catch((err) => Promise.reject(err));
     }
 
-    isRefreshing = true;
     originalRequest._retry = true;
+    isRefreshing = true;
 
     try {
-      if (!refreshToken || !accessTokenOld) {
-        throw new Error("Refresh token or Access token was not found.");
-      }
       const authParams: RefreshTokenData = {
         accessToken: accessTokenOld,
         refreshToken: refreshToken,
@@ -152,29 +135,31 @@ const onResponseError = async (
         accessToken: response.data.data.accessToken,
         refreshToken: response.data.data.refreshToken,
       };
+
+      // Lưu token mới
       const remember = isRemember();
-      if (remember) {
-        sessionStorage.setItem("accessToken", tokens.accessToken);
-      } else {
-        localStorage.setItem("accessToken", tokens.accessToken);
-      }
-      processQueue(null);
+      const storage = remember ? localStorage : sessionStorage;
+      storage.setItem("accessToken", tokens.accessToken);
+      storage.setItem("refreshToken", tokens.refreshToken);
+      originalRequest.headers!.Authorization = `Bearer ${tokens.accessToken}`;
+      processQueue(null, tokens.accessToken);
+      isRefreshing = false;
+
       return axiosInstance(originalRequest);
     } catch (refreshError) {
-      return handleError(refreshError as AxiosError);
-    } finally {
+      processQueue(refreshError, null);
       isRefreshing = false;
+      logout();
+      return Promise.reject(refreshError);
     }
   }
 
-  if (
-    error.response?.status === 401 &&
-    (error.response.data as any).message === "TokenExpiredError"
-  ) {
-    return handleError(error);
-  }
   return Promise.reject(error);
 };
 
-axiosInstance.interceptors.request.use(onRequest, onRequestError);
-axiosInstance.interceptors.response.use(onResponse, onResponseError);
+const instance = axios.create(axiosConfig);
+
+instance.interceptors.request.use(onRequest, onRequestError);
+instance.interceptors.response.use(onResponse, onResponseError);
+
+export default instance;

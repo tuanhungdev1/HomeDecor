@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
@@ -13,8 +14,9 @@ import {
   Select,
   Drawer,
   Spin,
+  Alert,
 } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Table, { ColumnProps } from "antd/es/table";
 import { LuFileEdit, LuListFilter } from "react-icons/lu";
 import { AiOutlineDelete } from "react-icons/ai";
@@ -30,13 +32,6 @@ import { RequestParams } from "@/types/type";
 import { ModalCreateBrand, ModalEditBrand } from "@/modules/admin/brand";
 
 const { RangePicker } = DatePicker;
-
-interface PaginationInfo {
-  totalCount: number;
-  totalPages: number;
-  currentPage: number;
-  pageSize: number;
-}
 
 interface FilterValues {
   isActive?: boolean;
@@ -72,64 +67,112 @@ const AdminBrand = () => {
     handleCancel: cancelCreateModal,
   } = useModal();
 
-  // Filter drawer state
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
   const [filterValues, setFilterValues] = useState<FilterValues>({});
   const [selectedBrand, setSelectedBrand] = useState<Brand | null>(null);
-  const [params, setParams] = useState<BrandRequestParams>();
-  const [form] = Form.useForm();
+  const [params, setParams] = useState<BrandRequestParams>({});
   const [filterForm] = Form.useForm();
   const {
     pageSize,
     pageNumber,
     searchTerm,
+    name,
+    sortKey,
+    orderBy,
     setPageNumber,
-    setPageSize,
     setSearchTerm,
-    setSortKey,
-    setSortOrder,
-  } = useTable<Brand>();
+    handleTableChange,
+    resetTable,
+  } = useTable<Brand>({
+    initialPageSize: 10,
+    defaultSortKey: "id",
+    onParamsChange: (tableParams) => {
+      setParams((prev) => ({
+        ...prev,
+        pageSize: tableParams.pageSize,
+        pageNumber: tableParams.pageNumber,
+        searchTerm: tableParams.searchTerm,
+        name: tableParams.name,
+        sortKey: tableParams.sortKey,
+        sortOrder: tableParams.orderBy,
+      }));
+    },
+  });
 
   const {
     loading,
     data: brands,
     pagination,
+    error,
     fetchData,
-  } = useFetch<Brand[]>(API_ENDPOINTS.BRAND.GET_ALL_BRAND, {
-    params: {
-      ...params,
-      pageSize,
-      pageNumber,
+  } = useFetch<Brand[]>(
+    API_ENDPOINTS.BRAND.GET_ALL_BRAND,
+    {
+      params: {
+        ...params,
+      },
     },
-  });
+    false
+  );
 
-  // Xử lý create brand
-  // const handleCreateBrand = async (brandForCreate: BrandForCreate) => {
-  //   await fetchData({
-  //     method: "POST",
-  //     data: brandForCreate,
-  //   });
-  // };
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setParams((prev) => ({
+        ...prev,
+        searchTerm,
+      }));
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // CRUD Operations
+  const handleCreateBrand = async (brandForCreate: BrandForCreate) => {
+    try {
+      await fetchData({
+        method: "POST",
+        data: brandForCreate,
+      });
+      message.success("Brand created successfully");
+      cancelCreateModal();
+      fetchData();
+    } catch (error) {
+      message.error("Failed to create brand");
+    }
+  };
 
   // Xử lý update brand
-  const handleUpdateBrand = async (
-    id: number,
-    brandForUpdates: BrandForUpdate
-  ) => {
-    await fetchData({
-      method: "PUT",
-      url: API_ENDPOINTS.BRAND.UPDATE_BRAND(id),
-      data: brandForUpdates,
-    });
+  const handleUpdateBrand = async (brandForUpdates: BrandForUpdate) => {
+    try {
+      if (!selectedBrand) return;
+      await fetchData({
+        method: "PUT",
+        url: API_ENDPOINTS.BRAND.UPDATE_BRAND(selectedBrand.id),
+        data: brandForUpdates,
+      });
+      message.success("Brand updated successfully");
+      cancelEditModal();
+      fetchData();
+    } catch (error) {
+      message.error("Failed to update brand");
+    }
   };
 
   // Xử lý delete brand
-  // const handleDeleteBrand = async (id: number) => {
-  //   await fetchData({
-  //     method: "DELETE",
-  //     url: API_ENDPOINTS.BRAND.DELETE_BRAND_BY_ID(id),
-  //   });
-  // };
+  const handleDeleteBrandConfirm = async () => {
+    try {
+      if (!selectedBrand) return;
+      await fetchData({
+        method: "DELETE",
+        url: API_ENDPOINTS.BRAND.DELETE_BRAND_BY_ID(selectedBrand.id),
+      });
+      message.success("Brand deleted successfully");
+      cancelDeleteModal();
+      fetchData();
+    } catch (error) {
+      message.error("Failed to delete brand");
+    }
+  };
 
   // Handle filter submit
   const handleFilterSubmit = async (values: FilterValues) => {
@@ -147,19 +190,13 @@ const AdminBrand = () => {
     setParams(filterParams);
     setFilterValues(values);
     setIsFilterDrawerOpen(false);
-
-    try {
-      message.success("Filters applied successfully");
-      setFilterValues({});
-    } catch (error) {
-      message.error("Failed to apply filters");
-    }
   };
 
   const handleResetFilters = () => {
     filterForm.resetFields();
     setFilterValues({});
-    handleFetchData();
+    resetTable();
+    setParams({});
   };
 
   const columns: ColumnProps<Brand>[] = [
@@ -205,78 +242,40 @@ const AdminBrand = () => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <Button icon={<LuFileEdit />} onClick={() => handleEdit(record)} />
+          <Button
+            icon={<LuFileEdit />}
+            onClick={() => {
+              setSelectedBrand(record);
+              showEditModal();
+            }}
+          />
           <Button
             danger
             icon={<AiOutlineDelete />}
-            onClick={() => handleDelete(record)}
+            onClick={() => {
+              setSelectedBrand(record);
+              showDeleteModal();
+            }}
           />
         </Space>
       ),
     },
   ];
 
-  const handleEdit = (record: Brand) => {
-    setSelectedBrand(record);
-    form.setFieldsValue(record);
-    showEditModal();
-  };
-
-  const handleCreateBrandSubmit = (values: BrandForCreate) => {
-    console.log(values);
-  };
-
-  const handleEditSubmit = async (values: BrandForUpdate) => {
-    try {
-      if (selectedBrand) {
-        await handleUpdateBrand(selectedBrand.id, values);
-        message.success("Brand updated successfully");
-        cancelEditModal();
-        handleFetchData();
-      }
-    } catch (error) {
-      message.error("Failed to update brand");
-    }
-  };
-
-  const handleDelete = (record: Brand) => {
-    setSelectedBrand(record);
-    showDeleteModal();
-  };
-
-  const handleDeleteConfirm = async () => {
-    try {
-      // await deleteBrand(selectedBrand?.id);
-      message.success("Brand deleted successfully");
-      cancelDeleteModal();
-      handleFetchData();
-    } catch (error) {
-      message.error("Failed to delete brand");
-    }
-  };
-
-  const handleFetchData = async () => {
-    try {
-      // Implement API call here
-      // const response = await fetchBrands({
-      //   page: currentPage,
-      //   pageSize,
-      //   searchTerm,
-      //   sortKey,
-      //   sortOrder,
-      //   ...filterValues
-      // });
-    } catch (error) {
-      message.error("Failed to fetch brands");
-    }
-  };
-
   const handleDownload = () => {
+    if (!brands?.length) {
+      message.warning("No data to dowload");
+      return;
+    }
     const ws = XLSX.utils.json_to_sheet(brands ?? []);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Brands");
-    XLSX.writeFile(wb, "brands.xlsx");
+    XLSX.writeFile(wb, `brands_${dayjs().format("DD-MM-YYYY")}.xlsx`);
   };
+
+  if (error) {
+    return <Alert type="error" message={error} />;
+  }
 
   return (
     <Spin spinning={loading} delay={500}>
@@ -291,11 +290,7 @@ const AdminBrand = () => {
               allowClear
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <Button
-              size="large"
-              onClick={() => showCreateModal()}
-              type={"primary"}
-            >
+            <Button size="large" onClick={showCreateModal} type={"primary"}>
               Create Brand
             </Button>
             <Button
@@ -319,23 +314,27 @@ const AdminBrand = () => {
           className="mt-4"
           columns={columns}
           pagination={{
-            current: pagination?.currentPage,
-            pageSize: pagination?.pageSize,
+            current: pageNumber,
+            pageSize: pageSize,
             total: pagination?.totalCount,
             pageSizeOptions: [5, 10, 15, 20],
             onChange: (page) => setPageNumber(page),
             showSizeChanger: true,
-            onShowSizeChange: (_, size) => {
-              setPageSize(size);
-              setPageNumber(1);
-            },
           }}
           onChange={(_pagination, _filters, sorter: any) => {
-            if (sorter.field) {
-              setSortKey(sorter.field);
-              setSortOrder(sorter.order);
-            }
+            handleTableChange(_pagination, _filters, sorter);
+
+            setParams((prev) => ({
+              ...prev,
+              name: name,
+              pageSize: pageSize,
+              pageNumber: pageNumber,
+              searchTerm: searchTerm,
+              sortKey: sortKey,
+              sortOrder: orderBy,
+            }));
           }}
+          rowKey={"id"}
         />
 
         {/* Filter Drawer */}
@@ -397,28 +396,22 @@ const AdminBrand = () => {
           visible={isEditModalOpen}
           onClose={cancelEditModal}
           brand={selectedBrand}
-          onSubmit={() => {}}
+          onSubmit={handleUpdateBrand}
         />
 
         <ModalCreateBrand
           visible={isCreateModalOpen}
           onClose={cancelCreateModal}
-          onSubmit={handleCreateBrandSubmit}
+          onSubmit={handleCreateBrand}
         />
         {/* Delete Confirmation Modal */}
         <Modal
           title="⚠️ Delete Brand"
           open={isDeleteModalOpen}
-          onOk={handleDeleteConfirm}
+          onOk={handleDeleteBrandConfirm}
           onCancel={cancelDeleteModal}
-          footer={
-            <>
-              <Button onClick={cancelDeleteModal}>Cancel</Button>
-              <Button danger type="primary" onClick={handleDeleteConfirm}>
-                Delete
-              </Button>
-            </>
-          }
+          okButtonProps={{ danger: true }}
+          okText="Delete"
         >
           <p>Are you sure you want to delete this brand?</p>
         </Modal>

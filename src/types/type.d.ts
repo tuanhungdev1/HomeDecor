@@ -160,7 +160,6 @@ export interface RequestParams {
   pageSize?: number;
   pageNumber?: number;
   searchTerm?: string;
-  orderBy?: string;
   startDate?: string;
   endDate?: string;
   isActive?: boolean;

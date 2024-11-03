@@ -84,6 +84,8 @@ export function logout(): void {
   sessionStorage.removeItem(REFRESH_TOKEN_KEY);
   sessionStorage.removeItem(USER_ID_KEY);
   sessionStorage.removeItem(USER_DATA);
+
+  window.location.href = "/admin/login";
 }
 
 export const isRemember = (): boolean | null => {
