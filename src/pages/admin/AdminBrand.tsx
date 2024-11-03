@@ -16,7 +16,7 @@ import {
   Spin,
   Alert,
 } from "antd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Table, { ColumnProps } from "antd/es/table";
 import { LuFileEdit, LuListFilter } from "react-icons/lu";
 import { AiOutlineDelete } from "react-icons/ai";
@@ -30,6 +30,10 @@ import useFetch from "@/hooks/useFetch";
 import { API_ENDPOINTS } from "@/constants";
 import { RequestParams } from "@/types/type";
 import { ModalCreateBrand, ModalEditBrand } from "@/modules/admin/brand";
+import AdminHeaderLayout from "@/layouts/AdminHeaderLayout";
+import { FiPlus } from "react-icons/fi";
+import { Link } from "react-router-dom";
+import { LuSearch } from "react-icons/lu";
 
 const { RangePicker } = DatePicker;
 
@@ -66,7 +70,7 @@ const AdminBrand = () => {
     showModal: showCreateModal,
     handleCancel: cancelCreateModal,
   } = useModal();
-
+  const [searchTemp, setSearchTemp] = useState("");
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
   const [filterValues, setFilterValues] = useState<FilterValues>({});
   const [selectedBrand, setSelectedBrand] = useState<Brand | null>(null);
@@ -80,7 +84,6 @@ const AdminBrand = () => {
     sortKey,
     orderBy,
     setPageNumber,
-    setSearchTerm,
     handleTableChange,
     resetTable,
   } = useTable<Brand>({
@@ -115,16 +118,12 @@ const AdminBrand = () => {
     false
   );
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setParams((prev) => ({
-        ...prev,
-        searchTerm,
-      }));
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
+  const handleSearch = () => {
+    setParams((prev) => ({
+      ...prev,
+      searchTerm: searchTemp,
+    }));
+  };
 
   // CRUD Operations
   const handleCreateBrand = async (brandForCreate: BrandForCreate) => {
@@ -278,145 +277,180 @@ const AdminBrand = () => {
   }
 
   return (
-    <Spin spinning={loading} delay={500}>
-      <div className="w-full h-full px-6 py-5 bg-white">
-        <Flex align="center" justify="space-between">
-          <Title level={2}>Brands</Title>
-          <Flex align="center" gap={12}>
-            <Input
-              placeholder="Search"
-              value={searchTerm}
-              size="large"
-              allowClear
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <Button size="large" onClick={showCreateModal} type={"primary"}>
-              Create Brand
-            </Button>
-            <Button
-              size="large"
-              icon={<LuListFilter size={24} />}
-              onClick={() => setIsFilterDrawerOpen(true)}
-              type={
-                Object.keys(filterValues).length > 0 ? "primary" : "default"
-              }
-            >
-              Filters
-            </Button>
-            <Button size="large" onClick={handleDownload}>
-              Download all
-            </Button>
-          </Flex>
-        </Flex>
-
-        <Table
-          dataSource={brands || []}
-          className="mt-4"
-          columns={columns}
-          pagination={{
-            current: pageNumber,
-            pageSize: pageSize,
-            total: pagination?.totalCount,
-            pageSizeOptions: [5, 10, 15, 20],
-            onChange: (page) => setPageNumber(page),
-            showSizeChanger: true,
-          }}
-          onChange={(_pagination, _filters, sorter: any) => {
-            handleTableChange(_pagination, _filters, sorter);
-
-            setParams((prev) => ({
-              ...prev,
-              name: name,
-              pageSize: pageSize,
-              pageNumber: pageNumber,
-              searchTerm: searchTerm,
-              sortKey: sortKey,
-              sortOrder: orderBy,
-            }));
-          }}
-          rowKey={"id"}
-        />
-
-        {/* Filter Drawer */}
-        <Drawer
-          title="Filter Brands"
-          placement="right"
-          onClose={() => setIsFilterDrawerOpen(false)}
-          open={isFilterDrawerOpen}
-          width={400}
-        >
-          <Form
-            form={filterForm}
-            layout="vertical"
-            onFinish={handleFilterSubmit}
-            initialValues={filterValues}
+    <main className="px-10">
+      <AdminHeaderLayout
+        title="Brands Manager"
+        rightSide={
+          <Button
+            variant="solid"
+            color="primary"
+            size="large"
+            className="h-12 w-[200px] text-lg flex items-center"
           >
-            <Form.Item name="isActive" label="Status">
-              <Select allowClear placeholder="Selected Status">
-                <Select.Option value={true}>Active</Select.Option>
-                <Select.Option value={false}>InActive</Select.Option>
-              </Select>
-            </Form.Item>
-
-            <Form.Item name="dateRange" label="Created Date Range">
-              <RangePicker format={dateFormat} className="w-full" />
-            </Form.Item>
-
-            <Form.Item name="name" label="Brand Name">
-              <Input placeholder="Filter by brand name" />
-            </Form.Item>
-
-            <Form.Item name="orderBy" label="Order By">
-              <Select allowClear placeholder="Select Order By">
-                <Select.Option value="asc">Asc</Select.Option>
-                <Select.Option value="desc">Desc</Select.Option>
-              </Select>
-            </Form.Item>
-
-            <Form.Item name="sortKey" label="Sort Key">
-              <Select allowClear placeholder="Select Sort Key">
-                <Select.Option value="id">ID</Select.Option>
-                <Select.Option value="name">Name</Select.Option>
-                <Select.Option value="description">Description</Select.Option>
-                <Select.Option value="createdAt">Created At</Select.Option>
-              </Select>
-            </Form.Item>
-
-            <Flex gap={8}>
-              <Button type="primary" htmlType="submit">
-                Apply Filters
+            <FiPlus size={24} />
+            Add Product
+          </Button>
+        }
+        items={[
+          {
+            title: <Link to={"/admin/dashboard"}>Dashboard</Link>,
+          },
+          {
+            title: <Link to={"/admin/brands"}>Manager</Link>,
+          },
+          {
+            title: <Link to={"/admin/brands"}>Brands</Link>,
+          },
+        ]}
+      />
+      <Spin spinning={loading} delay={500}>
+        <div className="w-full h-full mt-8 bg-white">
+          <Flex align="center" justify="space-between">
+            <Title level={2}>Brands</Title>
+            <Flex align="center" gap={12}>
+              <div className="flex items-center gap-3" onClick={handleSearch}>
+                <Input
+                  placeholder="Search"
+                  value={searchTemp}
+                  size="large"
+                  allowClear
+                  onChange={(e) => setSearchTemp(e.target.value)}
+                />
+                <div className="border rounded-full h-[40px] w-[50px] flex items-center hover:border-blue-500 transition-all hover:text-blue-500 justify-center cursor-pointer">
+                  <LuSearch size={18} />
+                </div>
+              </div>
+              <Button size="large" onClick={showCreateModal} type={"primary"}>
+                Create Brand
               </Button>
-              <Button onClick={handleResetFilters}>Reset</Button>
+              <Button
+                size="large"
+                icon={<LuListFilter size={24} />}
+                onClick={() => setIsFilterDrawerOpen(true)}
+                type={
+                  Object.keys(filterValues).length > 0 ? "primary" : "default"
+                }
+              >
+                Filters
+              </Button>
+              <Button size="large" onClick={handleDownload}>
+                Download all
+              </Button>
             </Flex>
-          </Form>
-        </Drawer>
+          </Flex>
 
-        {/* Edit Modal */}
-        <ModalEditBrand
-          visible={isEditModalOpen}
-          onClose={cancelEditModal}
-          brand={selectedBrand}
-          onSubmit={handleUpdateBrand}
-        />
+          <Table
+            dataSource={brands || []}
+            className="mt-4"
+            columns={columns}
+            pagination={{
+              current: pageNumber,
+              pageSize: pageSize,
+              total: pagination?.totalCount,
+              pageSizeOptions: [5, 10, 15],
+              onChange: (page) => setPageNumber(page),
+              showSizeChanger: true,
+              onShowSizeChange: (_current, _size) => {
+                setPageNumber(1);
+              },
+            }}
+            onChange={(_pagination, _filters, sorter: any) => {
+              handleTableChange(_pagination, _filters, sorter);
 
-        <ModalCreateBrand
-          visible={isCreateModalOpen}
-          onClose={cancelCreateModal}
-          onSubmit={handleCreateBrand}
-        />
-        {/* Delete Confirmation Modal */}
-        <Modal
-          title="⚠️ Delete Brand"
-          open={isDeleteModalOpen}
-          onOk={handleDeleteBrandConfirm}
-          onCancel={cancelDeleteModal}
-          okButtonProps={{ danger: true }}
-          okText="Delete"
-        >
-          <p>Are you sure you want to delete this brand?</p>
-        </Modal>
-      </div>
-    </Spin>
+              setParams((prev) => ({
+                ...prev,
+                name: name,
+                pageSize: pageSize,
+                pageNumber: pageNumber,
+                searchTerm: searchTerm,
+                sortKey: sortKey,
+                sortOrder: orderBy,
+              }));
+            }}
+            rowKey={"id"}
+          />
+
+          {/* Filter Drawer */}
+          <Drawer
+            title="Filter Brands"
+            placement="right"
+            onClose={() => setIsFilterDrawerOpen(false)}
+            open={isFilterDrawerOpen}
+            width={400}
+          >
+            <Form
+              form={filterForm}
+              layout="vertical"
+              onFinish={handleFilterSubmit}
+              initialValues={filterValues}
+            >
+              <Form.Item name="isActive" label="Status">
+                <Select allowClear placeholder="Selected Status">
+                  <Select.Option value={true}>Active</Select.Option>
+                  <Select.Option value={false}>InActive</Select.Option>
+                </Select>
+              </Form.Item>
+
+              <Form.Item name="dateRange" label="Created Date Range">
+                <RangePicker format={dateFormat} className="w-full" />
+              </Form.Item>
+
+              <Form.Item name="name" label="Brand Name">
+                <Input placeholder="Filter by brand name" />
+              </Form.Item>
+
+              <Form.Item name="orderBy" label="Order By">
+                <Select allowClear placeholder="Select Order By">
+                  <Select.Option value="asc">Asc</Select.Option>
+                  <Select.Option value="desc">Desc</Select.Option>
+                </Select>
+              </Form.Item>
+
+              <Form.Item name="sortKey" label="Sort Key">
+                <Select allowClear placeholder="Select Sort Key">
+                  <Select.Option value="id">ID</Select.Option>
+                  <Select.Option value="name">Name</Select.Option>
+                  <Select.Option value="description">Description</Select.Option>
+                  <Select.Option value="createdAt">Created At</Select.Option>
+                </Select>
+              </Form.Item>
+
+              <Flex gap={8}>
+                <Button type="primary" htmlType="submit">
+                  Apply Filters
+                </Button>
+                <Button onClick={handleResetFilters}>Reset</Button>
+              </Flex>
+            </Form>
+          </Drawer>
+
+          {/* Edit Modal */}
+          <ModalEditBrand
+            visible={isEditModalOpen}
+            onClose={cancelEditModal}
+            brand={selectedBrand}
+            onSubmit={handleUpdateBrand}
+          />
+
+          <ModalCreateBrand
+            visible={isCreateModalOpen}
+            onClose={cancelCreateModal}
+            onSubmit={handleCreateBrand}
+          />
+          {/* Delete Confirmation Modal */}
+          <Modal
+            title="⚠️ Delete Brand"
+            open={isDeleteModalOpen}
+            onOk={handleDeleteBrandConfirm}
+            onCancel={cancelDeleteModal}
+            okButtonProps={{ danger: true }}
+            okText="Delete"
+          >
+            <p>Are you sure you want to delete this brand?</p>
+          </Modal>
+        </div>
+      </Spin>
+    </main>
   );
 };
 

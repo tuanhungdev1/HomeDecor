@@ -102,7 +102,8 @@ const useTable = <T,>({
   const handleTableChange = useCallback(
     (pagination: any, _filters: any, sorter: any) => {
       const updates: Partial<TableParams<T>> = {
-        pageNumber: pagination.current,
+        pageNumber:
+          tableParams.pageSize === pagination.pageSize ? pagination.current : 1,
         pageSize: pagination.pageSize,
       };
 
