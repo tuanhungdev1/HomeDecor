@@ -23,6 +23,7 @@ const ModalEditBrand: React.FC<ModalBrandProps> = ({
     // Reset form về giá trị ban đầu
     form.setFieldsValue(brand);
   };
+
   return (
     <Modal
       title="Update Brand"
@@ -41,7 +42,14 @@ const ModalEditBrand: React.FC<ModalBrandProps> = ({
           </Flex>
         ) : (
           <Flex gap={8} justify="end">
-            <Button onClick={() => setIsEdit(false)}>Close</Button>
+            <Button
+              onClick={() => {
+                setIsEdit(false);
+                onClose();
+              }}
+            >
+              Close
+            </Button>
             <Button type="primary" onClick={() => setIsEdit(true)}>
               Update Brand
             </Button>
@@ -53,7 +61,12 @@ const ModalEditBrand: React.FC<ModalBrandProps> = ({
         form={form}
         layout="vertical"
         onFinish={onSubmit}
-        initialValues={brand || {}}
+        initialValues={{
+          ...brand,
+          createdAt: brand?.createdAt
+            ? dayjs(brand.createdAt).format("DD-MM-YYYY")
+            : "-",
+        }}
       >
         <Form.Item
           name="name"
@@ -67,10 +80,6 @@ const ModalEditBrand: React.FC<ModalBrandProps> = ({
           <Input.TextArea disabled={!isEdit} />
         </Form.Item>
 
-        <Form.Item name="logoUrl" label="Logo URL">
-          <Input disabled={!isEdit} />
-        </Form.Item>
-
         <Form.Item name="isActive" label="Status">
           <Select disabled={!isEdit}>
             <Select.Option value={true}>Active</Select.Option>
@@ -78,14 +87,14 @@ const ModalEditBrand: React.FC<ModalBrandProps> = ({
           </Select>
         </Form.Item>
 
-        <Form.Item name="createdAt" label="Created At">
+        <Form.Item label="Created At">
           <Input
-            disabled={true}
             value={
               brand?.createdAt
                 ? dayjs(brand.createdAt).format("DD-MM-YYYY")
                 : "-"
             }
+            disabled={true}
           />
         </Form.Item>
       </Form>

@@ -41,17 +41,16 @@ function useFetch<T>(
       try {
         setLoading(true);
         setError(null);
-        console.log("Options: ", { ...options });
-        console.log("Config: ", { ...config });
-        console.log("Url ", url);
+
         const params = {
           ...options?.params,
           ...config?.params,
         };
+
         const response = await axiosInstance.request<ApiResponse<T>>({
-          ...options, // Spread options trước
-          ...config, // Ghi đè bằng config nếu có
           url, // Đặt URL riêng biệt
+          ...options,
+          ...config,
           params,
         });
 

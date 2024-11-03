@@ -144,6 +144,7 @@ const AdminBrand = () => {
   const handleUpdateBrand = async (brandForUpdates: BrandForUpdate) => {
     try {
       if (!selectedBrand) return;
+
       await fetchData({
         method: "PUT",
         url: API_ENDPOINTS.BRAND.UPDATE_BRAND(selectedBrand.id),
@@ -161,6 +162,7 @@ const AdminBrand = () => {
   const handleDeleteBrandConfirm = async () => {
     try {
       if (!selectedBrand) return;
+
       await fetchData({
         method: "DELETE",
         url: API_ENDPOINTS.BRAND.DELETE_BRAND_BY_ID(selectedBrand.id),
