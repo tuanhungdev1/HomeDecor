@@ -30,14 +30,16 @@ import { Brand } from "@/services/brandService";
 import useFetch from "@/hooks/useFetch";
 import { API_ENDPOINTS } from "@/constants";
 import { RequestParams } from "@/types/type";
-import { ModalCreateBrand, ModalEditBrand } from "@/modules/admin/brand";
 import AdminHeaderLayout from "@/layouts/AdminHeaderLayout";
 import { FiPlus } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { LuSearch } from "react-icons/lu";
 import { UserOutlined } from "@ant-design/icons";
 import { Supplier } from "@/services/supplierServices";
-import { ModalEditSupplier } from "@/modules/admin/supplier";
+import {
+  ModalCreateSupplier,
+  ModalEditSupplier,
+} from "@/modules/admin/supplier";
 
 const { RangePicker } = DatePicker;
 
@@ -158,7 +160,7 @@ const AdminSuppliers = () => {
       await fetchData({
         method: "PUT",
         url: API_ENDPOINTS.SUPPLIER.UPDATE_SUPPLIER(selectedSupplier.id),
-        data: brandForUpdates,
+        data: supplierForUpdates,
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -387,7 +389,7 @@ const AdminSuppliers = () => {
           </Flex>
 
           <Table
-            dataSource={suppliers || []}
+            dataSource={Array.isArray(suppliers) ? suppliers : []}
             className="mt-4"
             columns={columns}
             pagination={{
@@ -442,8 +444,8 @@ const AdminSuppliers = () => {
                 <RangePicker format={dateFormat} className="w-full" />
               </Form.Item>
 
-              <Form.Item name="name" label="Brand Name">
-                <Input placeholder="Filter by brand name" />
+              <Form.Item name="name" label="Supplier Name">
+                <Input placeholder="Filter by supplier name" />
               </Form.Item>
 
               <Form.Item name="orderBy" label="Order By">

@@ -94,6 +94,13 @@ const ModalEditSupplier: React.FC<ModalSupplierProps> = ({
         Name: supplier.name,
         Description: supplier.description,
         IsActive: supplier.isActive,
+        Phone: supplier.phone,
+        Address: supplier.address,
+        City: supplier.city,
+        Email: supplier.email,
+        ContactPerson: supplier.contactPerson,
+        Country: supplier.country,
+        CreatedAt: supplier.createdAt,
       });
       setImageUrl(supplier.logoUrl ?? null);
       setIsDeleteImage(false);
@@ -116,6 +123,7 @@ const ModalEditSupplier: React.FC<ModalSupplierProps> = ({
       open={visible}
       onCancel={handleClose}
       confirmLoading={isLoading}
+      width={"640px"}
       footer={
         isEdit ? (
           <Flex gap={8} justify="end">
@@ -239,155 +247,164 @@ const ModalEditSupplier: React.FC<ModalSupplierProps> = ({
             </div>
           </Form.Item>
 
-          <Form.Item
-            hasFeedback
-            name="name"
-            label="Supplier Name"
-            rules={[
-              { required: true, message: "Please input supplier name!" },
-              {
-                min: 3,
-                message: "Tên nhà cung cấp phải lớn hơn 3 kí tự!",
-              },
-              { max: 100, message: "Tên nhà cung cấp phải nhỏ hơn 100 kí tự" },
-            ]}
-          >
-            <Input disabled={!isEdit} />
-          </Form.Item>
-          <Form.Item
-            hasFeedback
-            name="contactPerson"
-            label="Contact Person"
-            rules={[
-              { required: true, message: "Please input Contact Person!" },
-              {
-                min: 3,
-                message: "Contact person phải lớn hơn 3 kí tự!",
-              },
-              { max: 100, message: "Contact person phải nhỏ hơn 100 kí tự!" },
-            ]}
-          >
-            <Input disabled={!isEdit} allowClear />
-          </Form.Item>
+          <div className="grid grid-cols-2 gap-x-6">
+            <Form.Item
+              hasFeedback
+              name="name"
+              label="Supplier Name"
+              rules={[
+                { required: true, message: "Please input supplier name!" },
+                {
+                  min: 3,
+                  message: "Tên nhà cung cấp phải lớn hơn 3 kí tự!",
+                },
+                {
+                  max: 100,
+                  message: "Tên nhà cung cấp phải nhỏ hơn 100 kí tự",
+                },
+              ]}
+            >
+              <Input disabled={!isEdit} />
+            </Form.Item>
 
-          <Form.Item
-            hasFeedback
-            name="email"
-            label="Email"
-            rules={[
-              { required: true, message: "Please input Email!" },
-              {
-                min: 3,
-                message: "Emai phải lớn hơn 3 kí tự!",
-              },
-              { max: 300, message: "Email phải nhỏ hơn 100 kí tự!" },
-              {
-                type: "email",
-                message: "Email bạn nhận không đúng định dạng!",
-              },
-            ]}
-          >
-            <Input.TextArea disabled={!isEdit} allowClear />
-          </Form.Item>
+            <Form.Item
+              hasFeedback
+              name="contactPerson"
+              label="Contact Person"
+              rules={[
+                { required: true, message: "Please input Contact Person!" },
+                {
+                  min: 3,
+                  message: "Contact person phải lớn hơn 3 kí tự!",
+                },
+                {
+                  max: 100,
+                  message: "Contact person phải nhỏ hơn 100 kí tự!",
+                },
+              ]}
+            >
+              <Input disabled={!isEdit} allowClear />
+            </Form.Item>
 
-          <Form.Item
-            hasFeedback
-            name="phone"
-            label="Phone"
-            rules={[
-              { required: true, message: "Please input Phone!" },
-              {
-                min: 8,
-                message: "Phone phải lớn hơn 8 số!",
-              },
-              { max: 15, message: "Phone phải nhỏ hơn 15 số!" },
-              {
-                pattern: /^[0-9]+$/,
-                message: "Phone chỉ được chứa các chữ số!",
-              },
-            ]}
-          >
-            <Input.TextArea disabled={!isEdit} allowClear />
-          </Form.Item>
+            <Form.Item
+              hasFeedback
+              name="email"
+              label="Email"
+              rules={[
+                { required: true, message: "Please input Email!" },
+                {
+                  min: 3,
+                  message: "Emai phải lớn hơn 3 kí tự!",
+                },
+                { max: 300, message: "Email phải nhỏ hơn 100 kí tự!" },
+                {
+                  type: "email",
+                  message: "Email bạn nhận không đúng định dạng!",
+                },
+              ]}
+            >
+              <Input disabled={!isEdit} allowClear />
+            </Form.Item>
 
-          <Form.Item
-            hasFeedback
-            name="address"
-            label="Address"
-            rules={[
-              {
-                min: 3,
-                message: "Address phải lớn hơn 3 kí tự!",
-              },
-              { max: 100, message: "Address phải nhỏ hơn 100 kí tự!" },
-            ]}
-          >
-            <Input.TextArea disabled={!isEdit} allowClear />
-          </Form.Item>
+            <Form.Item
+              hasFeedback
+              name="phone"
+              label="Phone"
+              rules={[
+                { required: true, message: "Please input Phone!" },
+                {
+                  min: 8,
+                  message: "Phone phải lớn hơn 8 số!",
+                },
+                { max: 15, message: "Phone phải nhỏ hơn 15 số!" },
+                {
+                  pattern: /^[0-9]+$/,
+                  message: "Phone chỉ được chứa các chữ số!",
+                },
+              ]}
+            >
+              <Input disabled={!isEdit} allowClear />
+            </Form.Item>
 
-          <Form.Item
-            hasFeedback
-            name="city"
-            label="City"
-            rules={[
-              {
-                min: 3,
-                message: "City phải lớn hơn 3 kí tự!",
-              },
-              { max: 100, message: "City phải nhỏ hơn 100 kí tự!" },
-            ]}
-          >
-            <Input.TextArea disabled={!isEdit} allowClear />
-          </Form.Item>
+            <Form.Item
+              hasFeedback
+              name="address"
+              label="Address"
+              rules={[
+                {
+                  min: 3,
+                  message: "Address phải lớn hơn 3 kí tự!",
+                },
+                { max: 100, message: "Address phải nhỏ hơn 100 kí tự!" },
+              ]}
+            >
+              <Input disabled={!isEdit} allowClear />
+            </Form.Item>
 
-          <Form.Item
-            hasFeedback
-            name="country"
-            label="Country"
-            rules={[
-              {
-                min: 3,
-                message: "Country phải lớn hơn 3 kí tự!",
-              },
-              { max: 100, message: "Country phải nhỏ hơn 100 kí tự!" },
-            ]}
-          >
-            <Input.TextArea disabled={!isEdit} allowClear />
-          </Form.Item>
+            <Form.Item
+              hasFeedback
+              name="city"
+              label="City"
+              rules={[
+                {
+                  min: 3,
+                  message: "City phải lớn hơn 3 kí tự!",
+                },
+                { max: 100, message: "City phải nhỏ hơn 100 kí tự!" },
+              ]}
+            >
+              <Input disabled={!isEdit} allowClear />
+            </Form.Item>
 
-          <Form.Item
-            hasFeedback
-            name="description"
-            label="Description"
-            rules={[
-              { required: true, message: "Please input Description!" },
-              {
-                min: 3,
-                message: "Description phải lớn hơn 3 kí tự!",
-              },
-              { max: 300, message: "Description phải nhỏ hơn 100 kí tự!" },
-            ]}
-          >
-            <Input.TextArea disabled={!isEdit} />
-          </Form.Item>
+            <Form.Item
+              hasFeedback
+              name="country"
+              label="Country"
+              rules={[
+                {
+                  min: 3,
+                  message: "Country phải lớn hơn 3 kí tự!",
+                },
+                { max: 100, message: "Country phải nhỏ hơn 100 kí tự!" },
+              ]}
+            >
+              <Input disabled={!isEdit} allowClear />
+            </Form.Item>
 
-          <Form.Item name="isActive" label="Status">
-            <Select disabled={!isEdit}>
-              <Select.Option value={true}>Active</Select.Option>
-              <Select.Option value={false}>Inactive</Select.Option>
-            </Select>
-          </Form.Item>
+            <Form.Item
+              hasFeedback
+              name="description"
+              label="Description"
+              rules={[
+                { required: true, message: "Please input Description!" },
+                {
+                  min: 3,
+                  message: "Description phải lớn hơn 3 kí tự!",
+                },
+                { max: 300, message: "Description phải nhỏ hơn 100 kí tự!" },
+              ]}
+            >
+              <Input.TextArea disabled={!isEdit} />
+            </Form.Item>
 
-          <Form.Item label="Created At">
-            <Input
-              value={
-                supplier?.createdAt
-                  ? dayjs(supplier.createdAt).format("DD-MM-YYYY")
-                  : "-"
-              }
-              disabled={true}
-            />
-          </Form.Item>
+            <Form.Item name="isActive" label="Status">
+              <Select disabled={!isEdit}>
+                <Select.Option value={true}>Active</Select.Option>
+                <Select.Option value={false}>Inactive</Select.Option>
+              </Select>
+            </Form.Item>
+
+            <Form.Item label="Created At">
+              <Input
+                value={
+                  supplier?.createdAt
+                    ? dayjs(supplier.createdAt).format("DD-MM-YYYY")
+                    : "-"
+                }
+                disabled={true}
+              />
+            </Form.Item>
+          </div>
         </Form>
       </Spin>
     </Modal>

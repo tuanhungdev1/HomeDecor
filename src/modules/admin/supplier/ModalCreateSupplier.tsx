@@ -1,4 +1,3 @@
-import { BrandForCreate } from "@/services/brandService";
 import {
   Button,
   Form,
@@ -13,6 +12,7 @@ import { RcFile } from "antd/lib/upload";
 import { PlusOutlined } from "@ant-design/icons";
 import { useRef, useState } from "react";
 import { IoClose } from "react-icons/io5";
+import { SupplierForCreate } from "@/services/supplierServices";
 
 interface ModalCreateProps {
   visible: boolean;
@@ -43,13 +43,19 @@ const ModalCreateSupplier: React.FC<ModalCreateProps> = ({
   // Handle image removal
   const handleRemoveImage = () => setImageUrl(null);
 
-  const handleSubmit = (values: BrandForCreate) => {
+  const handleSubmit = (values: SupplierForCreate) => {
     const formData = new FormData();
 
     if (selectedFile) {
       formData.append("logoFile", selectedFile);
     }
     formData.append("name", values.name);
+    formData.append("contactPerson", values.contactPerson);
+    formData.append("phone", values.phone);
+    formData.append("address", values.address ?? "");
+    formData.append("city", values.city ?? "");
+    formData.append("email", values.email);
+    formData.append("country", values.country ?? "");
     formData.append("description", values.description ?? "");
     formData.append("isActive", values.isActive?.toString() ?? "");
 
@@ -62,6 +68,7 @@ const ModalCreateSupplier: React.FC<ModalCreateProps> = ({
         title="Create Brand"
         open={visible}
         className="select-none"
+        width={"640px"}
         onCancel={() => {
           onClose();
           form.resetFields();
@@ -177,59 +184,163 @@ const ModalCreateSupplier: React.FC<ModalCreateProps> = ({
                 }}
               />
             </div>
+            <div className="grid grid-cols-2 gap-x-6">
+              <Form.Item
+                name="name"
+                label="Brand Name"
+                hasFeedback
+                rules={[
+                  { required: true, message: "Please input brand name!" },
+                  {
+                    min: 3,
+                    message: "Tên Brand phải hơn hơn 3 kí tự!",
+                  },
+                  {
+                    max: 100,
+                    message: "Tên Brand phải trong khoảng 3 đến 100 kí tự!",
+                  },
+                ]}
+              >
+                <Input placeholder="Brand Name" maxLength={100} minLength={5} />
+              </Form.Item>
+              <Form.Item
+                hasFeedback
+                name="contactPerson"
+                label="Contact Person"
+                rules={[
+                  { required: true, message: "Please input Contact Person!" },
+                  {
+                    min: 3,
+                    message: "Contact person phải lớn hơn 3 kí tự!",
+                  },
+                  {
+                    max: 100,
+                    message: "Contact person phải nhỏ hơn 100 kí tự!",
+                  },
+                ]}
+              >
+                <Input allowClear />
+              </Form.Item>
 
-            <Form.Item
-              name="name"
-              label="Brand Name"
-              hasFeedback
-              rules={[
-                { required: true, message: "Please input brand name!" },
-                {
-                  min: 3,
-                  message: "Tên Brand phải hơn hơn 3 kí tự!",
-                },
-                {
-                  max: 100,
-                  message: "Tên Brand phải trong khoảng 3 đến 100 kí tự!",
-                },
-              ]}
-            >
-              <Input placeholder="Brand Name" maxLength={100} minLength={5} />
-            </Form.Item>
+              <Form.Item
+                hasFeedback
+                name="email"
+                label="Email"
+                rules={[
+                  { required: true, message: "Please input Email!" },
+                  {
+                    min: 3,
+                    message: "Emai phải lớn hơn 3 kí tự!",
+                  },
+                  { max: 300, message: "Email phải nhỏ hơn 100 kí tự!" },
+                  {
+                    type: "email",
+                    message: "Email bạn nhận không đúng định dạng!",
+                  },
+                ]}
+              >
+                <Input allowClear />
+              </Form.Item>
 
-            <Form.Item
-              name="description"
-              label="Description"
-              hasFeedback
-              rules={[
-                { required: true, message: "Please input description!" },
-                {
-                  min: 3,
-                  message: "Mô tả phải hơn hơn 5 kí tự!",
-                },
-                {
-                  max: 300,
-                  message: "Mô tả phải trong khoảng 3 đến 300 kí tự!",
-                },
-              ]}
-            >
-              <Input.TextArea
-                placeholder="Brand Description"
-                maxLength={300}
-                minLength={5}
-              />
-            </Form.Item>
+              <Form.Item
+                hasFeedback
+                name="phone"
+                label="Phone"
+                rules={[
+                  { required: true, message: "Please input Phone!" },
+                  {
+                    min: 8,
+                    message: "Phone phải lớn hơn 8 số!",
+                  },
+                  { max: 15, message: "Phone phải nhỏ hơn 15 số!" },
+                  {
+                    pattern: /^[0-9]+$/,
+                    message: "Phone chỉ được chứa các chữ số!",
+                  },
+                ]}
+              >
+                <Input allowClear />
+              </Form.Item>
 
-            <Form.Item
-              name="isActive"
-              label="Status"
-              rules={[{ required: true, message: "Please select a status!" }]}
-            >
-              <Select allowClear placeholder="Selected Status">
-                <Select.Option value={true}>Active</Select.Option>
-                <Select.Option value={false}>Inactive</Select.Option>
-              </Select>
-            </Form.Item>
+              <Form.Item
+                hasFeedback
+                name="address"
+                label="Address"
+                rules={[
+                  {
+                    min: 3,
+                    message: "Address phải lớn hơn 3 kí tự!",
+                  },
+                  { max: 100, message: "Address phải nhỏ hơn 100 kí tự!" },
+                ]}
+              >
+                <Input allowClear />
+              </Form.Item>
+
+              <Form.Item
+                hasFeedback
+                name="city"
+                label="City"
+                rules={[
+                  {
+                    min: 3,
+                    message: "City phải lớn hơn 3 kí tự!",
+                  },
+                  { max: 100, message: "City phải nhỏ hơn 100 kí tự!" },
+                ]}
+              >
+                <Input allowClear />
+              </Form.Item>
+
+              <Form.Item
+                hasFeedback
+                name="country"
+                label="Country"
+                rules={[
+                  {
+                    min: 3,
+                    message: "Country phải lớn hơn 3 kí tự!",
+                  },
+                  { max: 100, message: "Country phải nhỏ hơn 100 kí tự!" },
+                ]}
+              >
+                <Input allowClear />
+              </Form.Item>
+
+              <Form.Item
+                name="description"
+                label="Description"
+                hasFeedback
+                rules={[
+                  { required: true, message: "Please input description!" },
+                  {
+                    min: 3,
+                    message: "Mô tả phải hơn hơn 5 kí tự!",
+                  },
+                  {
+                    max: 300,
+                    message: "Mô tả phải trong khoảng 3 đến 300 kí tự!",
+                  },
+                ]}
+              >
+                <Input.TextArea
+                  placeholder="Brand Description"
+                  maxLength={300}
+                  minLength={5}
+                />
+              </Form.Item>
+
+              <Form.Item
+                name="isActive"
+                label="Status"
+                rules={[{ required: true, message: "Please select a status!" }]}
+              >
+                <Select allowClear placeholder="Selected Status">
+                  <Select.Option value={true}>Active</Select.Option>
+                  <Select.Option value={false}>Inactive</Select.Option>
+                </Select>
+              </Form.Item>
+            </div>
           </Form>
         </Spin>
       </Modal>
