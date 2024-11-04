@@ -1,46 +1,220 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useModal } from "@/hooks/useModal";
-import { Button, Flex, Modal, Space, Tag, Typography } from "antd";
-import Table, { ColumnProps } from "antd/es/table";
+import {
+  Button,
+  Flex,
+  Input,
+  Space,
+  Tag,
+  Modal,
+  Form,
+  message,
+  DatePicker,
+  Select,
+  Drawer,
+  Spin,
+  Alert,
+  Avatar,
+} from "antd";
 import { useState } from "react";
-import { LuEye, LuFileEdit, LuListFilter } from "react-icons/lu";
+import Table, { ColumnProps } from "antd/es/table";
+import { LuFileEdit, LuListFilter } from "react-icons/lu";
 import { AiOutlineDelete } from "react-icons/ai";
+import Title from "antd/es/typography/Title";
+import useTable from "@/hooks/useTable";
+import * as XLSX from "xlsx";
+import { useModal } from "@/hooks/useModal";
+import dayjs from "dayjs";
+import { Brand } from "@/services/brandService";
+import useFetch from "@/hooks/useFetch";
+import { API_ENDPOINTS } from "@/constants";
+import { RequestParams } from "@/types/type";
+import { ModalCreateBrand, ModalEditBrand } from "@/modules/admin/brand";
+import AdminHeaderLayout from "@/layouts/AdminHeaderLayout";
+import { FiPlus } from "react-icons/fi";
+import { Link } from "react-router-dom";
+import { LuSearch } from "react-icons/lu";
+import { UserOutlined } from "@ant-design/icons";
+import { Supplier } from "@/services/supplierServices";
+import { ModalEditSupplier } from "@/modules/admin/supplier";
 
-const { Title } = Typography;
+const { RangePicker } = DatePicker;
 
-export interface Supplier {
-  id: number;
-  companyName: string;
-  contactPerson: string;
-  email: string;
-  phone: string;
-  address: string;
-  taxId: string;
-  status: "Active" | "Inactive";
-  lastOrderDate: string;
-  createdAt: Date;
-  updatedAt: Date;
+interface FilterValues {
+  isActive?: boolean;
+  dateRange?: [string, string];
+  name?: string;
+  orderBy?: "asc" | "desc";
+  sortKey?: "id" | "name" | "description" | "createdAt";
+}
+
+const dateFormat = "DD/MM/YYYY";
+
+interface SupplierRequestParams extends RequestParams {
+  name?: string;
 }
 
 const AdminSuppliers = () => {
-  const { isModalVisble, handleCancel, showModal } = useModal();
+  // Modal states
+  const {
+    isModalVisble: isDeleteModalOpen,
+    showModal: showDeleteModal,
+    handleCancel: cancelDeleteModal,
+  } = useModal();
+
+  const {
+    isModalVisble: isEditModalOpen,
+    showModal: showEditModal,
+    handleCancel: cancelEditModal,
+  } = useModal();
+
+  const {
+    isModalVisble: isCreateModalOpen,
+    showModal: showCreateModal,
+    handleCancel: cancelCreateModal,
+  } = useModal();
+  const [searchTemp, setSearchTemp] = useState("");
+  const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
+  const [filterValues, setFilterValues] = useState<FilterValues>({});
   const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(
     null
   );
-  const [loading, setLoading] = useState(false);
+  const [params, setParams] = useState<SupplierRequestParams>({});
+  const [filterForm] = Form.useForm();
+  const {
+    pageSize,
+    pageNumber,
+    searchTerm,
+    name,
+    sortKey,
+    orderBy,
+    setPageNumber,
+    handleTableChange,
+    resetTable,
+  } = useTable<Brand>({
+    initialPageSize: 10,
+    defaultSortKey: "id",
+    onParamsChange: (tableParams) => {
+      setParams((prev) => ({
+        ...prev,
+        pageSize: tableParams.pageSize,
+        pageNumber: tableParams.pageNumber,
+        searchTerm: tableParams.searchTerm,
+        name: tableParams.name,
+        sortKey: tableParams.sortKey,
+        sortOrder: tableParams.orderBy,
+      }));
+    },
+  });
 
-  const handleViewDetails = (supplier: Supplier) => {
-    setLoading(true);
-    showModal();
+  const {
+    loading,
+    data: suppliers,
+    pagination,
+    error,
+    fetchData,
+  } = useFetch<Supplier[]>(
+    API_ENDPOINTS.SUPPLIER.GET_ALL_SUPPLIER,
+    {
+      params: {
+        ...params,
+      },
+    },
+    false
+  );
 
-    setTimeout(() => {
-      setSelectedSupplier(supplier);
-      setLoading(false);
-    }, 1000);
+  const handleSearch = () => {
+    setParams((prev) => ({
+      ...prev,
+      searchTerm: searchTemp,
+    }));
   };
 
-  const handleOk = () => {
-    handleCancel();
+  // CRUD Operations
+  const handleCreateSupplier = async (supplierForCreate: FormData) => {
+    try {
+      await fetchData({
+        method: "POST",
+        data: supplierForCreate,
+
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      message.success("Supplier created successfully");
+      cancelCreateModal();
+      fetchData();
+    } catch (error) {
+      message.error("Failed to create supplier");
+    }
+  };
+
+  // Xử lý update brand
+  const handleUpdateSupplier = async (supplierForUpdates: FormData) => {
+    try {
+      if (!selectedSupplier) return;
+
+      await fetchData({
+        method: "PUT",
+        url: API_ENDPOINTS.SUPPLIER.UPDATE_SUPPLIER(selectedSupplier.id),
+        data: brandForUpdates,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      message.success("Brand updated successfully");
+      cancelEditModal();
+      fetchData();
+    } catch (error) {
+      message.error("Failed to update brand");
+    }
+  };
+
+  // Xử lý delete brand
+  const handleDeleteBrandConfirm = async () => {
+    try {
+      if (!selectedSupplier) return;
+
+      await fetchData({
+        method: "DELETE",
+        url: API_ENDPOINTS.SUPPLIER.DELETE_SUPPLIER_BY_ID(selectedSupplier.id),
+      });
+      message.success("Supplier deleted successfully");
+      cancelDeleteModal();
+      fetchData();
+    } catch (error) {
+      message.error("Failed to delete Supplier");
+    }
+  };
+
+  // Handle filter submit
+  const handleFilterSubmit = async (values: FilterValues) => {
+    const { dateRange, ...restValues } = values;
+
+    const filterParams: SupplierRequestParams = {
+      ...restValues,
+      startDate: dateRange?.[0]
+        ? dayjs(dateRange[0]).format("DD-MM-YYYY")
+        : undefined,
+      endDate: dateRange?.[1]
+        ? dayjs(dateRange[1]).format("DD-MM-YYYY")
+        : undefined,
+    };
+    setParams(filterParams);
+    setIsFilterDrawerOpen(false);
+  };
+
+  const handleClearFillters = () => {
+    filterForm.resetFields();
+  };
+
+  const handleResetFilters = () => {
+    filterForm.resetFields();
+    setFilterValues({});
+    resetTable();
+    setParams({});
+    setSearchTemp("");
   };
 
   const columns: ColumnProps<Supplier>[] = [
@@ -50,9 +224,20 @@ const AdminSuppliers = () => {
       key: "id",
     },
     {
-      title: "Company Name",
-      dataIndex: "companyName",
-      key: "companyName",
+      title: "Logo URL",
+      dataIndex: "logoUrl",
+      key: "logoUrl",
+      render: (logoUrl: string) =>
+        logoUrl ? (
+          <Avatar size={50} src={<img src={logoUrl} />} />
+        ) : (
+          <Avatar size={50} icon={<UserOutlined />} />
+        ),
+    },
+    {
+      title: "Supplier Name",
+      dataIndex: "name",
+      key: "name",
     },
     {
       title: "Contact Person",
@@ -65,176 +250,267 @@ const AdminSuppliers = () => {
       key: "email",
     },
     {
-      title: "Phone",
-      dataIndex: "phone",
-      key: "phone",
+      title: "Address",
+      dataIndex: "address",
+      key: "address",
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
     },
     {
       title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status: string) => (
-        <Tag color={status === "Active" ? "green" : "red"}>{status}</Tag>
+      dataIndex: "isActive",
+      key: "isActive",
+      render: (isActive: boolean) => (
+        <Tag color={isActive ? "green" : "red"}>
+          {isActive ? "Active" : "Inactive"}
+        </Tag>
       ),
     },
-
     {
-      title: "Last Order",
-      dataIndex: "lastOrderDate",
-      key: "lastOrderDate",
-    },
+      title: "Created At",
+      dataIndex: "createdAt",
+      key: "createdAt",
 
+      render: (date: string) => dayjs(date).format("DD-MM-YYYY"),
+    },
     {
       title: "Action",
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <Button icon={<LuEye />} onClick={() => handleViewDetails(record)} />
-          <Button icon={<LuFileEdit />} />
           <Button
-            variant="outlined"
-            color="danger"
+            icon={<LuFileEdit />}
+            onClick={() => {
+              setSelectedSupplier(record);
+              showEditModal();
+            }}
+          />
+          <Button
+            danger
             icon={<AiOutlineDelete />}
+            onClick={() => {
+              setSelectedSupplier(record);
+              showDeleteModal();
+            }}
           />
         </Space>
       ),
     },
   ];
 
-  const suppliersData: Supplier[] = [
-    {
-      id: 1,
-      companyName: "ABC Supplies Co.",
-      contactPerson: "John Doe",
-      email: "johndoe@abc.com",
-      phone: "123-456-7890",
-      address: "123 Main St, Cityville",
-      taxId: "ABC123456",
-      status: "Active",
-      lastOrderDate: "2024-10-01",
-      createdAt: new Date("2023-01-15"),
-      updatedAt: new Date("2024-01-12"),
-    },
-    {
-      id: 2,
-      companyName: "XYZ Distributors",
-      contactPerson: "Jane Smith",
-      email: "janesmith@xyz.com",
-      phone: "987-654-3210",
-      address: "456 Broadway, Metropolis",
-      taxId: "XYZ987654",
-      status: "Inactive",
-      lastOrderDate: "2023-08-10",
-      createdAt: new Date("2022-06-25"),
-      updatedAt: new Date("2023-09-05"),
-    },
-    {
-      id: 3,
-      companyName: "QuickShip Logistics",
-      contactPerson: "Emily Davis",
-      email: "emily@quickship.com",
-      phone: "321-654-0987",
-      address: "789 Commerce St, Industrial City",
-      taxId: "QSL098765",
-      status: "Active",
-      lastOrderDate: "2024-05-15",
-      createdAt: new Date("2021-12-01"),
-      updatedAt: new Date("2024-04-20"),
-    },
-    {
-      id: 4,
-      companyName: "Global Parts Inc.",
-      contactPerson: "Michael Lee",
-      email: "mikelee@globalparts.com",
-      phone: "111-222-3333",
-      address: "100 Industrial Ave, Tech Valley",
-      taxId: "GPI112233",
-      status: "Inactive",
-      lastOrderDate: "2023-12-05",
-      createdAt: new Date("2020-05-12"),
-      updatedAt: new Date("2024-06-01"),
-    },
-    {
-      id: 5,
-      companyName: "Premium Goods",
-      contactPerson: "Sophia Brown",
-      email: "sophiabrown@premiumgoods.com",
-      phone: "444-555-6666",
-      address: "250 Luxury Blvd, Uptown",
-      taxId: "PG445566",
-      status: "Active",
-      lastOrderDate: "2024-09-20",
-      createdAt: new Date("2022-09-30"),
-      updatedAt: new Date("2024-09-15"),
-    },
-  ];
+  const handleDownload = () => {
+    if (!suppliers?.length) {
+      message.warning("No data to dowload");
+      return;
+    }
+    const ws = XLSX.utils.json_to_sheet(suppliers ?? []);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Suppliers");
+    XLSX.writeFile(wb, `brands_${dayjs().format("DD-MM-YYYY")}.xlsx`);
+  };
+
+  if (error) {
+    return <Alert type="error" message={error} />;
+  }
 
   return (
-    <div className="">
-      <Table
-        dataSource={suppliersData}
-        columns={columns}
-        title={() => (
+    <main className="px-10">
+      <AdminHeaderLayout
+        title="Suppliers Manager"
+        rightSide={
+          <Button
+            variant="solid"
+            color="primary"
+            size="large"
+            className="h-12 w-[200px] text-lg flex items-center"
+          >
+            <FiPlus size={24} />
+            Add Product
+          </Button>
+        }
+        items={[
+          {
+            title: <Link to={"/admin/dashboard"}>Dashboard</Link>,
+          },
+          {
+            title: <Link to={"/admin/suppliers"}>Manager</Link>,
+          },
+          {
+            title: <Link to={"/admin/suppliers"}>Suppliers</Link>,
+          },
+        ]}
+      />
+      <Spin spinning={loading} delay={500}>
+        <div className="w-full h-full mt-8 bg-white">
           <Flex align="center" justify="space-between">
             <Title level={2}>Suppliers</Title>
             <Flex align="center" gap={12}>
-              <Button size="large" type="primary">
-                Add Supplier
+              <div className="flex items-center gap-3" onClick={handleSearch}>
+                <Input
+                  placeholder="Search"
+                  value={searchTemp}
+                  size="large"
+                  allowClear
+                  onChange={(e) => setSearchTemp(e.target.value)}
+                />
+                <div className="border rounded-full h-[40px] w-[50px] flex items-center hover:border-blue-500 transition-all hover:text-blue-500 justify-center cursor-pointer">
+                  <LuSearch size={18} />
+                </div>
+              </div>
+              <Button
+                size="large"
+                onClick={handleResetFilters}
+                type={"primary"}
+              >
+                Reset
               </Button>
-              <Button size="large" icon={<LuListFilter size={24} />}>
+              <Button size="large" onClick={showCreateModal} type={"primary"}>
+                Create Supplier
+              </Button>
+              <Button
+                size="large"
+                icon={<LuListFilter size={24} />}
+                onClick={() => setIsFilterDrawerOpen(true)}
+                type={
+                  Object.keys(filterValues).length > 0 ? "primary" : "default"
+                }
+              >
                 Filters
               </Button>
-              <Button size="large">Download all</Button>
+              <Button size="large" onClick={handleDownload}>
+                Download all
+              </Button>
             </Flex>
           </Flex>
-        )}
-      />
 
-      <Modal
-        loading={loading}
-        title="Supplier Details"
-        visible={isModalVisble}
-        onCancel={handleCancel}
-        footer={[
-          <Button key="close" size="large" onClick={handleCancel}>
-            Close
-          </Button>,
-          <Button key="update" size="large" type="primary" onClick={handleOk}>
-            Update
-          </Button>,
-        ]}
-        width={800}
-      >
-        {" "}
-        {selectedSupplier && (
-          <div>
-            <h3>{selectedSupplier.companyName}</h3>
-            <p>
-              <strong>Contact:</strong> {selectedSupplier.contactPerson}
-            </p>
-            <p>
-              <strong>Email:</strong> {selectedSupplier.email}
-            </p>
-            <p>
-              <strong>Phone:</strong> {selectedSupplier.phone}
-            </p>
-            <p>
-              <strong>Address:</strong> {selectedSupplier.address}
-            </p>
-            <p>
-              <strong>Tax ID:</strong> {selectedSupplier.taxId}
-            </p>
-            <p>
-              <strong>Status:</strong> {selectedSupplier.status}
-            </p>
+          <Table
+            dataSource={suppliers || []}
+            className="mt-4"
+            columns={columns}
+            pagination={{
+              current: pageNumber,
+              pageSize: pageSize,
+              total: pagination?.totalCount,
+              pageSizeOptions: [5, 10, 15],
+              onChange: (page) => setPageNumber(page),
+              showSizeChanger: true,
+              onShowSizeChange: (_current, _size) => {
+                setPageNumber(1);
+              },
+            }}
+            onChange={(_pagination, _filters, sorter: any) => {
+              handleTableChange(_pagination, _filters, sorter);
 
-            <p>
-              <strong>Last Order:</strong> {selectedSupplier.lastOrderDate}
-            </p>
-          </div>
-        )}
-      </Modal>
-    </div>
+              setParams((prev) => ({
+                ...prev,
+                name: name,
+                pageSize: pageSize,
+                pageNumber: pageNumber,
+                searchTerm: searchTerm,
+                sortKey: sortKey,
+                sortOrder: orderBy,
+              }));
+            }}
+            rowKey={"id"}
+          />
+
+          {/* Filter Drawer */}
+          <Drawer
+            title="Filter Suppliers"
+            placement="right"
+            onClose={() => setIsFilterDrawerOpen(false)}
+            open={isFilterDrawerOpen}
+            width={400}
+          >
+            <Form
+              form={filterForm}
+              layout="vertical"
+              onFinish={handleFilterSubmit}
+              initialValues={filterValues}
+            >
+              <Form.Item name="isActive" label="Status">
+                <Select allowClear placeholder="Selected Status">
+                  <Select.Option value={true}>Active</Select.Option>
+                  <Select.Option value={false}>InActive</Select.Option>
+                </Select>
+              </Form.Item>
+
+              <Form.Item name="dateRange" label="Created Date Range">
+                <RangePicker format={dateFormat} className="w-full" />
+              </Form.Item>
+
+              <Form.Item name="name" label="Brand Name">
+                <Input placeholder="Filter by brand name" />
+              </Form.Item>
+
+              <Form.Item name="orderBy" label="Order By">
+                <Select allowClear placeholder="Select Order By">
+                  <Select.Option value="asc">Asc</Select.Option>
+                  <Select.Option value="desc">Desc</Select.Option>
+                </Select>
+              </Form.Item>
+
+              <Form.Item name="sortKey" label="Sort Key">
+                <Select allowClear placeholder="Select Sort Key">
+                  <Select.Option value="id">ID</Select.Option>
+                  <Select.Option value="name">Name</Select.Option>
+                  <Select.Option value="email">Email</Select.Option>
+                  <Select.Option value="contactPerson">
+                    Contact Person
+                  </Select.Option>
+                  <Select.Option value="phone">Phone</Select.Option>
+                  <Select.Option value="address">Adress</Select.Option>
+                  <Select.Option value="description">Description</Select.Option>
+                  <Select.Option value="createdAt">Created At</Select.Option>
+                </Select>
+              </Form.Item>
+
+              <Flex gap={8}>
+                <Button type="primary" htmlType="submit" loading={loading}>
+                  Apply Filters
+                </Button>
+                <Button onClick={handleClearFillters} loading={loading}>
+                  Reset
+                </Button>
+              </Flex>
+            </Form>
+          </Drawer>
+
+          {/* Edit Modal */}
+          <ModalEditSupplier
+            visible={isEditModalOpen}
+            onClose={cancelEditModal}
+            supplier={selectedSupplier}
+            onSubmit={handleUpdateSupplier}
+            isLoading={loading}
+          />
+
+          <ModalCreateSupplier
+            visible={isCreateModalOpen}
+            onClose={cancelCreateModal}
+            onSubmit={handleCreateSupplier}
+            isLoading={loading}
+          />
+          {/* Delete Confirmation Modal */}
+          <Modal
+            title="⚠️ Delete Supplier"
+            open={isDeleteModalOpen}
+            onOk={handleDeleteBrandConfirm}
+            onCancel={cancelDeleteModal}
+            okButtonProps={{ danger: true }}
+            okText="Delete"
+            confirmLoading={loading}
+          >
+            <Spin delay={500} spinning={loading}>
+              <p>Are you sure you want to delete this Supplier?</p>
+            </Spin>
+          </Modal>
+        </div>
+      </Spin>
+    </main>
   );
 };
 

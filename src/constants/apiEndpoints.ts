@@ -51,4 +51,17 @@ export const API_ENDPOINTS = {
     CREATE_BRAND: `${API_BASE_URL}/brand`,
   },
   // BRAND
+
+  // SUPPLIER
+  SUPPLIER: {
+    GET_ALL_SUPPLIER: `${API_BASE_URL}/supplier`,
+    GET_SUPPLIER_BY_ID: (supplierId: number) =>
+      `${API_BASE_URL}/supplier/${supplierId}`,
+    UPDATE_SUPPLIER: (supplierId: number) =>
+      `${API_BASE_URL}/supplier/${supplierId}`,
+    DELETE_SUPPLIER_BY_ID: (supplierId: number) =>
+      `${API_BASE_URL}/supplier/${supplierId}`,
+    CREATE_SUPPLIER: `${API_BASE_URL}/supplier`,
+  },
+  // SUPPLIER
 };
