@@ -42,16 +42,15 @@ function useFetch<T>(
         setLoading(true);
         setError(null);
 
-        const params = {
-          ...options?.params,
-          ...config?.params,
-        };
+        const params = config
+          ? {
+              ...config,
+            }
+          : { ...options };
 
         const response = await axiosInstance.request<ApiResponse<T>>({
-          url, // Đặt URL riêng biệt
-          ...options,
-          ...config,
-          params,
+          url,
+          ...params,
         });
 
         setData(response.data.data);
@@ -59,7 +58,10 @@ function useFetch<T>(
       } catch (err) {
         const error = err as AxiosError;
         setError(error.message);
-        console.error("Fetch Error:", error);
+        console.error(
+          "Fetch Error:",
+          JSON.parse(error.response?.request.response)
+        );
       } finally {
         setLoading(false);
       }

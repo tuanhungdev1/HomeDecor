@@ -15,6 +15,7 @@ import {
   Drawer,
   Spin,
   Alert,
+  Avatar,
 } from "antd";
 import { useState } from "react";
 import Table, { ColumnProps } from "antd/es/table";
@@ -25,7 +26,7 @@ import useTable from "@/hooks/useTable";
 import * as XLSX from "xlsx";
 import { useModal } from "@/hooks/useModal";
 import dayjs from "dayjs";
-import { Brand, BrandForCreate, BrandForUpdate } from "@/services/brandService";
+import { Brand } from "@/services/brandService";
 import useFetch from "@/hooks/useFetch";
 import { API_ENDPOINTS } from "@/constants";
 import { RequestParams } from "@/types/type";
@@ -34,6 +35,7 @@ import AdminHeaderLayout from "@/layouts/AdminHeaderLayout";
 import { FiPlus } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { LuSearch } from "react-icons/lu";
+import { UserOutlined } from "@ant-design/icons";
 
 const { RangePicker } = DatePicker;
 
@@ -126,11 +128,15 @@ const AdminBrand = () => {
   };
 
   // CRUD Operations
-  const handleCreateBrand = async (brandForCreate: BrandForCreate) => {
+  const handleCreateBrand = async (brandForCreate: FormData) => {
     try {
       await fetchData({
         method: "POST",
         data: brandForCreate,
+
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
       message.success("Brand created successfully");
       cancelCreateModal();
@@ -141,7 +147,7 @@ const AdminBrand = () => {
   };
 
   // Xử lý update brand
-  const handleUpdateBrand = async (brandForUpdates: BrandForUpdate) => {
+  const handleUpdateBrand = async (brandForUpdates: FormData) => {
     try {
       if (!selectedBrand) return;
 
@@ -149,6 +155,9 @@ const AdminBrand = () => {
         method: "PUT",
         url: API_ENDPOINTS.BRAND.UPDATE_BRAND(selectedBrand.id),
         data: brandForUpdates,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
       message.success("Brand updated successfully");
       cancelEditModal();
@@ -189,8 +198,11 @@ const AdminBrand = () => {
         : undefined,
     };
     setParams(filterParams);
-    setFilterValues(values);
     setIsFilterDrawerOpen(false);
+  };
+
+  const handleClearFillters = () => {
+    filterForm.resetFields();
   };
 
   const handleResetFilters = () => {
@@ -198,6 +210,7 @@ const AdminBrand = () => {
     setFilterValues({});
     resetTable();
     setParams({});
+    setSearchTemp("");
   };
 
   const columns: ColumnProps<Brand>[] = [
@@ -210,6 +223,12 @@ const AdminBrand = () => {
       title: "Logo URL",
       dataIndex: "logoUrl",
       key: "logoUrl",
+      render: (logoUrl: string) =>
+        logoUrl ? (
+          <Avatar size={50} src={<img src={logoUrl} />} />
+        ) : (
+          <Avatar size={50} icon={<UserOutlined />} />
+        ),
     },
     {
       title: "Brand Name",
@@ -322,6 +341,13 @@ const AdminBrand = () => {
                   <LuSearch size={18} />
                 </div>
               </div>
+              <Button
+                size="large"
+                onClick={handleResetFilters}
+                type={"primary"}
+              >
+                Reset
+              </Button>
               <Button size="large" onClick={showCreateModal} type={"primary"}>
                 Create Brand
               </Button>
@@ -418,10 +444,12 @@ const AdminBrand = () => {
               </Form.Item>
 
               <Flex gap={8}>
-                <Button type="primary" htmlType="submit">
+                <Button type="primary" htmlType="submit" loading={loading}>
                   Apply Filters
                 </Button>
-                <Button onClick={handleResetFilters}>Reset</Button>
+                <Button onClick={handleClearFillters} loading={loading}>
+                  Reset
+                </Button>
               </Flex>
             </Form>
           </Drawer>
@@ -432,12 +460,14 @@ const AdminBrand = () => {
             onClose={cancelEditModal}
             brand={selectedBrand}
             onSubmit={handleUpdateBrand}
+            isLoading={loading}
           />
 
           <ModalCreateBrand
             visible={isCreateModalOpen}
             onClose={cancelCreateModal}
             onSubmit={handleCreateBrand}
+            isLoading={loading}
           />
           {/* Delete Confirmation Modal */}
           <Modal
@@ -447,8 +477,11 @@ const AdminBrand = () => {
             onCancel={cancelDeleteModal}
             okButtonProps={{ danger: true }}
             okText="Delete"
+            confirmLoading={loading}
           >
-            <p>Are you sure you want to delete this brand?</p>
+            <Spin delay={500} spinning={loading}>
+              <p>Are you sure you want to delete this brand?</p>
+            </Spin>
           </Modal>
         </div>
       </Spin>

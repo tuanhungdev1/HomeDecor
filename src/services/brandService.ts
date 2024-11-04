@@ -14,15 +14,16 @@ export interface Brand {
 export interface BrandForCreate {
   name: string;
   description?: string;
-  logoFile?: string;
+  logoFile?: File;
   isActive?: boolean;
 }
 
 export interface BrandForUpdate {
-  name?: string;
+  name: string;
   description?: string;
-  logoUrl?: string;
+  logoUrl?: File;
   isActive?: boolean;
+  isDeleteImage?: boolean;
 }
 
 export const brandService = {
