@@ -5,11 +5,11 @@ import { Outlet } from "react-router-dom";
 const AdminHomePage = () => {
   return (
     <>
-      <Layout style={{ minHeight: "100vh", overflow: "hidden" }}>
+      <Layout>
         <SibarAdmin />
-        <div className="flex flex-col w-full min-h-screen overflow-y-scroll">
+        <div className="flex flex-col w-full">
           <HeaderAdmin />
-          <div className="overflow-y-scroll bg-white pt-28">
+          <div className="pt-6 bg-white">
             <Outlet />
           </div>
         </div>

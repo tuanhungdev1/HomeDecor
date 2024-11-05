@@ -12,3 +12,10 @@ export enum AddressType {
   Temporary = "Temporary",
   Alternate = "Alternate",
 }
+
+export enum ProductStatus {
+  Draft = "Draft",
+  Active = "Active",
+  InActive = "InActive",
+  Discontinued = "Discontinued",
+}

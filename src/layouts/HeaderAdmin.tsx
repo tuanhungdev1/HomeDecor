@@ -17,7 +17,7 @@ const HeaderAdmin = () => {
 
   return (
     <div
-      className={`px-10 py-6 fixed w-full z-50 bg-white transition-shadow duration-300 ${
+      className={`px-10 py-4 w-full border-b-[2px] z-50 bg-white transition-shadow duration-300 ${
         isScrolled ? "border-b shadow-sm" : ""
       }`}
     >
