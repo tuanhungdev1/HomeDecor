@@ -8,12 +8,10 @@ export interface ProductImage {
 export interface ProductImageForUpdate {
   fileImage: File;
   isMainImage: boolean;
-  productVariantId: number;
 }
 export interface ProductImageForCreate {
   fileImage: File;
   isMainImage: boolean;
-  productVariantId: number;
 }
 
 export interface ProductVariant {
@@ -42,12 +40,9 @@ export interface ProductVariantForCreate {
   isMainVariant: boolean;
   originalPrice: number;
   discountPercentage?: number;
-  discountPrice: number;
   discountStartDate?: Date;
   discountEndDate?: Date;
   stockQuantity: number;
-  isNewStartDate?: Date;
-  isNewEndDate?: Date;
   isActive: boolean;
   images?: ProductImageForCreate[];
 }
@@ -75,25 +70,23 @@ export interface ProductDetails {
   height?: number;
   material?: string;
   features?: string;
-  caseInStruction?: string;
+  careInStruction?: string;
   warrantyInfo?: string;
   maintenanceInstructions?: string;
-  recommemdedCleaningProducts?: string;
+  recomemdedCleaningProduct?: string;
 }
 
 export interface ProductDetailsForCreate {
-  id: number;
-  productId: number;
   measurements: string;
   roomType?: string;
   weight?: number;
   height?: number;
   material?: string;
   features?: string;
-  caseInStruction?: string;
+  careInStruction?: string;
   warrantyInfo?: string;
   maintenanceInstructions?: string;
-  recommemdedCleaningProducts?: string;
+  recomemdedCleaningProduct?: string;
 }
 
 export interface ProductDetailsForUpdate {
@@ -103,10 +96,10 @@ export interface ProductDetailsForUpdate {
   height?: number;
   material?: string;
   features?: string;
-  caseInStruction?: string;
+  careInStruction?: string;
   warrantyInfo?: string;
   maintenanceInstructions?: string;
-  recommemdedCleaningProducts?: string;
+  recomemdedCleaningProduct?: string;
 }
 
 export interface Product {

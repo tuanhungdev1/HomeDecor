@@ -1,5 +1,6 @@
 import { Banner } from "@/components/banner";
 import { BreadcrumbPath } from "@/components/breadcrumb/Breadcrumb";
+import { ScrollToTop } from "@/components/scrollToTop";
 // import { LoadingOverlay } from "@/components/loadingOverlay";
 import { FilterProduct } from "@/modules/shop";
 
@@ -20,6 +21,7 @@ const ShopPage = () => {
   return (
     <main>
       {/* <LoadingOverlay /> */}
+      <ScrollToTop />
       <Banner
         title="Shop Page"
         subTitle="Let’s design the place you always imagined."
