@@ -32,8 +32,7 @@ import { ProductStatus } from "@/types/Enums";
 import { generateSKU } from "@/utils/utils";
 import { UploadFile } from "antd/lib/upload";
 import dayjs from "dayjs";
-import useFetch from "@/hooks/useFetch";
-import { API_ENDPOINTS } from "@/constants";
+import { productServices } from "@/services/productService";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -46,11 +45,7 @@ const getBase64 = (file: FileType): Promise<string> =>
   });
 
 const AdminCreateProduct = () => {
-  const { loading, error, fetchData } = useFetch(
-    API_ENDPOINTS.PRODUCTS.GET_ALL,
-    {},
-    true
-  );
+  const [loading, setLoading] = useState(false);
   const [createProductForm] = Form.useForm();
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
@@ -127,11 +122,12 @@ const AdminCreateProduct = () => {
             originalPrice: variant.originalPrice,
             discountPercentage: variant.discountPercentage,
             discountStartDate: variant.discountDates?.[0]
-              ? dayjs(variant.discountDates?.[0]).format("YYYY-MM-DD")
+              ? dayjs(variant.discountDates?.[0]).format("YYYY-MM-DDTHH:mm:ss")
               : undefined,
             discountEndDate: variant.discountDates?.[1]
-              ? dayjs(variant.discountDates?.[1]).format("YYYY-MM-DD")
+              ? dayjs(variant.discountDates?.[1]).format("YYYY-MM-DDTHH:mm:ss")
               : undefined,
+
             stockQuantity: variant.stockQuantity,
             isActive: variant.isActive ?? true,
             images: variantFileList.map(
@@ -151,10 +147,10 @@ const AdminCreateProduct = () => {
         height: values.height,
         material: values.material,
         features: values.features,
-        careInStruction: values.caseInStruction,
+        careInStructions: values.careInStructions,
         warrantyInfo: values.warrantyInfo,
         maintenanceInstructions: values.maintenanceInstructions,
-        recomemdedCleaningProduct: values.recomemdedCleaningProduct,
+        recommemdedCleaningProducts: values.recommemdedCleaningProducts,
       };
 
       const productData: ProductForCreate = {
@@ -251,24 +247,20 @@ const AdminCreateProduct = () => {
           );
         }
       );
-
-      const response: any = await fetchData({
-        url: API_ENDPOINTS.PRODUCTS.CREATE,
-        method: "POST",
-        data: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      setLoading(true);
+      const response = await productServices.createProduct(formData);
       console.log(response);
-      if (response && response.statusCode === 201) {
+      if (response && response.data.statusCode === 201) {
         message.success("Chúc mừng bạn đã tạo một sản phẩm mới thành công!");
+        setLoading(false);
       } else {
         throw new Error("Tạo sản phẩm không thành công.");
       }
     } catch (err) {
       console.error("Error creating product:", err);
-      message.error(`Có lỗi sảy ra khi tạo sản phẩm Error: ${error}`);
+      message.error(`Có lỗi sảy ra khi tạo sản phẩm Error: ${err}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -548,7 +540,7 @@ const AdminCreateProduct = () => {
               />
             </Form.Item>
 
-            <Form.Item label="Hướng dẫn sử dụng" name="caseInStruction">
+            <Form.Item label="Hướng dẫn sử dụng" name="careInStructions">
               <TextArea
                 rows={4}
                 allowClear
@@ -559,7 +551,7 @@ const AdminCreateProduct = () => {
 
             <Form.Item
               label="Hướng dẫn vệ sinh"
-              name="recomemdedCleaningProduct"
+              name="recommemdedCleaningProducts"
             >
               <TextArea
                 rows={4}

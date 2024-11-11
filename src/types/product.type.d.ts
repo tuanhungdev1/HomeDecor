@@ -64,7 +64,7 @@ export interface ProductVariantForUpdate {
 }
 
 export interface ProductDetails {
-  measurements: string;
+  measurements?: string;
   roomType?: string;
   weight?: number;
   height?: number;
@@ -73,24 +73,24 @@ export interface ProductDetails {
   careInStruction?: string;
   warrantyInfo?: string;
   maintenanceInstructions?: string;
-  recomemdedCleaningProduct?: string;
+  recommemdedCleaningProducts?: string;
 }
 
 export interface ProductDetailsForCreate {
-  measurements: string;
+  measurements?: string;
   roomType?: string;
   weight?: number;
   height?: number;
   material?: string;
   features?: string;
-  careInStruction?: string;
+  careInStructions?: string;
   warrantyInfo?: string;
   maintenanceInstructions?: string;
-  recomemdedCleaningProduct?: string;
+  recommemdedCleaningProducts?: string;
 }
 
 export interface ProductDetailsForUpdate {
-  measurements: string;
+  measurements?: string;
   roomType?: string;
   weight?: number;
   height?: number;
@@ -99,7 +99,7 @@ export interface ProductDetailsForUpdate {
   careInStruction?: string;
   warrantyInfo?: string;
   maintenanceInstructions?: string;
-  recomemdedCleaningProduct?: string;
+  recommemdedCleaningProducts?: string;
 }
 
 export interface Product {
